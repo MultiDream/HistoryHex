@@ -408,6 +408,11 @@ PrefabInstance:
       propertyPath: Colour.a
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2141304725549219747, guid: 583fa1adac2d35e48b323e9e0bd6dfbd,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 583fa1adac2d35e48b323e9e0bd6dfbd, type: 3}
 --- !u!114 &528086182 stripped
@@ -677,6 +682,11 @@ PrefabInstance:
         type: 3}
       propertyPath: Colour.a
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2141304725549219747, guid: 583fa1adac2d35e48b323e9e0bd6dfbd,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 583fa1adac2d35e48b323e9e0bd6dfbd, type: 3}

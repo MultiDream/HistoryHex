@@ -27,19 +27,43 @@ public class KeyboardController : MonoBehaviour {
 					toDo();
 				}
 			}
-			
 		}
 	}
 
 	/// <summary>
-	/// Binds a key to an action. To maintain best practices. Do not overload these bindings later.
+	/// Binds a key to an action.
 	/// </summary>
-	public void BindKey(KeyCode key, KeyAction action = null){
+	public void BindKey(KeyCode key, KeyAction action = null)
+	{
+		if (Bindings.ContainsKey(key))
+		{
+			//For now, kill the game if you try to bind without unbinding. We can change later.
+			throw new UnityException("Attempted to bind already bound key!");
+		}
 
-		if (action != null){
+		if (action != null)
+		{
 			Bindings.Add(key, action);
-		} else {
+		} 
+		else 
+		{
 			Bindings.Add(key, DefaultAction);
+		}
+	}
+
+	/// <summary>
+	/// Unbinds a key from an action.
+	/// </summary>
+	public void UnbindKey(KeyCode key) 
+	{
+		if (!Bindings.ContainsKey(key))
+		{
+			//For now, kill the game if you try to unbind without binding. We can change later.
+			throw new UnityException("Attempted to unbind key that was never bound!");
+		} 
+		else 
+		{
+			Bindings.Remove(key);
 		}
 	}
 

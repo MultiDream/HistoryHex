@@ -5,32 +5,34 @@ using UnityEngine.UI;
 
 /// <summary>
 /// This script's purpose is to manage a series of other UI components.
-///	For now, that list includes:
-///		1. The Selection Controller
-///		2. The Active Player Display.
-///		3. The Game Timer.
-///		
-/// This class isn't ready yet, but eventually all components will be moved here.
+/// It should always be attached to a UIPrefab.
 /// </summary>
 public class UIMaster : MonoBehaviour
 {
-	public ILedger activeLedger;
-	public Player ActivePlayer {
-		set {
-			Debug.Log(value.Colour);
-			transform.GetChild(3).GetComponent<Image>().color = value.Colour;
-		} 
-	}
+	/* We still need to decide the exact process of registering and unregistering UIComponents. */
+
+	private Dictionary<string,GameObject> UIComponents;
+	public KeyboardController keyboard;
 
     // Start is called before the first frame update
-    void Start()
-    {
-
+    void Start(){
+		keyboard.BindKey(KeyCode.K, K_Key);
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        //Make sure the correct active player is ready.
+    void Update(){
     }
+
+	//register a UIComponent
+	public void RegisterUIComponent(){
+	}
+
+	//unregister a UIComponent
+	public void UnregisterUIComponent(){
+	}
+
+	// Key bindings
+	void K_Key(){
+		Debug.Log("K_Key_Pressed");
+	}
 }

@@ -11,7 +11,6 @@ public class Player : MonoBehaviour
 	public Color Colour = new Color(); //This is terrible naming. Won't somebody do something?
 
 	public void Start() {
-		
 	}
 
 	public void Update() {
