@@ -40,7 +40,9 @@ public class Map : MonoBehaviour
 		for (int i = -radius; i <= radius; i++) {
 			for (int j = -radius; j <= radius; j++) {
 				for (int k = -radius; k <= radius; k++) {
-					if (i + j + k == 0) {
+					float gapChance = 0.125f;
+					if (i + j + k == 0 && Random.value < 1.0f - gapChance) {
+
 						int[] key = new int[3] { i, j, k };
 
 						// Beware order of operations.
@@ -54,7 +56,6 @@ public class Map : MonoBehaviour
 				}
 			}
 		}
-
 		hexMap = HeavyMap;
 	}
 

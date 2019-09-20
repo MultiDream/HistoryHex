@@ -11,7 +11,10 @@ public class UIMaster : MonoBehaviour
 {
 	/* We still need to decide the exact process of registering and unregistering UIComponents. */
 
-	private Dictionary<string,GameObject> UIComponents;
+	// For now, we'll just make some possible UIComponentPrefabs.
+	// We'll want something more permanent, but this will do for now.
+	public GameObject TileLedgerPrefab;
+
 	public KeyboardController keyboard;
 
     // Start is called before the first frame update

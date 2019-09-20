@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class SelectController : MonoBehaviour {
 	public HexSingleton selected;
-	public GameObject ArmyPrefab;
+	//public GameObject ArmyPrefab;
 
 	// Update is called once per frame
 	void Update() {
@@ -26,26 +26,27 @@ public class SelectController : MonoBehaviour {
 				}
 			}
 		} 
+
 		//Army spawning key. Move code elsewhere at some point.
-		else if (Input.GetKeyDown(KeyCode.V)){
-			if (selected != null) {
-				Vector3 position = selected.transform.position;
-				Quaternion rotation = Quaternion.Euler(0, 0, 0);
-				Instantiate(ArmyPrefab, position, rotation);
-			}
-		}
+		//else if (Input.GetKeyDown(KeyCode.V)){
+		//	if (selected != null) {
+		//		Vector3 position = selected.transform.position;
+		//		Quaternion rotation = Quaternion.Euler(0, 0, 0);
+		//		Instantiate(ArmyPrefab, position, rotation);
+		//	}
+		//}
 	}
 
 	private void Select() {
 		selected.drawer.selected = true;
-		transform.GetChild(0).GetComponent<Text>().text = selected.Name;
-		transform.GetChild(1).GetComponent<Text>().text = "Food: " + selected.Food.ToString();
+		//transform.GetChild(0).GetComponent<Text>().text = selected.Name;
+		//transform.GetChild(1).GetComponent<Text>().text = "Food: " + selected.Food.ToString();
 	}
 
 	private void Deselect(){
 		selected.drawer.selected = false;
-		transform.GetChild(0).GetComponent<Text>().text = "No Tile Selected";
-		transform.GetChild(1).GetComponent<Text>().text = "-";
+		//transform.GetChild(0).GetComponent<Text>().text = "No Tile Selected";
+		//transform.GetChild(1).GetComponent<Text>().text = "-";
 		selected = null;
 	}
 }

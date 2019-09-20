@@ -13,7 +13,7 @@ public class GameMaster : MonoBehaviour {
 	public GameObject UIMasterPrefab;
 
 	public int NumberOfPlayers;
-	public GameObject[] Players;
+	private GameObject[] Players;
 	public Map Board;				//Handles map creation.
 
 
