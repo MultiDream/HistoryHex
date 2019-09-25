@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7801856688079270606}
   - component: {fileID: 5329014594902089350}
   - component: {fileID: 7235547270692203151}
+  - component: {fileID: -2018049605240172475}
   m_Layer: 0
   m_Name: HexPrefab
   m_TagString: Untagged
@@ -45,6 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a3632bd861b3c047a2461e1dff1eeee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Food: 0
 --- !u!64 &7235547270692203151
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -59,6 +61,20 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 14
   m_Mesh: {fileID: 4300000, guid: dc25c4cb78552b04e85f08b9de73a549, type: 3}
+--- !u!114 &-2018049605240172475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8565909793243875799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46ba07132db866d4faffad8f3e57d526, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UIComponentPrefab: {fileID: 5312235066543638287, guid: 452c607705918eb4691fba4a31a32e66,
+    type: 3}
 --- !u!1001 &9138214094919227444
 PrefabInstance:
   m_ObjectHideFlags: 0

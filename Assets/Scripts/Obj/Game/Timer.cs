@@ -2,12 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Script that can use real time to scheduale an event.
+/// </summary>
 public class Timer : MonoBehaviour {
 
 	public float TimeRemaining { get; set; } = 0;
 	public bool Enabled { get; set; } = false;
+
+	/*  Need to revisit this area and check for memory leaks. */
 	public delegate void Action();
-	public Action OnAlarmScript = DefaultAction;
+	public Action OnAlarmScript = DefaultAction; 
 
 	// Start is called before the first frame update
 	void Start()

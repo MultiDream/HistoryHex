@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5299021486818969603}
   - component: {fileID: 1944641150124040855}
   - component: {fileID: 3346418782820915770}
+  - component: {fileID: 3110721473342400849}
   m_Layer: 0
   m_Name: ArmyPrefab
   m_TagString: Untagged
@@ -66,6 +67,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -91,3 +93,17 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3110721473342400849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 629301489883901089}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46ba07132db866d4faffad8f3e57d526, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UIComponentPrefab: {fileID: 7427512739934399640, guid: ddacf57c90d415948b3f82b723dc75f0,
+    type: 3}

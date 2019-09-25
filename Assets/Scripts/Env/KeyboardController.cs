@@ -17,14 +17,18 @@ public class KeyboardController : MonoBehaviour {
 	 * as few as possible because of this update function.
 	 */
 	public void Update(){
-		
-		if (Input.anyKeyDown){
-			foreach (KeyCode key in Bindings.Keys){
-				if (Input.GetKeyDown(key)){
-					KeyAction toDo = Bindings[key];
+		if (Listening) {
+			if (Input.anyKeyDown) {
+				foreach (KeyCode key in Bindings.Keys) {
+					if (Input.GetKeyDown(key)) {
+						//Compiler says this can be simplified. Don't trust it.
+						KeyAction toDo = Bindings[key];
 
-					//Run the binded action.
-					toDo();
+						//Run the binded action.
+						if (toDo != null){
+							toDo();
+						}
+					}
 				}
 			}
 		}
@@ -32,23 +36,16 @@ public class KeyboardController : MonoBehaviour {
 
 	/// <summary>
 	/// Binds a key to an action.
+	/// For now, multicasting is forbidden.
 	/// </summary>
-	public void BindKey(KeyCode key, KeyAction action = null)
+	public void BindKey(KeyCode key, KeyAction action)
 	{
 		if (Bindings.ContainsKey(key))
 		{
 			//For now, kill the game if you try to bind without unbinding. We can change later.
 			throw new UnityException("Attempted to bind already bound key!");
 		}
-
-		if (action != null)
-		{
-			Bindings.Add(key, action);
-		} 
-		else 
-		{
-			Bindings.Add(key, DefaultAction);
-		}
+		Bindings.Add(key, action);
 	}
 
 	/// <summary>
@@ -65,13 +62,5 @@ public class KeyboardController : MonoBehaviour {
 		{
 			Bindings.Remove(key);
 		}
-	}
-
-	/// <summary>
-	/// Default KeyBinding action.
-	/// </summary>
-	public void DefaultAction(){
-		Debug.Log("Key Bound to default action.");
-		return;
 	}
 }

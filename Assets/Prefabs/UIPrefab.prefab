@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 4962886492842157324}
   - component: {fileID: 7020987381863704599}
   - component: {fileID: 7950823048148831022}
-  - component: {fileID: 7330235940927035523}
+  - component: {fileID: 7322861142643214952}
+  - component: {fileID: 8967113103402394180}
   m_Layer: 0
   m_Name: UIPrefab
   m_TagString: Untagged
@@ -80,9 +81,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3320c519c19d2524f9b3d6256ee692ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RootCanvas: {fileID: 4962886492842157324}
-  keyboard: {fileID: 7330235940927035523}
---- !u!114 &7330235940927035523
+  subComponents: {fileID: 0}
+  keyboard: {fileID: 8967113103402394180}
+  selectController: {fileID: 7322861142643214952}
+--- !u!114 &7322861142643214952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5431515765016586136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de47677ca95f5f049b6c8efdeafb7eab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selected: {fileID: 0}
+--- !u!114 &8967113103402394180
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

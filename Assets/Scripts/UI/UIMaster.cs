@@ -11,15 +11,14 @@ public class UIMaster : MonoBehaviour
 {
 	/* We still need to decide the exact process of registering and unregistering UIComponents. */
 
-	// For now, we'll just make some possible UIComponentPrefabs.
-	// We'll want something more permanent, but this will do for now.
-	public GameObject TileLedgerPrefab;
-
-	public KeyboardController keyboard;
+	public GameObject subComponent;
+	public KeyboardController keyboard;			// Needs to be passed in.
+	public SelectController selectController;	// Same deal.
 
     // Start is called before the first frame update
     void Start(){
-		keyboard.BindKey(KeyCode.K, K_Key);
+		BindKeys();
+		keyboard.Listening = true;
     }
 
     // Update is called once per frame
@@ -28,14 +27,32 @@ public class UIMaster : MonoBehaviour
 
 	//register a UIComponent
 	public void RegisterUIComponent(){
+		if (subComponent == null){
+			UIFactory factory = transform.GetComponent<UIFactory>();
+			subComponent = factory.getUI();
+			//subComponent.GetComponent<ISelectable>(); Shit, I got a bad feeling about this.
+		}
 	}
 
 	//unregister a UIComponent
 	public void UnregisterUIComponent(){
+		Destroy(subComponent);
+		subComponent = null;
 	}
 
 	// Key bindings
-	void K_Key(){
-		Debug.Log("K_Key_Pressed");
+	void BindKeys(){
+		keyboard.BindKey(KeyCode.J, J_Key);
+		keyboard.BindKey(KeyCode.K, K_Key);
+	}
+
+	void J_Key() {
+		Debug.Log("Registering UI");
+		RegisterUIComponent();
+	}
+	
+	void K_Key() {
+		Debug.Log("Unregistering UI");
+		UnregisterUIComponent();
 	}
 }

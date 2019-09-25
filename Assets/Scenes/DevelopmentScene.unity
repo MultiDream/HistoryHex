@@ -334,6 +334,17 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7950823048148831022, guid: 18b291ddf762ae44f8d1d056379246b3,
+        type: 3}
+      propertyPath: keyboard
+      value: 
+      objectReference: {fileID: 124199627}
+    - target: {fileID: 7322861142643214952, guid: 18b291ddf762ae44f8d1d056379246b3,
+        type: 3}
+      propertyPath: ArmyPrefab
+      value: 
+      objectReference: {fileID: 629301489883901089, guid: 7b0ce070045652d449cc0f1c5ff48ac1,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 18b291ddf762ae44f8d1d056379246b3, type: 3}
 --- !u!1 &124199626 stripped
@@ -342,7 +353,19 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 124199625}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &124199627
+--- !u!114 &124199627 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8967113103402394180, guid: 18b291ddf762ae44f8d1d056379246b3,
+    type: 3}
+  m_PrefabInstance: {fileID: 124199625}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 124199626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73f36b205a6c59a42962dcf13167c6ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &124199628
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -351,10 +374,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 124199626}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de47677ca95f5f049b6c8efdeafb7eab, type: 3}
+  m_Script: {fileID: 11500000, guid: 46a8e8ca3705f2c4a9931bc680441327, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selected: {fileID: 0}
+  ArmyUIPrefab: {fileID: 4397745927132737139, guid: a5c0d8f098b0a3a4ea7ada99c5122e76,
+    type: 3}
+  TileUIPrefab: {fileID: 0}
 --- !u!1 &699937526
 GameObject:
   m_ObjectHideFlags: 0
