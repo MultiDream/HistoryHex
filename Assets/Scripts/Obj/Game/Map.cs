@@ -19,7 +19,7 @@ public class Map : MonoBehaviour
 
 	// Start is called before the first frame update
 	void Start() {
-		InitMap();
+		//InitMap();
 	}
 
 	// Update is called once per frame
@@ -81,5 +81,11 @@ public class Map : MonoBehaviour
 			throw new UnityException("Map has not been initialized!");
 		}
 
+	}
+
+	public void setControl(Player[] players){
+		foreach (GameObject hexObj in hexMap.Values){
+			hexObj.GetComponent<HexSingleton>().Controller = players[Mathf.FloorToInt(Random.value * players.Length)];
+		}
 	}
 }

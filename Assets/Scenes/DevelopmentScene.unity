@@ -339,6 +339,11 @@ PrefabInstance:
       propertyPath: keyboard
       value: 
       objectReference: {fileID: 124199627}
+    - target: {fileID: 7950823048148831022, guid: 18b291ddf762ae44f8d1d056379246b3,
+        type: 3}
+      propertyPath: GM
+      value: 
+      objectReference: {fileID: 518740635649282431}
     - target: {fileID: 7322861142643214952, guid: 18b291ddf762ae44f8d1d056379246b3,
         type: 3}
       propertyPath: ArmyPrefab
@@ -377,7 +382,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46a8e8ca3705f2c4a9931bc680441327, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ArmyUIPrefab: {fileID: 4397745927132737139, guid: a5c0d8f098b0a3a4ea7ada99c5122e76,
+  ArmyUIPrefab: {fileID: 0}
+  FlagUIPrefab: {fileID: 4397745927132737139, guid: a5c0d8f098b0a3a4ea7ada99c5122e76,
     type: 3}
   TileUIPrefab: {fileID: 0}
 --- !u!1 &699937526
@@ -546,7 +552,7 @@ PrefabInstance:
     - target: {fileID: 518740635885981376, guid: 23b94d6d44eb7c24b9e1d615b8da48f6,
         type: 3}
       propertyPath: Players.Array.size
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 518740635885981376, guid: 23b94d6d44eb7c24b9e1d615b8da48f6,
         type: 3}
@@ -565,3 +571,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 23b94d6d44eb7c24b9e1d615b8da48f6, type: 3}
+--- !u!114 &518740635649282431 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 518740635885981376, guid: 23b94d6d44eb7c24b9e1d615b8da48f6,
+    type: 3}
+  m_PrefabInstance: {fileID: 853860287}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 481ba415ea97b5e468d65112a2b677bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

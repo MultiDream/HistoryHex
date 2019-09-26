@@ -7,10 +7,9 @@ public class KeyboardController : MonoBehaviour {
 	public delegate void KeyAction();
 
 	//Do not allow observation of the internal state of the KeyBoardController.
-	private Dictionary<KeyCode, KeyAction> Bindings;
+	private Dictionary<KeyCode, KeyAction> Bindings = new Dictionary<KeyCode, KeyAction>();
 
 	public void Start(){
-		Bindings = new Dictionary<KeyCode, KeyAction>();
 	}
 
 	/* Keyboard Controllers are expensive. Try not to run to many at once, and maintain

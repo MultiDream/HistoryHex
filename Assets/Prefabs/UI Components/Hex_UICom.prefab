@@ -333,7 +333,7 @@ GameObject:
   - component: {fileID: 8705485679933935008}
   - component: {fileID: 5003918327814516534}
   m_Layer: 0
-  m_Name: HexLedger
+  m_Name: Hex_UICom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

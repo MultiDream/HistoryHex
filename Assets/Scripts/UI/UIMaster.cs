@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,6 +12,7 @@ public class UIMaster : MonoBehaviour
 {
 	/* We still need to decide the exact process of registering and unregistering UIComponents. */
 
+	public GameMaster GM;
 	public GameObject subComponent;
 	public KeyboardController keyboard;			// Needs to be passed in.
 	public SelectController selectController;	// Same deal.
@@ -19,18 +21,21 @@ public class UIMaster : MonoBehaviour
     void Start(){
 		BindKeys();
 		keyboard.Listening = true;
+		//Master needs to register to the GameMaster for NextTurnEvent!
+		GM.NextTurn += new NextTurnHandler(Space_Key);
     }
 
     // Update is called once per frame
     void Update(){
     }
 
-	//register a UIComponent
+	// Register a UIComponent. Currently just does the flag.
 	public void RegisterUIComponent(){
 		if (subComponent == null){
 			UIFactory factory = transform.GetComponent<UIFactory>();
 			subComponent = factory.getUI();
-			//subComponent.GetComponent<ISelectable>(); Shit, I got a bad feeling about this.
+			Color color = GM.Players[GM.currentPlayer].GetComponent<Player>().Colour;
+			subComponent.transform.GetChild(0).GetComponent<Image>().color = color; //Jesus this is long. Clean later.
 		}
 	}
 
@@ -54,5 +59,15 @@ public class UIMaster : MonoBehaviour
 	void K_Key() {
 		Debug.Log("Unregistering UI");
 		UnregisterUIComponent();
+	}
+
+	void Space_Key()
+	{
+		Debug.Log("UIMaster Notified of Space Hit!");
+		if (subComponent != null){
+			Color color = GM.Players[GM.currentPlayer].GetComponent<Player>().Colour;
+			subComponent.transform.GetChild(0).GetComponent<Image>().color = color; //Jesus this is long. Clean later.
+		}
+		return;
 	}
 }

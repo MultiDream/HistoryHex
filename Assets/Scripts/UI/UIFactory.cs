@@ -8,16 +8,11 @@ using UnityEngine;
 public class UIFactory : MonoBehaviour
 {
 	public GameObject ArmyUIPrefab;
+	public GameObject FlagUIPrefab;
 	public GameObject TileUIPrefab;
 
 	public GameObject getUI(){
-		GameObject newUI = Instantiate(ArmyUIPrefab);
-		return newUI;
-	}
-
-	public GameObject getWiredUI(ref KeyboardController keyboard) {
-		GameObject newUI = Instantiate(ArmyUIPrefab);
-		// newUI.GetComponent<> Oh shit. This doesn't support interfaces.
+		GameObject newUI = Instantiate(FlagUIPrefab);
 		return newUI;
 	}
 }

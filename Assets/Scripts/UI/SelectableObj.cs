@@ -13,9 +13,9 @@ public class SelectableObj : MonoBehaviour
 	// Delegation of the Selection/Unselection methods.
 	// Use these to attach the Selection methods programmatically.
 	// Are event handles necessary?
-	public delegate void SelectionHandler();
-	public event SelectionHandler OnSelect;
-	public event SelectionHandler OnDeselect;
+	//public delegate void SelectionHandler();
+	//public event SelectionHandler OnSelect;
+	//public event SelectionHandler OnDeselect;
 
 
     // Start is called before the first frame update
@@ -36,13 +36,15 @@ public class SelectableObj : MonoBehaviour
 			//Creating a new component without imploding the old one creates memory leaks.
 			throw new System.Exception("Imploding Program. UI Must not exist before getting created!");
 		}
-		UIComponent = Instantiate(UIComponentPrefab); //Remember, this can be destroyed anywhere.
+		UIComponent = Instantiate(UIComponentPrefab);
 		//OnSelect(); //Publishes the fact that the object has been selected. Necessary?
 	}
 
 	// Fired by the SelectionController when the Object is deselected.
 	public void OnDeselected() {
 		Destroy(UIComponent);
+		UIComponent = null; //For some reason, destroying a component does not actually make it go away?
+
 		//OnDeselect(); //Publishes the fact that the object has been unselected. Necessary?
 	}
 }
