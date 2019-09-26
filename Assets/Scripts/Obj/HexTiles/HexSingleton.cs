@@ -2,20 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/*
- * This class is an alternative way to organize a hexTile. It will require some refactoring
- * to be useful, but I think its probably best to use singletons for Unity, with some internal hidden data.
- * 
- * I'll go to the Unity meet up and see what people think.
- * */
+// Does not follow singleton pattern. Refactor to HexEntity.
 public class HexSingleton : MonoBehaviour
 {
 	public float Food;
 	public string Name { get; set; }
 	public Player Controller { get; set; }
-
-
-	internal HexDrawer drawer;
+	public EntityDrawer drawer;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,21 +18,23 @@ public class HexSingleton : MonoBehaviour
     // Update is called once per frame.
     void Update()
     {
+		// Move the responsibility of setting Map Viewing modes to another class later.
+
 		// Shows the Food Map.
 		if (Input.GetKeyDown(KeyCode.F)){
-			drawer.hexCol = new Color(Food/4f,0,0);
+			drawer.Color = new Color(Food/4f,0,0);
 		}
 		//Shows the Control Map.
 		else if (Input.GetKeyDown(KeyCode.G)) {
 			if (Controller != null){
-				drawer.hexCol = Controller.Colour;
+				drawer.Color = Controller.Colour;
 			} else {
-				drawer.hexCol = Color.black;
+				drawer.Color = Color.black;
 			}
 		}
 		// Clears the map.
 		else if (Input.GetKeyDown(KeyCode.R)) {
-			drawer.hexCol = Color.white;
+			drawer.Color = Color.white;
 		}
 		Draw();
     }
@@ -48,7 +43,7 @@ public class HexSingleton : MonoBehaviour
 	private void Initialize(){
 		Name = "NoMansLand";
 		Food = Mathf.Floor(Random.value * Global.MAXIMUM_FOOD);
-		drawer = new HexDrawer(transform.GetChild(0));
+		drawer = new EntityDrawer(transform.GetChild(0));
 	}
 
 	//Draw Delegation

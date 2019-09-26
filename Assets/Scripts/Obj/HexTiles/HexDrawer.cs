@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Legacy Drawer for HexTiles.
+/// </summary>
 public class HexDrawer {
 	Transform hexMesh;
 	public bool selected;
