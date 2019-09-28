@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // Does not follow singleton pattern. Refactor to HexEntity.
-public class HexSingleton : MonoBehaviour
+public class HexEntity : MonoBehaviour
 {
 	public float Food;
 	public string Name { get; set; }

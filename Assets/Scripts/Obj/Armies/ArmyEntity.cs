@@ -58,16 +58,18 @@ public class ArmyEntity : MonoBehaviour
 		}
 	}
 
+	private void ActiveUpdate() {
+		Debug.Log("Active Update Occuring!");
+		return;
+	}
+
+	#region WireSelectionInterface
 	private void WireSelectionInterface() {
 		SelectionInterface.Prepare();
 		SelectionInterface.OnSelect += OnSelect;
 		SelectionInterface.OnDeselect += OnDeselect;
 	}
 
-	private void ActiveUpdate(){
-		Debug.Log("Active Update Occuring!");
-		return;
-	}
 
 	private void OnSelect() {
 		activated = true;
@@ -76,6 +78,8 @@ public class ArmyEntity : MonoBehaviour
 	private void OnDeselect() {
 		activated = false;
 	}
+
+	#endregion
 
 	//Draw Delegation
 	private void Draw() {

@@ -14,8 +14,8 @@ public class Map : MonoBehaviour
 	public int radius = 5;
 
 	//Hard coded values that reflect the dimensions of the hex tile blender file.
-	private float hexHeight = 2f;
-	private float hexWidth = 1.73205f;
+	// private float hexHeight = 2f;
+	// private float hexWidth = 1.73205f;
 
 	// Start is called before the first frame update
 	void Start() {
@@ -85,7 +85,7 @@ public class Map : MonoBehaviour
 
 	public void setControl(Player[] players){
 		foreach (GameObject hexObj in hexMap.Values){
-			hexObj.GetComponent<HexSingleton>().Controller = players[Mathf.FloorToInt(Random.value * players.Length)];
+			hexObj.GetComponent<HexEntity>().Controller = players[Mathf.FloorToInt(Random.value * players.Length)];
 		}
 	}
 }
