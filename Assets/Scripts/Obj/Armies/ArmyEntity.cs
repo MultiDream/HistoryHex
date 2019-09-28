@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class ArmyEntity : MonoBehaviour
 {
+	private bool activated = false;
 	public float Food;
 	public string Name { get; set; }
 	public Player Controller { get; set; }
 
+	private SelectableObj SelectionInterface;
 	public EntityDrawer drawer;
 	// Start is called before the first frame update
 	void Start()
@@ -32,13 +34,47 @@ public class ArmyEntity : MonoBehaviour
 			drawer.Color = Color.white;
 		}
 
+		//If Activated, run the extended activation methods.
+		if (activated){
+			ActiveUpdate();
+		}
+
+		//Draw the Entity.
 		Draw();
 	}
 
 	void Initialize(){
 		Name = "UnnamedArmy";
 		Food = Mathf.Floor(Random.value * Global.MAXIMUM_FOOD);
+
 		drawer = new EntityDrawer(transform);
+
+		//Attempt to wire the SelectionInterface.
+		SelectionInterface = transform.GetComponent<SelectableObj>();
+		if (SelectionInterface == null){
+			throw new UnityException("Failed to link Army Entity to a SelectionInterface.");
+		} else {
+			WireSelectionInterface();
+		}
+	}
+
+	private void WireSelectionInterface() {
+		SelectionInterface.Prepare();
+		SelectionInterface.OnSelect += OnSelect;
+		SelectionInterface.OnDeselect += OnDeselect;
+	}
+
+	private void ActiveUpdate(){
+		Debug.Log("Active Update Occuring!");
+		return;
+	}
+
+	private void OnSelect() {
+		activated = true;
+	}
+
+	private void OnDeselect() {
+		activated = false;
 	}
 
 	//Draw Delegation

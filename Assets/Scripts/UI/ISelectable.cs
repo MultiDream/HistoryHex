@@ -9,6 +9,4 @@ public interface ISelectable
 {
 	void OnSelect();
 	void OnDeselect();
-	void WireKeyBoard(ref KeyboardController keyboard);
-	void UnwireKeyboard(ref KeyboardController keyboard);
 }
