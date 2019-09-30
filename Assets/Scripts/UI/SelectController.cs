@@ -35,13 +35,13 @@ public class SelectController : MonoBehaviour {
 		}
 		//Right keys will issue commands to selectableObj.
 		//Army spawning key.Move code elsewhere at some point.
-		else if (Input.GetKeyDown(KeyCode.V)) {
-			if (SelectedObj != null) {
-				Vector3 position = SelectedObj.transform.position;
-				Quaternion rotation = Quaternion.Euler(0, 0, 0);
-				Instantiate(ArmyPrefab, position, rotation);
-			}
-		}
+		//else if (Input.GetKeyDown(KeyCode.V)) {
+		//	if (SelectedObj != null) {
+		//		Vector3 position = SelectedObj.transform.position;
+		//		Quaternion rotation = Quaternion.Euler(0, 0, 0);
+		//		Instantiate(ArmyPrefab, position, rotation);
+		//	}
+		//}
 	}
 
 	private void Select() {

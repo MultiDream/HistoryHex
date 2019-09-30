@@ -9,4 +9,16 @@ public static class Global
 {
 	public static float MAXIMUM_FOOD = 4.0f;
 	public static int MAX_PLAYERS = 4;
+
+	//Map Flyweight and related tools.
+	public static Map MapFlyWeight;
+	public static Vector3 Q = new Vector3(Mathf.PI / 3.0f, 0, 0.5f);      //  60* axis 
+	public static Vector3 R = new Vector3(-Mathf.PI / 3.0f, 0, 0.5f);     // 120* axis
+	public static Vector3 S = new Vector3(0, 0, -1);                      // 180* axis
+
+	public static Vector3 GetCubicVector(int i, int j, int k){
+		Vector3 position = ((Q * i) + (R * j) + (S * k));
+		position = new Vector3(position.x * 0.85f, 0, position.z);
+		return position;
+	}
 }

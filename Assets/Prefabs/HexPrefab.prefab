@@ -46,6 +46,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a3632bd861b3c047a2461e1dff1eeee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ArmyPrefab: {fileID: 629301489883901089, guid: 7b0ce070045652d449cc0f1c5ff48ac1,
+    type: 3}
+  Position: 
   Food: 0
 --- !u!64 &7235547270692203151
 MeshCollider:

@@ -5,6 +5,7 @@ using UnityEngine;
 
 /// <summary>
 /// Handles the Creation and management of the Map.
+/// Access using Flyweight in Global.
 /// </summary>
 public class Map : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class Map : MonoBehaviour
 	// Start is called before the first frame update
 	void Start() {
 		//InitMap();
+		Global.MapFlyWeight = this;
 	}
 
 	// Update is called once per frame
@@ -51,6 +53,7 @@ public class Map : MonoBehaviour
 
 
 						GameObject Hex = Instantiate(hexPrefab, position, rotation);
+						Hex.GetComponent<HexEntity>().Position = key;
 						HeavyMap.Add(key, Hex);
 					}
 				}

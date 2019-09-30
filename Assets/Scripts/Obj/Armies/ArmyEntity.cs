@@ -4,11 +4,19 @@ using UnityEngine;
 
 public class ArmyEntity : MonoBehaviour
 {
+	// Internal variables
 	private bool activated = false;
+
+	public int[] Position; //Position on the hex grid.
 	public float Food;
 	public string Name { get; set; }
 	public Player Controller { get; set; }
 
+	// UI_COMponents.
+	public GameObject UIComponent; // UIComponentPrefab
+	private GameObject UIComponentInstance;
+
+	// SelectionInterface
 	private SelectableObj SelectionInterface;
 	public EntityDrawer drawer;
 	// Start is called before the first frame update
@@ -47,6 +55,7 @@ public class ArmyEntity : MonoBehaviour
 		Name = "UnnamedArmy";
 		Food = Mathf.Floor(Random.value * Global.MAXIMUM_FOOD);
 
+		// Create a drawer.
 		drawer = new EntityDrawer(transform);
 
 		//Attempt to wire the SelectionInterface.
@@ -56,10 +65,34 @@ public class ArmyEntity : MonoBehaviour
 		} else {
 			WireSelectionInterface();
 		}
+
+		//Present UI Components.
 	}
 
 	private void ActiveUpdate() {
-		Debug.Log("Active Update Occuring!");
+		Debug.Log($"Army now: {activated}!");
+		
+		//When active, listen for 7 4 1 and 9 6 3.
+		if (Input.GetKeyDown(KeyCode.Keypad3)){
+			Vector3 moveTo = Global.GetCubicVector(0, -1, 1);
+			transform.Translate(moveTo);
+		} else if (Input.GetKeyDown(KeyCode.Keypad1)){
+			Vector3 moveTo = Global.GetCubicVector(-1, 0, 1);
+			transform.Translate(moveTo);
+		} else if (Input.GetKeyDown(KeyCode.Keypad4)){
+			Vector3 moveTo = Global.GetCubicVector(-1, 1, 0);
+			transform.Translate(moveTo);
+		} else if (Input.GetKeyDown(KeyCode.Keypad6)) {
+			Vector3 moveTo = Global.GetCubicVector(1, -1, 0);
+			transform.Translate(moveTo);
+		} else if (Input.GetKeyDown(KeyCode.Keypad9)) {
+			Vector3 moveTo = Global.GetCubicVector(1, 0, -1);
+			transform.Translate(moveTo);
+		} else if (Input.GetKeyDown(KeyCode.Keypad7)) {
+			Vector3 moveTo = Global.GetCubicVector(0, 1, -1);
+			transform.Translate(moveTo);
+		}
+
 		return;
 	}
 

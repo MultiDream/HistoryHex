@@ -66,7 +66,6 @@ public class GameMaster : MonoBehaviour {
 	private void OnNextTurn(){
 		Debug.Log("OnNextTurn Event Firing!");
 		if (NextTurn != null){
-			
 			NextTurn();
 		}
 	}

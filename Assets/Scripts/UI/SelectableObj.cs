@@ -10,7 +10,6 @@ public class SelectableObj : MonoBehaviour
 {
 	public GameObject UIComponentPrefab; //UIComponent. Attach manually.
 	private GameObject UIComponent;
-
 	// This is just to inform the entity script what's going on,
 	// we use this to hide away the identity of the
 	// the entity script. Im sure there is a way to
