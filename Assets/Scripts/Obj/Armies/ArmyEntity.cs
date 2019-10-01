@@ -70,30 +70,43 @@ public class ArmyEntity : MonoBehaviour
 	}
 
 	private void ActiveUpdate() {
-		Debug.Log($"Army now: {activated}!");
+		//Debug.Log($"Army now: {activated}!");
 		
-		//When active, listen for 7 4 1 and 9 6 3.
+		// When active, listen for 7 4 1 and 9 6 3.
+		// Obviously Wet Code. Refactor at a later date.
 		if (Input.GetKeyDown(KeyCode.Keypad3)){
-			Vector3 moveTo = Global.GetCubicVector(0, -1, 1);
-			transform.Translate(moveTo);
+			int[] direction = new int[] {0, -1, 1};
+			MoveAction(direction);
 		} else if (Input.GetKeyDown(KeyCode.Keypad1)){
-			Vector3 moveTo = Global.GetCubicVector(-1, 0, 1);
-			transform.Translate(moveTo);
+			int[] direction = new int[] { -1, 0, 1 };
+			MoveAction(direction);
 		} else if (Input.GetKeyDown(KeyCode.Keypad4)){
-			Vector3 moveTo = Global.GetCubicVector(-1, 1, 0);
-			transform.Translate(moveTo);
+			int[] direction = new int[] { -1, 1, 0 };
+			MoveAction(direction);
 		} else if (Input.GetKeyDown(KeyCode.Keypad6)) {
-			Vector3 moveTo = Global.GetCubicVector(1, -1, 0);
-			transform.Translate(moveTo);
+			int[] direction = new int[] { 1, -1, 0 };
+			MoveAction(direction);
 		} else if (Input.GetKeyDown(KeyCode.Keypad9)) {
-			Vector3 moveTo = Global.GetCubicVector(1, 0, -1);
-			transform.Translate(moveTo);
+			int[] direction = new int[] { 1, 0, -1 };
+			MoveAction(direction);
 		} else if (Input.GetKeyDown(KeyCode.Keypad7)) {
-			Vector3 moveTo = Global.GetCubicVector(0, 1, -1);
-			transform.Translate(moveTo);
+			int[] direction = new int[] { 0, 1, -1 };
+			MoveAction(direction);
 		}
 
 		return;
+	}
+	
+	/// <summary>
+	/// Moves the unit across the board relative to current position.
+	/// </summary>
+	public void MoveAction(int[] direction){
+		Vector3 moveTo = Global.GetCubicVector(direction[0], direction[1], direction[2]);
+		int[] nextPos = new int[] { Position[0] + direction[0], Position[1] + direction[1], Position[2] + direction[2] };
+		if (Global.MapFlyWeight.HasHexAtCubic(nextPos)) {
+			transform.Translate(moveTo);
+			Position = nextPos;
+		}
 	}
 
 	#region WireSelectionInterface

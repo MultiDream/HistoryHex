@@ -31,7 +31,7 @@ public class Map : MonoBehaviour
 
 	//IMap functions.
 	public void InitMap(){
-		Dictionary<int[], GameObject> HeavyMap = new Dictionary<int[], GameObject>();
+		Dictionary<int[], GameObject> HeavyMap = new Dictionary<int[], GameObject>(new MapEqualityComparer());
 
 		Vector3 Q = new Vector3(Mathf.PI / 3.0f, 0, 0.5f);      //  60* axis 
 		Vector3 R = new Vector3(-Mathf.PI / 3.0f, 0, 0.5f);     // 120* axis
@@ -86,9 +86,44 @@ public class Map : MonoBehaviour
 
 	}
 
+	// Checks the hexMap to see if this key is in it. Only works for cubic coordinates.
+	public bool HasHexAtCubic(int[] key){
+		return hexMap.ContainsKey(key);
+	}
+
 	public void setControl(Player[] players){
 		foreach (GameObject hexObj in hexMap.Values){
 			hexObj.GetComponent<HexEntity>().Controller = players[Mathf.FloorToInt(Random.value * players.Length)];
 		}
+	}
+}
+
+// IEqualityConparator used to compare keys in the HexMap
+// This code was developped primarily from this source:
+// https://stackoverflow.com/questions/14663168/an-integer-array-as-a-key-for-dictionary
+public class MapEqualityComparer : IEqualityComparer<int[]>
+{
+	public bool Equals(int[] x, int[] y) 
+	{
+		if (x.Length != y.Length) 
+		{
+			return false;
+		}
+		for (int i = 0; i < x.Length; i++) 
+		{
+			if (x[i] != y[i]) 
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public int GetHashCode(int[] key) 
+	{
+		// Will implode if you hit out of bounds exception.
+		int result = 0;
+		result = key[0] + key[1] * 32 + key[2] * 1024;
+		return result;
 	}
 }
