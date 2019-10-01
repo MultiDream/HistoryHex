@@ -31,14 +31,20 @@ public class GameMaster : MonoBehaviour {
 		for (int i = 0; i < NumberOfPlayers; i++){
 			Players[i] = Instantiate(playerPrefab);
 			Players[i].transform.GetComponent<Player>().Colour = UnityEngine.Random.ColorHSV();
+			Players[i].transform.GetComponent<Player>().PlayerId = i;
 		}
 
 		Board.InitMap();
+
 		Player[] _players = new Player[NumberOfPlayers];
 		for(int i = 0; i < NumberOfPlayers; i++){
 			_players[i] = Players[i].GetComponent<Player>();
 		}
+
+		//Possible to refactor by tossing current player into the Global flyweight.
 		Board.setControl(_players); //Needs to run after the map is generated.
+
+
 	}
 
 	// Update is called once per frame
@@ -59,6 +65,7 @@ public class GameMaster : MonoBehaviour {
 		if (currentPlayer >= NumberOfPlayers){
 			currentPlayer = 0;
 		}
+		Global.ActivePlayerId = Players[currentPlayer].GetComponent<Player>().PlayerId;
 
 		OnNextTurn(); // OnNext Turn Event fires.
 	}

@@ -21,4 +21,7 @@ public static class Global
 		position = new Vector3(position.x * 0.85f, 0, position.z);
 		return position;
 	}
+
+	//Current Player Flyweight and related tools.
+	public static int ActivePlayerId;
 }

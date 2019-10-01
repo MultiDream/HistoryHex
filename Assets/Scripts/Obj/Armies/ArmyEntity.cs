@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ArmyEntity : MonoBehaviour
 {
+	#region Properties
 	// Internal variables
 	private bool activated = false;
 
@@ -19,6 +20,8 @@ public class ArmyEntity : MonoBehaviour
 	// SelectionInterface
 	private SelectableObj SelectionInterface;
 	public EntityDrawer drawer;
+	#endregion
+
 	// Start is called before the first frame update
 	void Start()
     {
@@ -43,7 +46,8 @@ public class ArmyEntity : MonoBehaviour
 		}
 
 		//If Activated, run the extended activation methods.
-		if (activated){
+		bool SelectedByController = Global.ActivePlayerId == Controller.PlayerId;
+		if (activated && SelectedByController) {
 			ActiveUpdate();
 		}
 
@@ -70,7 +74,6 @@ public class ArmyEntity : MonoBehaviour
 	}
 
 	private void ActiveUpdate() {
-		//Debug.Log($"Army now: {activated}!");
 		
 		// When active, listen for 7 4 1 and 9 6 3.
 		// Obviously Wet Code. Refactor at a later date.
@@ -96,7 +99,9 @@ public class ArmyEntity : MonoBehaviour
 
 		return;
 	}
-	
+
+	#region Unit Actions
+
 	/// <summary>
 	/// Moves the unit across the board relative to current position.
 	/// </summary>
@@ -108,6 +113,14 @@ public class ArmyEntity : MonoBehaviour
 			Position = nextPos;
 		}
 	}
+
+	/// <summary>
+	/// Combats 
+	/// </summary>
+	public void Combat(){
+
+	}
+	#endregion
 
 	#region WireSelectionInterface
 	private void WireSelectionInterface() {
