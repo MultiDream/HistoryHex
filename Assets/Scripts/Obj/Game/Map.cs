@@ -10,7 +10,7 @@ using UnityEngine;
 public class Map : MonoBehaviour
 {
 	public GameObject hexPrefab;
-	private Dictionary<int[],GameObject> hexMap; //Cubic is default.
+	public Dictionary<int[],GameObject> hexMap; //Cubic is default.
 
 	public int radius = 5;
 

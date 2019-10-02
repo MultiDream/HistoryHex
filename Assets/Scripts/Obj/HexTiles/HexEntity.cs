@@ -5,6 +5,7 @@ using UnityEngine;
 // Does not follow singleton pattern. Refactor to HexEntity.
 public class HexEntity : MonoBehaviour
 {
+	#region Properties
 	// Internal variables
 	private bool activated = false;
 
@@ -20,6 +21,7 @@ public class HexEntity : MonoBehaviour
 
 	// SelectionInterface
 	private SelectableObj SelectionInterface;
+	#endregion
 
 	// Start is called before the first frame update
 	void Start()

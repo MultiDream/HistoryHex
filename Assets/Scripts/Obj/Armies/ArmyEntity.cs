@@ -76,7 +76,6 @@ public class ArmyEntity : MonoBehaviour
 	private void ActiveUpdate() {
 		
 		// When active, listen for 7 4 1 and 9 6 3.
-		// Obviously Wet Code. Refactor at a later date.
 		if (Input.GetKeyDown(KeyCode.Keypad3)){
 			int[] direction = new int[] {0, -1, 1};
 			MoveAction(direction);
@@ -109,16 +108,24 @@ public class ArmyEntity : MonoBehaviour
 		Vector3 moveTo = Global.GetCubicVector(direction[0], direction[1], direction[2]);
 		int[] nextPos = new int[] { Position[0] + direction[0], Position[1] + direction[1], Position[2] + direction[2] };
 		if (Global.MapFlyWeight.HasHexAtCubic(nextPos)) {
+			//Get the tile for any operations that might be necessary.
+			GameObject HexTile = Global.MapFlyWeight.hexMap[nextPos];
+			Sieze(ref HexTile);
 			transform.Translate(moveTo);
 			Position = nextPos;
 		}
 	}
 
+	public void Sieze(ref GameObject hexTile) {
+		hexTile.GetComponent<HexEntity>().Controller = this.Controller;
+	}
+
 	/// <summary>
-	/// Combats 
+	/// Combats another unit.
 	/// </summary>
 	public void Combat(){
-
+		// Not yet implemented!
+		throw new UnityException("");
 	}
 	#endregion
 
