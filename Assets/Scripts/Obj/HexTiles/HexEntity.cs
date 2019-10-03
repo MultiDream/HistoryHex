@@ -128,13 +128,14 @@ public class HexEntity : MonoBehaviour
     // Wraps position vector operations. Returns distance in each coordinate.
     public Vector3Int CoordinateDistance(HexEntity hex)
     {
-        return (this.Position - hex.Position).Abs();
+        Vector3Int distance = (this.Position - hex.Position);
+        return new Vector3Int(Mathf.Abs(distance.x), Mathf.Abs(distance.y), Mathf.Abs(distance.z));
     }
 
     // Wraps Position distance function
     public float Distance(HexEntity hex)
     {
-        return this.Position.Distance(hex.Position);
+        return (this.Position - hex.Position).magnitude;
     }
 
     // Simple logic to check adjacent (distance of at least one coordinate less than 1)

@@ -10,7 +10,7 @@ using UnityEngine;
 public class Map : MonoBehaviour
 {
 	public GameObject hexPrefab;
-	public Dictionary<int[],GameObject> hexMap; //Cubic is default.
+	public Dictionary<Vector3Int,GameObject> hexMap; //Cubic is default.
 
 	public int radius = 5;
 
@@ -31,7 +31,7 @@ public class Map : MonoBehaviour
 
 	//IMap functions.
 	public void InitMap(){
-		Dictionary<int[], GameObject> HeavyMap = new Dictionary<int[], GameObject>(new MapEqualityComparer());
+		Dictionary<Vector3Int, GameObject> HeavyMap = new Dictionary<Vector3Int, GameObject>(new MapEqualityComparer());
 
 		Vector3 Q = new Vector3(Mathf.PI / 3.0f, 0, 0.5f);      //  60* axis 
 		Vector3 R = new Vector3(-Mathf.PI / 3.0f, 0, 0.5f);     // 120* axis
@@ -45,7 +45,7 @@ public class Map : MonoBehaviour
 					float gapChance = 0.125f;
 					if (i + j + k == 0 && Random.value < 1.0f - gapChance) {
 
-						int[] key = new int[3] { i, j, k };
+						Vector3Int key = new Vector3Int(i, j, k);
 
 						// Beware order of operations.
 						Vector3 position = ((Q * i) + (R * j) + (S * k));
@@ -62,11 +62,11 @@ public class Map : MonoBehaviour
 		hexMap = HeavyMap;
 	}
 
-	public Dictionary<int[], GameObject> GetMapAxial(){
-		Dictionary<int[], GameObject> axialMap = new Dictionary<int[], GameObject>();
+	public Dictionary<Vector3Int, GameObject> GetMapAxial(){
+		Dictionary<Vector3Int, GameObject> axialMap = new Dictionary<Vector3Int, GameObject>();
 		if (hexMap != null) {
-			foreach(int[] cubicKey in hexMap.Keys){
-				int[] axialKey = new int[] { cubicKey[0], cubicKey[1]};
+			foreach(Vector3Int cubicKey in hexMap.Keys){
+				Vector3Int axialKey = new Vector3Int(cubicKey.x, cubicKey.y, cubicKey.z);
 				axialMap.Add(axialKey,hexMap[cubicKey]);
 			}
 		} else {
@@ -76,7 +76,7 @@ public class Map : MonoBehaviour
 		return axialMap;
 	}
 
-	public Dictionary<int[], GameObject> GetMapCubic() {
+	public Dictionary<Vector3Int, GameObject> GetMapCubic() {
 
 		if (hexMap != null){
 			return hexMap;
@@ -87,7 +87,7 @@ public class Map : MonoBehaviour
 	}
 
 	// Checks the hexMap to see if this key is in it. Only works for cubic coordinates.
-	public bool HasHexAtCubic(int[] key){
+	public bool HasHexAtCubic(Vector3Int key){
 		return hexMap.ContainsKey(key);
 	}
 
@@ -101,29 +101,18 @@ public class Map : MonoBehaviour
 // IEqualityConparator used to compare keys in the HexMap
 // This code was developped primarily from this source:
 // https://stackoverflow.com/questions/14663168/an-integer-array-as-a-key-for-dictionary
-public class MapEqualityComparer : IEqualityComparer<int[]>
+public class MapEqualityComparer : IEqualityComparer<Vector3Int>
 {
-	public bool Equals(int[] x, int[] y) 
-	{
-		if (x.Length != y.Length) 
-		{
-			return false;
-		}
-		for (int i = 0; i < x.Length; i++) 
-		{
-			if (x[i] != y[i]) 
-			{
-				return false;
-			}
-		}
-		return true;
+	public bool Equals(Vector3Int x, Vector3Int y) 
+	{		
+		return x.x == y.x && x.y == y.y && x.z == y.z;
 	}
 
-	public int GetHashCode(int[] key) 
+	public int GetHashCode(Vector3Int key) 
 	{
 		// Will implode if you hit out of bounds exception.
 		int result = 0;
-		result = key[0] + key[1] * 32 + key[2] * 1024;
+		result = key.x + key.y * 32 + key.z * 1024;
 		return result;
 	}
 }

@@ -18,7 +18,7 @@ public class HexPath : MonoBehaviour
     #region Properties
     // Internal variables
     private List<HexEntity> hexEntities; // list of tiles
-    private Hashtable<CompositeKey<HexEntity, HexEntity>, bool> adjacencyMap;
+    private Dictionary<CompositeKey<HexEntity, HexEntity>, bool> adjacencyMap;
     //Prefabs
     //Public variables
     public string Name { get; set; }
@@ -51,23 +51,22 @@ public class HexPath : MonoBehaviour
     private void Initialize()
     {
         Name = "EmptyPath";
-        drawer = new EntityDrawer(transform.GetChild(0));
-        hexEntities = new ArrayList<HexEntity>();
-        adjacencyMap = new Hashtable<CompositeKey<HexEntity, HexEntity>, bool>();
-        adjacencyMap[null] = false;
+        hexEntities = new List<HexEntity>();
+        adjacencyMap = new Dictionary<CompositeKey<HexEntity, HexEntity>, bool>();
+        adjacencyMap[new CompositeKey<HexEntity, HexEntity>(null, null)] = false;
     }
 
 
     // ContainsHex - wraps the list Contains function.
     public bool ContainsHex(HexEntity hex)
     {
-        return HexEntities.Contains(hex);
+        return hexEntities.Contains(hex);
     }
 
     private CompositeKey<HexEntity, HexEntity> GetAdjacencyKey(HexEntity hex1, HexEntity hex2)
     {
-        CompositeKey key12 = new CompositeKey(hex1, hex2);
-        CompositeKey key21 = new CompositeKey(hex2, hex1);
+        CompositeKey<HexEntity, HexEntity> key12 = new CompositeKey<HexEntity, HexEntity>(hex1, hex2);
+        CompositeKey<HexEntity, HexEntity> key21 = new CompositeKey<HexEntity, HexEntity>(hex2, hex1);
         if (adjacencyMap.ContainsKey(key21))
             return key21;
         else
@@ -76,16 +75,16 @@ public class HexPath : MonoBehaviour
 
     private CompositeKey<HexEntity, HexEntity> GetExistingAdjacencyKey(HexEntity hex1, HexEntity hex2)
     {
-        CompositeKey key = GetAdjacencyKey(hex1, hex2);
+        CompositeKey<HexEntity, HexEntity> key = GetAdjacencyKey(hex1, hex2);
         if (adjacencyMap.ContainsKey(key))
             return key;
-        return null;
+        return new CompositeKey<HexEntity, HexEntity>(null, null);
     }
 
     // Update adjacency matrix
     private void UpdateAdjacency(HexEntity hex1, HexEntity hex2)
     {
-        CompositeKey key = GetAdjacencyKey(hex1, hex2);
+        CompositeKey<HexEntity, HexEntity> key = GetAdjacencyKey(hex1, hex2);        
         adjacencyMap.Add(key, hex1.Adjacent(hex2));
     }
 
@@ -111,22 +110,22 @@ public class HexPath : MonoBehaviour
 
     private void UpdateExistingAdjacency(HexEntity hex1, HexEntity hex2)
     {
-        CompositeKey key = GetExistingAdjacencyKey(hex1, hex2);
-        if (key != null)
-            adjacencyMap.Add(key, hex1.Adjacent(hex2););
+        CompositeKey<HexEntity, HexEntity> key = GetExistingAdjacencyKey(hex1, hex2);
+        if (key.IsNull())
+            adjacencyMap.Add(key, hex1.Adjacent(hex2));
     }
 
     private void RemoveAdjacency(HexEntity hex1, HexEntity hex2)
     {
-        CompositeKey key = new GetExistingAdjacencyKey(hex1, hex2);
-        if (key != null)
+       CompositeKey<HexEntity, HexEntity> key = GetExistingAdjacencyKey(hex1, hex2);
+       if (key.IsNull())
         {
             adjacencyMap.Remove(key);
         }
     }
     public bool Adjacent(HexEntity hex1, HexEntity hex2)
     {
-        CompositeKey key = GetExistingAdjacencyKey(hex1, hex2);
+        CompositeKey<HexEntity, HexEntity> key = GetExistingAdjacencyKey(hex1, hex2);
         return adjacencyMap[key];
     }
 
@@ -138,13 +137,14 @@ public class HexPath : MonoBehaviour
         if (!ContainsHex(hex))
         {
             hexEntities.Add(hex);
-            UpdateAdjacency();
+            UpdateAdjacency(hex);
         }
+        return ContainsHex(hex);
     }
 
     public bool IsConnected()
     {
-
+        return false;
     }
 
 
