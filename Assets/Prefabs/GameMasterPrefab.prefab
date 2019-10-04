@@ -49,6 +49,7 @@ MonoBehaviour:
   UIMasterPrefab: {fileID: 5431515765016586136, guid: 18b291ddf762ae44f8d1d056379246b3,
     type: 3}
   NumberOfPlayers: 1
+  currentPlayer: 0
   Players: []
   Board: {fileID: 1977217408252973863}
 --- !u!114 &1977217408252973863
@@ -64,5 +65,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hexPrefab: {fileID: 8565909793243875799, guid: 1beb4e061f6d32840b037a5e9bd360ab,
+    type: 3}
+  hexPathPrefab: {fileID: 8323398178626441626, guid: 876d1538776e31341b9f660eebb6c650,
     type: 3}
   radius: 5

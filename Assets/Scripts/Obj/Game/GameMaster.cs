@@ -19,7 +19,6 @@ public class GameMaster : MonoBehaviour {
 	//Prefabs needed for this Component and sub components.
 	public GameObject playerPrefab;
 	public GameObject UIMasterPrefab;
-
 	public int NumberOfPlayers;
 	public int currentPlayer = 0;
 	public GameObject[] Players;
@@ -43,8 +42,7 @@ public class GameMaster : MonoBehaviour {
 
 		//Possible to refactor by tossing current player into the Global flyweight.
 		Board.setControl(_players); //Needs to run after the map is generated.
-
-
+		Board.CreateGreedyRandomPath(5);		
 	}
 
 	// Update is called once per frame

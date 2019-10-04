@@ -10,6 +10,7 @@ using UnityEngine;
 public class Map : MonoBehaviour
 {
 	public GameObject hexPrefab;
+	public GameObject hexPathPrefab;
 	public Dictionary<Vector3Int,GameObject> hexMap; //Cubic is default.
 
 	public int radius = 5;
@@ -96,6 +97,38 @@ public class Map : MonoBehaviour
 			hexObj.GetComponent<HexEntity>().Controller = players[Mathf.FloorToInt(Random.value * players.Length)];
 		}
 	}
+
+	public GameObject RandomHex(int n)
+	{
+		int size = hexMap.Count;
+		int index = (int)Random.Range(0, size);
+		int i = 0;
+		while (true){
+			foreach (GameObject value in hexMap.Values){
+				if (i == index)
+					return value;
+				i++;
+			}
+		}
+	}
+
+	public GameObject CreateGreedyRandomPath(int length){
+		GameObject rootHex = RandomHex(1);
+        Vector3Int start = rootHex.GetComponent<HexEntity>().Position;
+		GameObject path = Instantiate(hexPathPrefab);
+		path.GetComponent<HexPath>().Initialize();
+		path.GetComponent<HexPath>().AddHex(rootHex);
+			Debug.Log("Adding hex with GameObject position " + rootHex.transform.position + " and Position " + rootHex.GetComponent<HexEntity>().Position);
+        for (int i = 0; i < length; i++){
+            GameObject nextHex = RandomHex(1);
+			while(path.GetComponent<HexPath>().ContainsHex(nextHex) || !rootHex.GetComponent<HexEntity>().Adjacent(nextHex.GetComponent<HexEntity>()))
+				nextHex = RandomHex(1);
+			path.GetComponent<HexPath>().AddHex(nextHex);
+			rootHex = nextHex;
+			Debug.Log("Adding hex with GameObject position " + nextHex.transform.position + " and Position " + nextHex.GetComponent<HexEntity>().Position);
+        }
+		return path;
+    }
 }
 
 // IEqualityConparator used to compare keys in the HexMap

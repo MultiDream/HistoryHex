@@ -142,6 +142,6 @@ public class HexEntity : MonoBehaviour
     public bool Adjacent(HexEntity hex)
     {
         Vector3Int distance = this.CoordinateDistance(hex);
-        return distance.x <= 1 || distance.y <= 1 || distance.z <= 1;
+        return (distance.x == 1 && distance.y <= 1 && distance.z <= 1) || (distance.x <= 1 && distance.y == 1 && distance.z <= 1 ) || (distance.x <= 1 && distance.y <= 1  && distance.z == 1);
     }
 }
