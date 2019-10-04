@@ -18,6 +18,7 @@ public class HexEntity : MonoBehaviour
 	public string Name { get; set; }
 	public Player Controller { get; set; }
 	public EntityDrawer drawer;
+	public GameObject army; // make into an array later.
 
 	// SelectionInterface
 	private SelectableObj SelectionInterface;
@@ -73,11 +74,12 @@ public class HexEntity : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.V)){
 			Vector3 position = transform.position;
 			Quaternion rotation = Quaternion.Euler(0, 0, 0);
-			GameObject army = Instantiate(ArmyPrefab, position, rotation);
+			this.army = Instantiate(ArmyPrefab, position, rotation);
 
 			//Set an army up.
 			army.transform.GetComponent<ArmyEntity>().Position = Position;
 			army.transform.GetComponent<ArmyEntity>().Controller = Controller;
+			
 		}
 	}
 
