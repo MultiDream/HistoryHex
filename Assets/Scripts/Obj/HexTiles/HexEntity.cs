@@ -77,8 +77,9 @@ public class HexEntity : MonoBehaviour
 			this.army = Instantiate(ArmyPrefab, position, rotation);
 
 			//Set an army up.
-			army.transform.GetComponent<ArmyEntity>().Position = Position;
-			army.transform.GetComponent<ArmyEntity>().Controller = Controller;
+			ArmyEntity armyEntity = army.transform.GetComponent<ArmyEntity>();
+			armyEntity.Position = Position;
+			armyEntity.Controller = Controller;
 			
 		}
 	}

@@ -109,18 +109,23 @@ public class ArmyEntity : MonoBehaviour
 		int[] nextPos = new int[] { Position[0] + direction[0], Position[1] + direction[1], Position[2] + direction[2] };
 		if (Global.MapFlyWeight.HasHexAtCubic(nextPos)) {
 			//Get the tile for any operations that might be necessary.
-			GameObject HexTile = Global.MapFlyWeight.hexMap[nextPos];
-			Global.MapFlyWeight.hexMap[Position].GetComponent<HexEntity>().army = null;
-			Sieze(ref HexTile);
+			GameObject nextTile = Global.MapFlyWeight.hexMap[nextPos];
+			GameObject currentTile = Global.MapFlyWeight.hexMap[Position];
+
+			HexEntity currentHexEntity = currentTile.GetComponent<HexEntity>();
+			currentHexEntity.army = null;
+
+			Sieze(ref nextTile);
 			transform.Translate(moveTo);
 			Position = nextPos;
 		}
 	}
 
 	public void Sieze(ref GameObject hexTile) {
-		hexTile.GetComponent<HexEntity>().Controller = this.Controller;
-		if(hexTile.GetComponent<HexEntity>().army != null){
-			Destroy(hexTile.GetComponent<HexEntity>().army);
+		HexEntity entity = hexTile.GetComponent<HexEntity>();
+		entity.Controller = this.Controller;
+		if(entity.army != null){
+			Destroy(entity.army);
 		}
 		hexTile.GetComponent<HexEntity>().army = gameObject;
 	}
