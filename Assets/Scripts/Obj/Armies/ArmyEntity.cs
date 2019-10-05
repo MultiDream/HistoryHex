@@ -115,30 +115,27 @@ public class ArmyEntity : MonoBehaviour
 			HexEntity currentHexEntity = currentTile.GetComponent<HexEntity>();
 			currentHexEntity.army = null;
 
-			Sieze(ref nextTile);
+			Sieze(nextTile);
 			transform.Translate(moveTo);
 			Position = nextPos;
 		}
 	}
 
-	public void Sieze(ref GameObject hexTile) {
+	public void Sieze(GameObject hexTile) {
 		HexEntity entity = hexTile.GetComponent<HexEntity>();
 		entity.Controller = this.Controller;
-		if(entity.army != null){
-			Destroy(entity.army);
-		}
-		hexTile.GetComponent<HexEntity>().army = gameObject;
+		Combat(entity.army);
+		entity.army = gameObject;
 	}
 
-	public void Die(){
-		Destroy(this); //destroy the GameObj. Should handle the events alright. Check to be sure in the future.
-	}
 	/// <summary>
 	/// Combats another unit.
 	/// </summary>
-	public void Combat(){
-		// Not yet implemented!
-		throw new UnityException("");
+	public void Combat(GameObject otherArmy){
+		if (otherArmy != null){
+			//Seems to destroy the Army, despite not being passed by refrence.
+			Destroy(otherArmy);
+		}
 	}
 	#endregion
 
