@@ -3,14 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SelectController : MonoBehaviour {
-	public HexSingleton selected;
-	//public GameObject ArmyPrefab;
 
-	// Update is called once per frame
+/// <summary>
+/// Controller responsible for handling mouse input.
+/// </summary>
+public class SelectController : MonoBehaviour {
+	public SelectableObj SelectedObj;
+	public GameObject ArmyPrefab;  //Remove this later.
+
+	// Update is called once per frame.
+	// Used to determine if something new has been selected.
 	void Update() {
+		// Left mouse will select a new SelectableObj.
 		if (Input.GetKeyDown(KeyCode.Mouse0)) {
-			if (selected != null) {
+			if (SelectedObj != null) {
 				Deselect();
 			}
 
@@ -18,19 +24,20 @@ public class SelectController : MonoBehaviour {
 			RaycastHit hit;
 			Debug.DrawRay(ray.origin, ray.direction, Color.green, 100f); // only draws once. Re-clicking does nothing
 			if (Physics.Raycast(ray, out hit)) {
-				var selection = hit.transform;
-				selected = selection.GetComponent<HexSingleton>();
+				var selectedTransform = hit.transform;
+				SelectedObj = selectedTransform.GetComponent<SelectableObj>();
 
-				if (selected != null) {
+				// If the transform has a selectable Component, run the Selection logic.
+				if (SelectedObj != null) {
 					Select();
 				}
 			}
-		} 
-
-		//Army spawning key. Move code elsewhere at some point.
-		//else if (Input.GetKeyDown(KeyCode.V)){
-		//	if (selected != null) {
-		//		Vector3 position = selected.transform.position;
+		}
+		//Right keys will issue commands to selectableObj.
+		//Army spawning key.Move code elsewhere at some point.
+		//else if (Input.GetKeyDown(KeyCode.V)) {
+		//	if (SelectedObj != null) {
+		//		Vector3 position = SelectedObj.transform.position;
 		//		Quaternion rotation = Quaternion.Euler(0, 0, 0);
 		//		Instantiate(ArmyPrefab, position, rotation);
 		//	}
@@ -38,15 +45,10 @@ public class SelectController : MonoBehaviour {
 	}
 
 	private void Select() {
-		selected.drawer.selected = true;
-		//transform.GetChild(0).GetComponent<Text>().text = selected.Name;
-		//transform.GetChild(1).GetComponent<Text>().text = "Food: " + selected.Food.ToString();
+		SelectedObj.OnSelected();
 	}
 
 	private void Deselect(){
-		selected.drawer.selected = false;
-		//transform.GetChild(0).GetComponent<Text>().text = "No Tile Selected";
-		//transform.GetChild(1).GetComponent<Text>().text = "-";
-		selected = null;
+		SelectedObj.OnDeselected();
 	}
 }
