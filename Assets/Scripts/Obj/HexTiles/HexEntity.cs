@@ -18,6 +18,7 @@ public class HexEntity : MonoBehaviour
     public string Name { get; set; }
     public Player Controller { get; set; }
     public EntityDrawer drawer;
+    public GameObject army;
 
     // SelectionInterface
     private SelectableObj SelectionInterface;
@@ -85,11 +86,12 @@ public class HexEntity : MonoBehaviour
         {
             Vector3 position = transform.position;
             Quaternion rotation = Quaternion.Euler(0, 0, 0);
-            GameObject army = Instantiate(ArmyPrefab, position, rotation);
+            this.army = Instantiate(ArmyPrefab, position, rotation);
 
             //Set an army up.
             army.transform.GetComponent<ArmyEntity>().Position = Position;
             army.transform.GetComponent<ArmyEntity>().Controller = Controller;
+
         }
     }
 
@@ -124,6 +126,7 @@ public class HexEntity : MonoBehaviour
     {
         drawer.Update();
     }
+
 
     // Wraps position vector operations. Returns distance in each coordinate.
     public Vector3Int CoordinateDistance(HexEntity hex)

@@ -7,6 +7,7 @@ using UnityEngine;
 /// </summary>
 public static class Global
 {
+    // Global variables.
     public static float MAXIMUM_FOOD = 4.0f;
     public static int MAX_PLAYERS = 4;
 

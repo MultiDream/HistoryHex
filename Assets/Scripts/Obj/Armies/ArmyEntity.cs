@@ -128,12 +128,13 @@ public class ArmyEntity : MonoBehaviour
     /// </summary>
     public void MoveAction(Vector3Int direction)
     {
-        Vector3 moveTo = Global.GetCubicVector(direction[0], direction[1], direction[2]);
-        Vector3Int nextPos = new Vector3Int(Position[0] + direction[0], Position[1] + direction[1], Position[2] + direction[2]);
+        Vector3 moveTo = Global.GetCubicVector(direction.x, direction.y, direction.z);
+        Vector3Int nextPos = new Vector3Int(Position.x + direction.x, Position.y + direction.y, Position.z + direction.z);
         if (Global.MapFlyWeight.HasHexAtCubic(nextPos))
         {
             //Get the tile for any operations that might be necessary.
             GameObject HexTile = Global.MapFlyWeight.hexMap[nextPos];
+            Global.MapFlyWeight.hexMap[Position].GetComponent<HexEntity>().army = null;
             Sieze(ref HexTile);
             transform.Translate(moveTo);
             Position = nextPos;
@@ -143,8 +144,17 @@ public class ArmyEntity : MonoBehaviour
     public void Sieze(ref GameObject hexTile)
     {
         hexTile.GetComponent<HexEntity>().Controller = this.Controller;
+        if (hexTile.GetComponent<HexEntity>().army != null)
+        {
+            Destroy(hexTile.GetComponent<HexEntity>().army);
+        }
+        hexTile.GetComponent<HexEntity>().army = gameObject;
     }
 
+    public void Die()
+    {
+        Destroy(this); //destroy the GameObj. Should handle the events alright. Check to be sure in the future.
+    }
     /// <summary>
     /// Combats another unit.
     /// </summary>
@@ -162,7 +172,6 @@ public class ArmyEntity : MonoBehaviour
         SelectionInterface.OnSelect += OnSelect;
         SelectionInterface.OnDeselect += OnDeselect;
     }
-
 
     private void OnSelect()
     {
