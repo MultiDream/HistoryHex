@@ -132,16 +132,24 @@ public class HexEntity : MonoBehaviour
         return new Vector3Int(Mathf.Abs(distance.x), Mathf.Abs(distance.y), Mathf.Abs(distance.z));
     }
 
+    // Return coordinate distance as magnitude. Divide by 2 for cubic
+    public float CubicDistance(HexEntity hex)
+    {
+        return CoordinateDistance(hex).magnitude / 2;
+    }
+
     // Wraps Position distance function
     public float Distance(HexEntity hex)
     {
         return (this.Position - hex.Position).magnitude;
     }
 
-    // Simple logic to check adjacent (distance of at least one coordinate less than 1)
+    // Simple logic to check adjacent based on cubic distance logic (two coordinates have Distance of 1)
     public bool Adjacent(HexEntity hex)
     {
         Vector3Int distance = this.CoordinateDistance(hex);
-        return (distance.x == 1 && distance.y <= 1 && distance.z <= 1) || (distance.x <= 1 && distance.y == 1 && distance.z <= 1 ) || (distance.x <= 1 && distance.y <= 1  && distance.z == 1);
+        return ((distance.x == 1 && distance.y == 1 && distance.z == 0) ||
+                (distance.x == 1 && distance.y == 0 && distance.z == 1) ||
+                (distance.x == 0 && distance.y == 1 && distance.z == 1));
     }
 }
