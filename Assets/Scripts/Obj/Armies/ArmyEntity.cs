@@ -31,19 +31,7 @@ public class ArmyEntity : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-		// Move the responsibility of setting Unit Viewing modes to another class later.
-		// Shows the Controller Color.
-		if (Input.GetKeyDown(KeyCode.G)) {
-			if (Controller != null) {
-				drawer.Color = Controller.Colour;
-			} else {
-				drawer.Color = Color.black;
-			}
-		}
-		// Clears the map.
-		else if (Input.GetKeyDown(KeyCode.R)) {
-			drawer.Color = Color.white;
-		}
+		MapDrawingUpdater();
 
 		//If Activated, run the extended activation methods.
 		bool SelectedByController = Global.ActivePlayerId == Controller.PlayerId;
@@ -99,6 +87,17 @@ public class ArmyEntity : MonoBehaviour
 		return;
 	}
 
+	private void MapDrawingUpdater() {
+		// Add a food mapping at some point.
+		// Shows the Control Map.
+		if (Global.CurrentMapMode == MapMode.Controller) {
+			if (Controller != null) {
+				drawer.Color = Controller.Colour;
+			} else {
+				drawer.Color = Color.black;
+			}
+		}
+	}
 	#region Unit Actions
 
 	/// <summary>

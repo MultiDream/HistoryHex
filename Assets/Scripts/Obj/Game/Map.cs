@@ -27,7 +27,7 @@ public class Map : MonoBehaviour
 	// Update is called once per frame
 	void Update() {
 
-	}
+	} 
 
 	//IMap functions.
 	public void InitMap(){
