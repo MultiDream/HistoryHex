@@ -109,4 +109,11 @@ public class HexEntity : MonoBehaviour
 	private void Draw() {
 		drawer.Update();	
 	}
+
+	//This function updates how much food is added to a tile based on the 
+	//Food Base (all the people in a population working to make food)
+	private void populationFoodProduction(int foodBase) {
+		//Right now one person = one food to make things simple, but this value can be changed as gameplay is tested
+		Food+= foodBase;
+	}
 }
