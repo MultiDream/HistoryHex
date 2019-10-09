@@ -55,4 +55,9 @@ public class HexSingleton : MonoBehaviour
 	private void Draw() {
 		drawer.Update();	
 	}
+
+	//Calculates the amount of food the population of a certain tile create
+	private void populationFoodProduction() {
+		
+	}
 }
