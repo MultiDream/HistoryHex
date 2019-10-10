@@ -19,6 +19,8 @@ public class HexEntity : MonoBehaviour
 	public Player Controller { get; set; }
 	public EntityDrawer drawer;
 	public GameObject army; // make into an array later.
+	public int Population;
+	public int Food_Base;
 
 	// SelectionInterface
 	private SelectableObj SelectionInterface;
@@ -112,7 +114,7 @@ public class HexEntity : MonoBehaviour
 
 	//This function updates how much food is added to a tile based on the 
 	//Food Base (all the people in a population working to make food)
-	private void populationFoodProduction(int foodBase) {
+	public void populationFoodProduction(int foodBase) {
 		//Right now one person = one food to make things simple, but this value can be changed as gameplay is tested
 		Food+= foodBase;
 	}
