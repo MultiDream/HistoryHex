@@ -22,8 +22,9 @@ public class HexEntity : MonoBehaviour
 	public string Name { get; set; }
 	public Player Controller { get; set; }
 	public EntityDrawer drawer;
-	public GameObject army; // make into an array later, whne multiple armies can sit on a tile.
+	public GameObject army; // make into an array later, when multiple armies can sit on a tile.
 	public float Population;
+  
 	// SelectionInterface
 	private SelectableObj SelectionInterface;
 	#endregion
@@ -85,7 +86,7 @@ public class HexEntity : MonoBehaviour
 				drawer.Color = Color.black;
 			}
 		}
-	}	
+	}
 
 	private void WireSelectionInterface() {
 		SelectionInterface.Prepare();
