@@ -31,19 +31,7 @@ public class ArmyEntity : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-		// Move the responsibility of setting Unit Viewing modes to another class later.
-		// Shows the Controller Color.
-		if (Input.GetKeyDown(KeyCode.G)) {
-			if (Controller != null) {
-				drawer.Color = Controller.Colour;
-			} else {
-				drawer.Color = Color.black;
-			}
-		}
-		// Clears the map.
-		else if (Input.GetKeyDown(KeyCode.R)) {
-			drawer.Color = Color.white;
-		}
+		MapDrawingUpdater();
 
 		//If Activated, run the extended activation methods.
 		bool SelectedByController = Global.ActivePlayerId == Controller.PlayerId;
@@ -99,6 +87,17 @@ public class ArmyEntity : MonoBehaviour
 		return;
 	}
 
+	private void MapDrawingUpdater() {
+		// Add a food mapping at some point.
+		// Shows the Control Map.
+		if (Global.CurrentMapMode == MapMode.Controller) {
+			if (Controller != null) {
+				drawer.Color = Controller.Colour;
+			} else {
+				drawer.Color = Color.black;
+			}
+		}
+	}
 	#region Unit Actions
 
 	/// <summary>
@@ -109,31 +108,33 @@ public class ArmyEntity : MonoBehaviour
 		int[] nextPos = new int[] { Position[0] + direction[0], Position[1] + direction[1], Position[2] + direction[2] };
 		if (Global.MapFlyWeight.HasHexAtCubic(nextPos)) {
 			//Get the tile for any operations that might be necessary.
-			GameObject HexTile = Global.MapFlyWeight.hexMap[nextPos];
-			Global.MapFlyWeight.hexMap[Position].GetComponent<HexEntity>().army = null;
-			Sieze(ref HexTile);
+			GameObject nextTile = Global.MapFlyWeight.hexMap[nextPos];
+			GameObject currentTile = Global.MapFlyWeight.hexMap[Position];
+
+			HexEntity currentHexEntity = currentTile.GetComponent<HexEntity>();
+			currentHexEntity.army = null;
+
+			Sieze(nextTile);
 			transform.Translate(moveTo);
 			Position = nextPos;
 		}
 	}
 
-	public void Sieze(ref GameObject hexTile) {
-		hexTile.GetComponent<HexEntity>().Controller = this.Controller;
-		if(hexTile.GetComponent<HexEntity>().army != null){
-			Destroy(hexTile.GetComponent<HexEntity>().army);
-		}
-		hexTile.GetComponent<HexEntity>().army = gameObject;
+	public void Sieze(GameObject hexTile) {
+		HexEntity entity = hexTile.GetComponent<HexEntity>();
+		entity.Controller = this.Controller;
+		Combat(entity.army);
+		entity.army = gameObject;
 	}
 
-	public void Die(){
-		Destroy(this); //destroy the GameObj. Should handle the events alright. Check to be sure in the future.
-	}
 	/// <summary>
 	/// Combats another unit.
 	/// </summary>
-	public void Combat(){
-		// Not yet implemented!
-		throw new UnityException("");
+	public void Combat(GameObject otherArmy){
+		if (otherArmy != null){
+			//Seems to destroy the Army, despite not being passed by refrence.
+			Destroy(otherArmy);
+		}
 	}
 	#endregion
 
