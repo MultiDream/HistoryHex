@@ -13,14 +13,13 @@ public class HexEntity : MonoBehaviour
     public GameObject ArmyPrefab;
 
     //Public variables
-    public Vector3Int Position; //Position on the hex grid: x, y, z.
+    public Vector3Int Position; //Position on the hex grid.
     public float Food;
     public string Name { get; set; }
     public Player Controller { get; set; }
     public EntityDrawer drawer;
-    public GameObject army;
-
-    // SelectionInterface
+    public GameObject army; // make into an array later, whne multiple armies can sit on a tile.
+                            // SelectionInterface
     private SelectableObj SelectionInterface;
     #endregion
 
@@ -33,30 +32,7 @@ public class HexEntity : MonoBehaviour
     // Update is called once per frame.
     void Update()
     {
-        // Move the responsibility of setting Map Viewing modes to another class later.
-
-        // Shows the Food Map.
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            drawer.Color = new Color(Food / 4f, 0, 0);
-        }
-        //Shows the Control Map.
-        else if (Input.GetKeyDown(KeyCode.G))
-        {
-            if (Controller != null)
-            {
-                drawer.Color = Controller.Colour;
-            }
-            else
-            {
-                drawer.Color = Color.black;
-            }
-        }
-        // Clears the map.
-        else if (Input.GetKeyDown(KeyCode.R))
-        {
-            drawer.Color = Color.white;
-        }
+        MapDrawingUpdater();
 
         //Attempt to wire the SelectionInterface.
         SelectionInterface = transform.GetComponent<SelectableObj>();
@@ -89,9 +65,32 @@ public class HexEntity : MonoBehaviour
             this.army = Instantiate(ArmyPrefab, position, rotation);
 
             //Set an army up.
-            army.transform.GetComponent<ArmyEntity>().Position = Position;
-            army.transform.GetComponent<ArmyEntity>().Controller = Controller;
+            ArmyEntity armyEntity = army.transform.GetComponent<ArmyEntity>();
+            armyEntity.Position = Position;
+            armyEntity.Controller = Controller;
 
+        }
+    }
+
+    private void MapDrawingUpdater()
+    {
+        // Shows the Food Map.
+        if (Global.CurrentMapMode == MapMode.Food)
+        {
+            drawer.Color = new Color(Food / 4f, 0, 0);
+        }
+
+        //Shows the Control Map.
+        else if (Global.CurrentMapMode == MapMode.Controller)
+        {
+            if (Controller != null)
+            {
+                drawer.Color = Controller.Colour;
+            }
+            else
+            {
+                drawer.Color = Color.black;
+            }
         }
     }
 
@@ -119,6 +118,12 @@ public class HexEntity : MonoBehaviour
         Name = "NoMansLand";
         Food = Mathf.Floor(Random.value * Global.MAXIMUM_FOOD);
         drawer = new EntityDrawer(transform.GetChild(0));
+    }
+
+    //Draw Delegation
+    private void Draw()
+    {
+        drawer.Update();
     }
 
     //Draw Delegation

@@ -31,24 +31,7 @@ public class ArmyEntity : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Move the responsibility of setting Unit Viewing modes to another class later.
-        // Shows the Controller Color.
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            if (Controller != null)
-            {
-                drawer.Color = Controller.Colour;
-            }
-            else
-            {
-                drawer.Color = Color.black;
-            }
-        }
-        // Clears the map.
-        else if (Input.GetKeyDown(KeyCode.R))
-        {
-            drawer.Color = Color.white;
-        }
+        MapDrawingUpdater();
 
         //If Activated, run the extended activation methods.
         bool SelectedByController = Global.ActivePlayerId == Controller.PlayerId;
@@ -85,7 +68,6 @@ public class ArmyEntity : MonoBehaviour
 
     private void ActiveUpdate()
     {
-
         // When active, listen for 7 4 1 and 9 6 3.
         if (Input.GetKeyDown(KeyCode.Keypad3))
         {
@@ -121,6 +103,22 @@ public class ArmyEntity : MonoBehaviour
         return;
     }
 
+    private void MapDrawingUpdater()
+    {
+        // Add a food mapping at some point.
+        // Shows the Control Map.
+        if (Global.CurrentMapMode == MapMode.Controller)
+        {
+            if (Controller != null)
+            {
+                drawer.Color = Controller.Colour;
+            }
+            else
+            {
+                drawer.Color = Color.black;
+            }
+        }
+    }
     #region Unit Actions
 
     /// <summary>
@@ -129,39 +127,40 @@ public class ArmyEntity : MonoBehaviour
     public void MoveAction(Vector3Int direction)
     {
         Vector3 moveTo = Global.GetCubicVector(direction.x, direction.y, direction.z);
-        Vector3Int nextPos = new Vector3Int(Position.x + direction.x, Position.y + direction.y, Position.z + direction.z);
+        int[] nextPos = new Vector3Int(Position.x + direction.x, Position.y + direction.y, Position.z + direction.z);
         if (Global.MapFlyWeight.HasHexAtCubic(nextPos))
         {
             //Get the tile for any operations that might be necessary.
-            GameObject HexTile = Global.MapFlyWeight.hexMap[nextPos];
-            Global.MapFlyWeight.hexMap[Position].GetComponent<HexEntity>().army = null;
-            Sieze(ref HexTile);
+            GameObject nextTile = Global.MapFlyWeight.hexMap[nextPos];
+            GameObject currentTile = Global.MapFlyWeight.hexMap[Position];
+
+            HexEntity currentHexEntity = currentTile.GetComponent<HexEntity>();
+            currentHexEntity.army = null;
+
+            Sieze(nextTile);
             transform.Translate(moveTo);
             Position = nextPos;
         }
     }
 
-    public void Sieze(ref GameObject hexTile)
+    public void Sieze(GameObject hexTile)
     {
-        hexTile.GetComponent<HexEntity>().Controller = this.Controller;
-        if (hexTile.GetComponent<HexEntity>().army != null)
-        {
-            Destroy(hexTile.GetComponent<HexEntity>().army);
-        }
-        hexTile.GetComponent<HexEntity>().army = gameObject;
+        HexEntity entity = hexTile.GetComponent<HexEntity>();
+        entity.Controller = this.Controller;
+        Combat(entity.army);
+        entity.army = gameObject;
     }
 
-    public void Die()
-    {
-        Destroy(this); //destroy the GameObj. Should handle the events alright. Check to be sure in the future.
-    }
     /// <summary>
     /// Combats another unit.
     /// </summary>
-    public void Combat()
+    public void Combat(GameObject otherArmy)
     {
-        // Not yet implemented!
-        throw new UnityException("");
+        if (otherArmy != null)
+        {
+            //Seems to destroy the Army, despite not being passed by refrence.
+            Destroy(otherArmy);
+        }
     }
     #endregion
 
