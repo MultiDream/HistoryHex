@@ -13,6 +13,8 @@ public class Map : MonoBehaviour
     public GameObject hexPathPrefab;
     public Dictionary<Vector3Int, GameObject> hexMap; //Cubic is default.
     public AdjacencyMap adjacencyMap;
+    public bool DrawDebugPath = false;
+    public bool LabelHexes = false;
 
     public int radius = 5;
 
@@ -63,7 +65,7 @@ public class Map : MonoBehaviour
 
                         GameObject Hex = Instantiate(hexPrefab, position, rotation);
                         Hex.AddComponent<TextMesh>();
-                        if (Global.labelHexes)
+                        if (LabelHexes)
                         {
                             TextMesh text = Hex.GetComponent<TextMesh>();
                             text.text = "" + key;
@@ -86,7 +88,7 @@ public class Map : MonoBehaviour
         {
             adjacencyMap.AddVertex(hex);
         }
-        if (Global.debugPath)
+        if (DrawDebugPath)
         { 	//TODO :: Add this to a separate method. 
             GameObject start = RandomHex();
             GameObject finish = RandomHex();
@@ -95,10 +97,10 @@ public class Map : MonoBehaviour
             path.Initialize();
             HexPath.DrawCircle(0.4f, 0.1f, start.transform.position.x, start.transform.position.z);
             HexPath.DrawCircle(0.4f, 0.1f, finish.transform.position.x, finish.transform.position.z);
-            List<GameObject> vertices = adjacencyMap.RaggedWalk(start, finish, hexMap);
+            //List<GameObject> vertices = adjacencyMap.RaggedWalk(start, finish, hexMap);
             //List<GameObject> vertices = adjacencyMap.RandomWalk(start, finish);
             //List<GameObject> vertices = adjacencyMap.DFS(start, finish);
-            //List<GameObject> vertices = adjacencyMap.NearestAstar(start, finish);
+            List<GameObject> vertices = adjacencyMap.NearestAstar(start, finish);
 
             path.AddHexes(vertices);
         }

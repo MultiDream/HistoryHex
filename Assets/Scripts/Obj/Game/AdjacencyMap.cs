@@ -119,7 +119,7 @@ public class AdjacencyMap
     // "Ragged Walk". Tries to get on the same file as a target piece, with some heuristics and search once that's complete.
     // Extremely fast, because once we reach the file, we're basically just rule following.
     // TODO: implement search when file is not obvious. Using either wall clinging, or something different.
-    public List<GameObject> RaggedWalk(GameObject root, GameObject target, Dictionary<Vector3Int, GameObject> map, int maxSteps = 100)
+    public List<GameObject> RaggedWalk(GameObject root, GameObject target, Dictionary<Vector3Int, GameObject> map, int maxSteps = 1000)
     {
         List<GameObject> path = new List<GameObject>();
         HexEntity targetEntity = target.GetComponent<HexEntity>();
@@ -310,9 +310,11 @@ public class AdjacencyMap
         return visited;
     }
 
+    // Back-reconstruct the A* path
     private List<GameObject> _reconstructAstarPath(Dictionary<GameObject, GameObject> cameFrom, GameObject current)
     {
         List<GameObject> totalPath = new List<GameObject>();
+        totalPath.Add(current);
         while (cameFrom.ContainsKey(current))
         {
             current = cameFrom[current];
@@ -321,11 +323,13 @@ public class AdjacencyMap
         return totalPath;
     }
 
-    private GameObject _minFScore(Dictionary<GameObject, float> fScore)
+    // Return dictionary key with minimum fScore from open list.
+    // TODO: Faster way to do this
+    private GameObject _minFScore(Dictionary<GameObject, float> fScore, List<GameObject> open)
     {
         float min = float.MaxValue;
         GameObject result = null;
-        foreach (GameObject ky in fScore.Keys)
+        foreach (GameObject ky in open)
         {
             if (fScore[ky] < min)
             {
@@ -337,8 +341,7 @@ public class AdjacencyMap
     }
 
     // A* search for finding shortest path.
-    // TODO: Fix. Currently doesn't always work. Needs a better heuristic.
-    public List<GameObject> NearestAstar(GameObject root, GameObject target)
+    public List<GameObject> NearestAstar(GameObject root, GameObject target, int maxAttempts = 100)
     {
         HexEntity rootEntity = root.GetComponent<HexEntity>();
         HexEntity targetEntity = target.GetComponent<HexEntity>();
@@ -350,15 +353,25 @@ public class AdjacencyMap
         Dictionary<GameObject, float> fScore = new Dictionary<GameObject, float>();
         gScore[root] = 0;
         fScore[root] = rootEntity.Distance(targetEntity);
+        int attempts = 0;
         while (open.Count != 0)
         {
-            GameObject current = _minFScore(fScore);
+            if (attempts > maxAttempts)
+                break;
+            GameObject current = _minFScore(fScore, open);
             HexEntity currentEntity = current.GetComponent<HexEntity>();
             if (current == target)
                 return _reconstructAstarPath(cameFrom, current);
+            List<GameObject> neighbors = GetNeighbors(current);
+            if (neighbors.Contains(target))
+            {
+                cameFrom[target] = current;
+                current = target;
+                return _reconstructAstarPath(cameFrom, current);
+            }
             open.Remove(current);
             closed.Remove(current);
-            foreach (GameObject neighbor in GetNeighbors(current))
+            foreach (GameObject neighbor in neighbors)
             {
                 if (!gScore.ContainsKey(neighbor))
                     gScore[neighbor] = Mathf.Infinity;
@@ -367,18 +380,20 @@ public class AdjacencyMap
                 HexEntity neighborEnt = neighbor.GetComponent<HexEntity>();
                 if (closed.Contains(neighbor))
                     continue;
-                float tentativeGscore = gScore[current] + 1;
-                if (tentativeGscore < gScore[neighbor])
+                float tentativeGscore = gScore[current] + 1;//currentEntity.Distance(neighborEnt);
+                if (tentativeGscore <= gScore[neighbor])
                 {
                     cameFrom[neighbor] = current;
                     gScore[neighbor] = tentativeGscore;
-                    fScore[neighbor] = gScore[neighbor] + currentEntity.Distance(targetEntity);
+                    float h = Vector3.Distance(neighbor.transform.position, target.transform.position);
+                    fScore[neighbor] = gScore[neighbor] + h;
                     if (!open.Contains(neighbor))
                         open.Add(neighbor);
                 }
             }
+            attempts += 1;
         }
-        return new List<GameObject>();
+        return open;
     }
 
 }

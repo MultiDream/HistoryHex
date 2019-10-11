@@ -29,9 +29,6 @@ public static class Global
 
     public static AdjacencyMap globalAdjacency;
 
-    public static bool debugPath = false;
-    public static bool labelHexes = false;
-
     //MapMode
     public static MapMode CurrentMapMode = MapMode.Food;
 }
