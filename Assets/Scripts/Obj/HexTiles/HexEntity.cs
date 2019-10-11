@@ -126,13 +126,6 @@ public class HexEntity : MonoBehaviour
         drawer.Update();
     }
 
-    //Draw Delegation
-    private void Draw()
-    {
-        drawer.Update();
-    }
-
-
     // Wraps position vector operations. Returns distance in each coordinate.
     public Vector3Int CoordinateDistance(HexEntity hex)
     {

@@ -127,7 +127,7 @@ public class ArmyEntity : MonoBehaviour
     public void MoveAction(Vector3Int direction)
     {
         Vector3 moveTo = Global.GetCubicVector(direction.x, direction.y, direction.z);
-        int[] nextPos = new Vector3Int(Position.x + direction.x, Position.y + direction.y, Position.z + direction.z);
+        Vector3Int nextPos = new Vector3Int(Position.x + direction.x, Position.y + direction.y, Position.z + direction.z);
         if (Global.MapFlyWeight.HasHexAtCubic(nextPos))
         {
             //Get the tile for any operations that might be necessary.
