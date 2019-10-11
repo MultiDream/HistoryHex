@@ -13,8 +13,9 @@ public class Map : MonoBehaviour
     public GameObject hexPathPrefab;
     public Dictionary<Vector3Int, GameObject> hexMap; //Cubic is default.
     public AdjacencyMap adjacencyMap;
-    public bool DrawDebugPath = false;
     public bool LabelHexes = false;
+    private GameObject pathObject;
+    private GameObject lastObject;
 
     public int radius = 5;
 
@@ -88,22 +89,7 @@ public class Map : MonoBehaviour
         {
             adjacencyMap.AddVertex(hex);
         }
-        if (DrawDebugPath)
-        { 	//TODO :: Add this to a separate method. 
-            GameObject start = RandomHex();
-            GameObject finish = RandomHex();
-            GameObject pathObject = Instantiate(hexPathPrefab);
-            HexPath path = pathObject.GetComponent<HexPath>();
-            path.Initialize();
-            HexPath.DrawCircle(0.4f, 0.1f, start.transform.position.x, start.transform.position.z);
-            HexPath.DrawCircle(0.4f, 0.1f, finish.transform.position.x, finish.transform.position.z);
-            //List<GameObject> vertices = adjacencyMap.RaggedWalk(start, finish, hexMap);
-            //List<GameObject> vertices = adjacencyMap.RandomWalk(start, finish);
-            //List<GameObject> vertices = adjacencyMap.DFS(start, finish);
-            List<GameObject> vertices = adjacencyMap.NearestAstar(start, finish);
 
-            path.AddHexes(vertices);
-        }
     }
 
     public Dictionary<Vector3Int, GameObject> GetMapAxial()
@@ -123,6 +109,37 @@ public class Map : MonoBehaviour
         }
 
         return axialMap;
+    }
+
+    public void DrawSelectedPath(SelectController selectController)
+    {
+        Debug.Log("Ok! " + selectController.LastSelected + " 2nd " + selectController.SelectedObj);
+        if (selectController.LastSelected != null && selectController.SelectedObj != null)
+        {
+            GameObject start = selectController.LastSelected.gameObject;
+            GameObject finish = selectController.SelectedObj.gameObject;
+            if (lastObject != finish && start.GetComponent<HexEntity>() != null && finish.GetComponent<HexEntity>() != null)
+            {
+                if (pathObject != null)
+                {
+                    pathObject.GetComponent<HexPath>().Destroy();
+                    Destroy(pathObject);
+                    pathObject = null;
+                }
+                lastObject = finish;
+                pathObject = Instantiate(hexPathPrefab);
+                HexPath path = pathObject.GetComponent<HexPath>();
+                path.Initialize();
+                path.DrawCircle(0.4f, 0.1f, start.transform.position.x, start.transform.position.z);
+                path.DrawCircle(0.4f, 0.1f, finish.transform.position.x, finish.transform.position.z);
+                //List<GameObject> vertices = adjacencyMap.RaggedWalk(start, finish, hexMap);
+                //List<GameObject> vertices = adjacencyMap.RandomWalk(start, finish);
+                //List<GameObject> vertices = adjacencyMap.DFS(start, finish);
+                List<GameObject> vertices = adjacencyMap.NearestAstar(start, finish);
+
+                path.AddHexes(vertices);
+            }
+        }
     }
 
     public Dictionary<Vector3Int, GameObject> GetMapCubic()
