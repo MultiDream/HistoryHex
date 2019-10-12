@@ -119,15 +119,6 @@ public class HexPath : MonoBehaviour
         GameObject myLine = new GameObject();
         myLine.transform.position = start;
         LineRenderer lr = myLine.AddComponent<LineRenderer>();
-        /*
-        myLine.AddComponent<TextMesh>();
-        TextMesh text = myLine.GetComponent<TextMesh>();
-        text.text = textToWrite;
-        text.characterSize = 0.5f;
-        text.fontSize = 12;
-        text.color = new Color(0, 0, 0);
-        text.transform.position = new Vector3((start.x + end.x) / 2, 1f, (start.z + end.z) / 2);
-         */
         //lr.material = new Material(Shader.Find("Standard"));
         lr.startColor = color;
         lr.endColor = color;

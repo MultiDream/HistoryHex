@@ -20,15 +20,6 @@ public class SelectController : MonoBehaviour
         // Left mouse will select a new SelectableObj.
         KeyDownSelect(KeyCode.Mouse0);
         KeyDownSelect(KeyCode.Mouse1);
-        //Right keys will issue commands to selectableObj.
-        //Army spawning key.Move code elsewhere at some point.
-        //else if (Input.GetKeyDown(KeyCode.V)) {
-        //	if (SelectedObj != null) {
-        //		Vector3 position = SelectedObj.transform.position;
-        //		Quaternion rotation = Quaternion.Euler(0, 0, 0);
-        //		Instantiate(ArmyPrefab, position, rotation);
-        //	}
-        //}
     }
 
     public void KeyDownSelect(KeyCode key)
