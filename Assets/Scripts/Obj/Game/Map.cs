@@ -35,7 +35,7 @@ public class Map : MonoBehaviour
 
     }
 
-    //IMap functions.
+    //Initializes the Map.
     public void InitMap()
     {
         Dictionary<Vector3Int, GameObject> HeavyMap = new Dictionary<Vector3Int, GameObject>(new MapEqualityComparer());

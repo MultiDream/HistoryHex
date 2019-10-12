@@ -2,14 +2,11 @@
 using System.Collections.Generic;
 using System;
 
-//using UnityEngine.Events; //Bah, why use this?
 using UnityEngine;
-
-
 
 // Relevant Delegates:
 public delegate void NextTurnHandler(); //Handles moving game forward one turn.
-
+public delegate void NextCycleHandler(); //Handles restarting the player cycle.
 /// <summary>
 /// Master Class for the game. Will handle networking infrastructure,
 /// or hotseat mechanics, which ever is applicable.
@@ -58,36 +55,49 @@ public class GameMaster : MonoBehaviour
         }
     }
 
-    #region KeyBindings
-    /*-------------------------------------------------
-	 *                  Key Bindings
-	 *-----------------------------------------------*/
-    public event NextTurnHandler NextTurn = new NextTurnHandler(logNextTurn); //Contains subscribers to next turn method.
-    public void Space_Key()
+
+	#region Key Bindings
+	public void Space_Key()
     {
         Debug.Log("Space Key Pressed!");
         currentPlayer++;
         if (currentPlayer >= NumberOfPlayers)
         {
             currentPlayer = 0;
+			NextTurn -= logNextTurn;
+			OnNextCycle();
         }
         Global.ActivePlayerId = Players[currentPlayer].GetComponent<Player>().PlayerId;
 
         OnNextTurn(); // OnNext Turn Event fires.
     }
+	#endregion
 
-    private void OnNextTurn()
+	#region EventBindings
+
+	public event NextTurnHandler NextTurn = new NextTurnHandler(logNextTurn); //Contains subscribers to next turn method.
+	private void OnNextTurn()
     {
-        Debug.Log("OnNextTurn Event Firing!");
-        if (NextTurn != null)
-        {
-            NextTurn();
-        }
+		NextTurn(); // Event will never be null.
     }
 
+	/// <summary>
+	/// Default function for logging next Turn Events firing.
+	/// </summary>
     static void logNextTurn()
     {
         Debug.Log("OnNextTurn Event Fired!");
     }
-    #endregion
+
+	public event NextCycleHandler NextCycle = new NextCycleHandler(logNextCycle); //Contains subscribers to next turn method.
+	private void OnNextCycle() {
+		NextCycle(); // Event will never be null.
+	}
+	/// <summary>
+	/// Default function for logging next Cycle Events firing.
+	/// </summary>
+	static void logNextCycle() {
+		Debug.Log("OnNextCycle Event Fired!");
+	}
+	#endregion
 }
