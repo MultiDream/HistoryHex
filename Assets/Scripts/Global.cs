@@ -31,7 +31,32 @@ public static class Global
 
     //MapMode
     public static MapMode CurrentMapMode = MapMode.Food;
+
+
+	#region GameMaster Observations
+
+	/* -------------------------------------------------------------------
+	 * This sections handles the registration of events to the
+	 * GameMaster.
+	 * 
+	 * Last Changed - Luka 10/14/2019
+	 * ------------------------------------------------------------------- */
+
+	public static GameMaster GM;
+
+	public static void RegisterNextTurnEvent(NextTurnHandler toDo) {
+		GM.NextTurn += toDo;
+		return;
+	}
+
+	public static void RegisterNextCycleEvent(NextCycleHandler toDo) {
+		GM.NextCycle += toDo;
+		return;
+	}
+	#endregion
 }
+
+
 
 public enum MapMode
 {

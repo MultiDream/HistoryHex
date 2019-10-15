@@ -4,13 +4,16 @@ using System;
 
 using UnityEngine;
 
+
 // Relevant Delegates:
 public delegate void NextTurnHandler(); //Handles moving game forward one turn.
 public delegate void NextCycleHandler(); //Handles restarting the player cycle.
+
 /// <summary>
-/// Master Class for the game. Will handle networking infrastructure,
-/// or hotseat mechanics, which ever is applicable.
+/// Master Class for the game. Holds important logic and classes for intializing
+/// and observing the state of the game.
 /// </summary>
+
 public class GameMaster : MonoBehaviour
 {
 
@@ -25,7 +28,10 @@ public class GameMaster : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Players = new GameObject[NumberOfPlayers];
+		//Throws itself up into Globally Accessible Scope.
+		Global.GM = this;
+
+		Players = new GameObject[NumberOfPlayers];
         for (int i = 0; i < NumberOfPlayers; i++)
         {
             Players[i] = Instantiate(playerPrefab);
@@ -44,6 +50,7 @@ public class GameMaster : MonoBehaviour
         //Possible to refactor by tossing current player into the Global flyweight.
         Board.setControl(_players); //Needs to run after the map is generated.
 
+		
     }
 
     // Update is called once per frame
@@ -64,18 +71,17 @@ public class GameMaster : MonoBehaviour
         if (currentPlayer >= NumberOfPlayers)
         {
             currentPlayer = 0;
-			NextTurn -= logNextTurn;
 			OnNextCycle();
         }
         Global.ActivePlayerId = Players[currentPlayer].GetComponent<Player>().PlayerId;
 
-        OnNextTurn(); // OnNext Turn Event fires.
+        OnNextTurn();
     }
 	#endregion
 
 	#region EventBindings
 
-	public event NextTurnHandler NextTurn = new NextTurnHandler(logNextTurn); //Contains subscribers to next turn method.
+	public event NextTurnHandler NextTurn = new NextTurnHandler(LogNextTurn); //Contains subscribers to next turn method.
 	private void OnNextTurn()
     {
 		NextTurn(); // Event will never be null.
@@ -84,19 +90,19 @@ public class GameMaster : MonoBehaviour
 	/// <summary>
 	/// Default function for logging next Turn Events firing.
 	/// </summary>
-    static void logNextTurn()
+    static void LogNextTurn()
     {
         Debug.Log("OnNextTurn Event Fired!");
     }
 
-	public event NextCycleHandler NextCycle = new NextCycleHandler(logNextCycle); //Contains subscribers to next turn method.
+	public event NextCycleHandler NextCycle = new NextCycleHandler(LogNextCycle); //Contains subscribers to next turn method.
 	private void OnNextCycle() {
 		NextCycle(); // Event will never be null.
 	}
 	/// <summary>
 	/// Default function for logging next Cycle Events firing.
 	/// </summary>
-	static void logNextCycle() {
+	static void LogNextCycle() {
 		Debug.Log("OnNextCycle Event Fired!");
 	}
 	#endregion
