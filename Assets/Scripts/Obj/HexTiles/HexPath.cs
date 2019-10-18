@@ -149,4 +149,13 @@ public class HexPath : MonoBehaviour
         }
     }
 
+	/// <summary>
+	/// Interface for an entity to request food from the hex path entity.
+	/// TODO: Hook this up to the base of food production.
+	/// </summary>
+	/// <param name="amountRequested">Amount of food requested</param>
+	/// <returns>Amount of food transported.</returns>
+	public int FoodRequest(int amountRequested){
+		return amountRequested;
+	}
 }
