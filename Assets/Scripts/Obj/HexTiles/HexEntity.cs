@@ -15,7 +15,6 @@ public class HexEntity : MonoBehaviour
 
     //Prefabs
     public GameObject ArmyPrefab;
-
     //Public variables
     public Vector3Int Position; //Position on the hex grid.
     public float FoodBase;

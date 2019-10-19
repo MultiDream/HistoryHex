@@ -16,17 +16,18 @@ public class SelectableObj : MonoBehaviour
 	// the entity script. Im sure there is a way to
 	// use interfaces, but I don't know that way.
 
-	public delegate void SelectionHandler();
-	public event SelectionHandler OnSelect;
-	public event SelectionHandler OnDeselect;
+    public delegate void SelectionHandler();
+    public event SelectionHandler OnSelect;
+    public event SelectionHandler OnDeselect;
+    public KeyCode LastSelectKey;
 
 	public delegate void RightClickHandler(GameObject other);
 	public event RightClickHandler OnRightClick;
 
-	// Start is called before the first frame update
-	void Start()
+    // Start is called before the first frame update
+    void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -65,13 +66,16 @@ public class SelectableObj : MonoBehaviour
 			UIComponent = Instantiate(UIComponentPrefab);
 		}
 
-		// Do not simplify delegation, intellisense is wrong.
-		if (OnSelect != null){
-			OnSelect(); //Publishes the fact that the object has been selected.
-		} else {
-			Debug.Log("No listeners for SelectableObj.OnSelect");
-		}
-	}
+        // Do not simplify delegation, intellisense is wrong.
+        if (OnSelect != null)
+        {
+            OnSelect(); //Publishes the fact that the object has been selected.
+        }
+        else
+        {
+            Debug.Log("No listeners for SelectableObj.OnSelect");
+        }
+    }
 
 	// Fired by the SelectionController when the Object is deselected.
 	// Cleans up after itself.
@@ -83,13 +87,16 @@ public class SelectableObj : MonoBehaviour
 			UIComponent = null; //This isn't handled by Destroy(), and can create wacky results if not done.
 		}
 
-		// Do not simplify delegation, intellisense is wrong.
-		if (OnDeselect != null){
-			OnDeselect(); //Publishes the fact that the object has been unselected.
-		} else {
-			Debug.Log("No listeners for SelectableObj.OnDeselect");
-		}
-	}
+        // Do not simplify delegation, intellisense is wrong.
+        if (OnDeselect != null)
+        {
+            OnDeselect(); //Publishes the fact that the object has been unselected.
+        }
+        else
+        {
+            Debug.Log("No listeners for SelectableObj.OnDeselect");
+        }
+    }
 
 	/// <summary>
 	/// Event that handles right clicking if another object has been selected.
@@ -108,8 +115,9 @@ public class SelectableObj : MonoBehaviour
 		OnRightClick = new RightClickHandler((other) => PrepareDelegate("OnRightClick"));
 	}
 
-	// Default Delegate to use when preparing subscribers.
-	private void PrepareDelegate(string eventName){
-		Debug.Log($"Publishing event: {eventName}.");
-	}
+    // Default Delegate to use when preparing subscribers.
+    private void PrepareDelegate(string eventName)
+    {
+        Debug.Log($"Publishing event: {eventName}.");
+    }
 }
