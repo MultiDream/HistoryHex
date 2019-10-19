@@ -50,7 +50,6 @@ public class GameMaster : MonoBehaviour
         //Possible to refactor by tossing current player into the Global flyweight.
         Board.setControl(_players); //Needs to run after the map is generated.
 
-		
     }
 
     // Update is called once per frame
@@ -62,9 +61,17 @@ public class GameMaster : MonoBehaviour
         }
     }
 
+    void FixedUpdate()
+    {
+        Board.DrawSelectedPath(UIMasterPrefab.GetComponent<UIMaster>().selectController);
+    }
 
-	#region Key Bindings
-	public void Space_Key()
+    #region KeyBindings
+    /*-------------------------------------------------
+	 *                  Key Bindings
+	 *-----------------------------------------------*/
+    public event NextTurnHandler NextTurn = new NextTurnHandler(logNextTurn); //Contains subscribers to next turn method.
+	  public void Space_Key()
     {
         Debug.Log("Space Key Pressed!");
         currentPlayer++;

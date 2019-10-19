@@ -19,9 +19,11 @@ public class HexPath : MonoBehaviour
     // Internal variables
     private List<GameObject> hexEntities; // list of tiles
     private AdjacencyMap adjacency;
+    private List<GameObject> lines;
     //Prefabs
     //Public variables
     public string Name { get; set; }
+
     #endregion
 
     // Start is called before the first frame update
@@ -53,7 +55,8 @@ public class HexPath : MonoBehaviour
         Debug.Log("Initializing!");
         Name = "EmptyPath";
         hexEntities = new List<GameObject>();
-        adjacency = new AdjacencyMap();
+        lines = new List<GameObject>();
+        //adjacency = new AdjacencyMap();
     }
 
 
@@ -68,7 +71,7 @@ public class HexPath : MonoBehaviour
         if (!ContainsHex(hex))
         {
             hexEntities.Add(hex);
-            adjacency.AddVertex(hex);
+            //adjacency.AddVertex(hex);
         }
         return ContainsHex(hex);
     }
@@ -84,7 +87,7 @@ public class HexPath : MonoBehaviour
         return false;
     }
 
-    public static void DrawCircle(float radius, float lineWidth, float x, float y)
+    public void DrawCircle(float radius, float lineWidth, float x, float y)
     {
         GameObject container = new GameObject();
         var segments = 360;
@@ -104,6 +107,7 @@ public class HexPath : MonoBehaviour
         }
 
         line.SetPositions(points);
+        lines.Add(container);
     }
 
     private void DrawSegment(Vector3 start, Vector3 end, Color color, string textToWrite = "")
@@ -114,23 +118,23 @@ public class HexPath : MonoBehaviour
         DrawCircle(0.1f, 0.1f, end.x, end.z);
         GameObject myLine = new GameObject();
         myLine.transform.position = start;
-        myLine.AddComponent<LineRenderer>();
-        LineRenderer lr = myLine.GetComponent<LineRenderer>();
-        myLine.AddComponent<TextMesh>();
-        TextMesh text = myLine.GetComponent<TextMesh>();
-        text.text = textToWrite;
-        text.characterSize = 0.5f;
-        text.fontSize = 12;
-        text.color = new Color(0, 0, 0);
-        text.transform.position = new Vector3((start.x + end.x) / 2, 1f, (start.z + end.z) / 2);
-
+        LineRenderer lr = myLine.AddComponent<LineRenderer>();
         //lr.material = new Material(Shader.Find("Standard"));
         lr.startColor = color;
         lr.endColor = color;
         lr.SetWidth(0.1f, 0.1f);
         lr.SetPosition(0, start);
         lr.SetPosition(1, end);
+        lines.Add(myLine);
         //GameObject.Destroy(myLine, duration);
+    }
+
+    public void Destroy()
+    {
+        foreach (GameObject line in lines)
+        {
+            Destroy(line);
+        }
     }
 
     private void Draw()

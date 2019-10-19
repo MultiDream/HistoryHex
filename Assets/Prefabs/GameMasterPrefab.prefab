@@ -68,4 +68,5 @@ MonoBehaviour:
     type: 3}
   hexPathPrefab: {fileID: 8323398178626441626, guid: 876d1538776e31341b9f660eebb6c650,
     type: 3}
+  LabelHexes: 0
   radius: 5
