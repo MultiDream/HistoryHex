@@ -36,7 +36,7 @@ public class Map : MonoBehaviour
 
     }
 
-    //IMap functions.
+    //Initializes the Map.
     public void InitMap()
     {
         Dictionary<Vector3Int, GameObject> HeavyMap = new Dictionary<Vector3Int, GameObject>(new MapEqualityComparer());
@@ -65,6 +65,9 @@ public class Map : MonoBehaviour
 
 
                         GameObject Hex = Instantiate(hexPrefab, position, rotation);
+
+						// Subscribes HexEntity's updateTurn function to GM's NextTurn event.
+						Global.GM.NextTurn += Hex.GetComponent<HexEntity>().updateTurn;
                         Hex.AddComponent<TextMesh>();
                         if (LabelHexes)
                         {
