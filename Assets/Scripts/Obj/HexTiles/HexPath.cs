@@ -36,8 +36,8 @@ public class HexPath : MonoBehaviour
 
     }
 
-    //If Activated, run the extended activation methods.
-    private void ActiveUpdate()
+	//If Activated, run the extended activation methods.
+	private void ActiveUpdate()
     {
 
     }
@@ -156,6 +156,10 @@ public class HexPath : MonoBehaviour
 	/// <param name="amountRequested">Amount of food requested</param>
 	/// <returns>Amount of food transported.</returns>
 	public int FoodRequest(int amountRequested){
+		int finalIndex = hexEntities.Count - 1;
+		GameObject baseTile = hexEntities[finalIndex];
+		HexEntity entity = baseTile.GetComponent<HexEntity>();
+		entity.RequestFood(amountRequested);
 		return amountRequested;
 	}
 }

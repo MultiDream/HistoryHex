@@ -54,7 +54,7 @@ public class UIMaster : MonoBehaviour
 	}
 
 	void F_Key() {
-		Debug.Log("Using map mode 'Food'. ");
+		Debug.Log("Using map mode 'FoodBase'. ");
 		Global.CurrentMapMode = MapMode.Food;
 	}
 

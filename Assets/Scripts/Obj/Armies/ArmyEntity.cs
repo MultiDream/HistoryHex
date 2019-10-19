@@ -12,9 +12,9 @@ public class ArmyEntity : MonoBehaviour
     public float Food;
     public string Name { get; set; }
     public Player Controller { get; set; }
-
-    // UI_COMponents.
-    public GameObject UIComponent; // UIComponentPrefab
+	GameObject pathObject;
+	// UI_COMponents.
+	public GameObject UIComponent; // UIComponentPrefab
     private GameObject UIComponentInstance;
 
     // SelectionInterface
@@ -165,11 +165,15 @@ public class ArmyEntity : MonoBehaviour
     #endregion
 
     #region WireSelectionInterface
+	/// <summary>
+	/// Wires up all the event handlers for the this entity.
+	/// </summary>
     private void WireSelectionInterface()
     {
         SelectionInterface.Prepare();
         SelectionInterface.OnSelect += OnSelect;
         SelectionInterface.OnDeselect += OnDeselect;
+		SelectionInterface.OnRightClick += OnRightClick;
     }
 
     private void OnSelect()
@@ -182,6 +186,27 @@ public class ArmyEntity : MonoBehaviour
         activated = false;
     }
 
+	private void OnRightClick(GameObject other){
+		//Add logic to check what the other is, and attempt to create a path to that location.
+		HexEntity hex = other.GetComponent<HexEntity>();
+		if (hex == null){
+			// do nothing.
+		} else {
+			//create a path between this tile and that one.
+			if (pathObject != null){
+				Destroy(pathObject);
+				pathObject = null;
+			}
+			GameObject baseTile = Global.MapFlyWeight.hexMap[Position];
+			GameObject target = other;
+			
+			pathObject = Instantiate(Global.MapFlyWeight.hexPathPrefab);
+			HexPath path = pathObject.GetComponent<HexPath>();
+			path.Initialize();
+			List<GameObject> hexes = Global.MapFlyWeight.adjacencyMap.NearestAstar(baseTile, target);
+			path.AddHexes(hexes);
+		}
+	}
     #endregion
 
     //Draw Delegation

@@ -10,6 +10,7 @@ public class SelectableObj : MonoBehaviour
 {
 	public GameObject UIComponentPrefab; //UIComponent. Attach manually.
 	private GameObject UIComponent;
+	private bool active = false;
 	// This is just to inform the entity script what's going on,
 	// we use this to hide away the identity of the
 	// the entity script. Im sure there is a way to
@@ -19,6 +20,8 @@ public class SelectableObj : MonoBehaviour
 	public event SelectionHandler OnSelect;
 	public event SelectionHandler OnDeselect;
 
+	public delegate void RightClickHandler(GameObject other);
+	public event RightClickHandler OnRightClick;
 
 	// Start is called before the first frame update
 	void Start()
@@ -29,12 +32,30 @@ public class SelectableObj : MonoBehaviour
     // Update is called once per frame
     void Update()
     {  
+		if (active){
+			ActiveUpdate();
+		}
     }
 
+	// Logic that only runs if this object is active.
+	private void ActiveUpdate(){
+		if (Input.GetKeyDown(KeyCode.Mouse1)) { //Right Click.
+			var ray = UnityEngine.Camera.main.ScreenPointToRay(Input.mousePosition);
+			RaycastHit hit;
+			Debug.DrawRay(ray.origin, ray.direction, Color.green, 100f); // only draws once. Re-clicking does nothing
+			if (Physics.Raycast(ray, out hit)) {
+				var selectedTransform = hit.transform;
+				GameObject SelectedObj = selectedTransform.gameObject;
+
+				// throw the right clicked object into the right click event handler.
+				OnRightClick(SelectedObj);
+			}
+		}
+	}
 	// Fired by the SelectionController when the Object is selected.
 	// Basically a factory.
 	public void OnSelected(){
-
+		active = true;
 		// Create the UI component if a prefab has been defined.
 		if (UIComponentPrefab){
 			if (UIComponent != null) {
@@ -53,8 +74,9 @@ public class SelectableObj : MonoBehaviour
 	}
 
 	// Fired by the SelectionController when the Object is deselected.
+	// Cleans up after itself.
 	public void OnDeselected() {
-
+		active = false;
 		// Destroy the UI Component if it exists.
 		if (UIComponent != null){
 			Destroy(UIComponent);
@@ -69,10 +91,21 @@ public class SelectableObj : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Event that handles right clicking if another object has been selected.
+	/// </summary>
+	/// <param name="other">The object that has been right clicked on.</param>
+	public void OnRightClicked(GameObject other){
+		OnRightClick(other);
+		return;
+	}
+
 	// Prepares events to be subscribed to.
+	// When adding new events, prepare them so that the selection object does not implode when an event fires.
 	public void Prepare(){
 		OnSelect = new SelectionHandler(() => PrepareDelegate("OnSelect"));
 		OnDeselect = new SelectionHandler(() => PrepareDelegate("OnDeselect"));
+		OnRightClick = new RightClickHandler((other) => PrepareDelegate("OnRightClick"));
 	}
 
 	// Default Delegate to use when preparing subscribers.
