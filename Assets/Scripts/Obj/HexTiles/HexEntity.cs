@@ -18,7 +18,7 @@ public class HexEntity : MonoBehaviour
     //Public variables
     public Vector3Int Position; //Position on the hex grid.
     public float FoodBase;
-	public int Food { get; set; }
+	public float Food { get; set; }
     public string Name { get; set; }
     public Player Controller { get; set; }
     public EntityDrawer drawer;
@@ -182,7 +182,7 @@ public class HexEntity : MonoBehaviour
 	{
 		if (request > Food)
 		{
-			request = Food;
+			request = Mathf.FloorToInt(Food);
 		}
 		Food -= request;
 		return request;

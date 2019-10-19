@@ -70,8 +70,7 @@ public class GameMaster : MonoBehaviour
     /*-------------------------------------------------
 	 *                  Key Bindings
 	 *-----------------------------------------------*/
-    public event NextTurnHandler NextTurn = new NextTurnHandler(logNextTurn); //Contains subscribers to next turn method.
-	  public void Space_Key()
+	public void Space_Key()
     {
         Debug.Log("Space Key Pressed!");
         currentPlayer++;
