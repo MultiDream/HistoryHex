@@ -63,7 +63,7 @@ public class GameMaster : MonoBehaviour
 
     void FixedUpdate()
     {
-        Board.DrawSelectedPath(UIMasterPrefab.GetComponent<UIMaster>().selectController);
+        //Board.DrawSelectedPath(UIMasterPrefab.GetComponent<UIMaster>().selectController);
     }
 
     #region KeyBindings

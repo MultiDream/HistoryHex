@@ -194,6 +194,7 @@ public class ArmyEntity : MonoBehaviour
 		} else {
 			//create a path between this tile and that one.
 			if (pathObject != null){
+				pathObject.GetComponent<HexPath>().Destroy();
 				Destroy(pathObject);
 				pathObject = null;
 			}
@@ -203,6 +204,7 @@ public class ArmyEntity : MonoBehaviour
 			pathObject = Instantiate(Global.MapFlyWeight.hexPathPrefab);
 			HexPath path = pathObject.GetComponent<HexPath>();
 			path.Initialize();
+
 			List<GameObject> hexes = Global.MapFlyWeight.adjacencyMap.NearestAstar(baseTile, target);
 			path.AddHexes(hexes);
 		}

@@ -114,6 +114,7 @@ public class Map : MonoBehaviour
         return axialMap;
     }
 
+	/* Drawing a selected path doesn't seem to work.
     public void DrawSelectedPath(SelectController selectController)
     {
         Debug.Log("Ok! " + selectController.LastSelected + " 2nd " + selectController.SelectedObj);
@@ -143,7 +144,7 @@ public class Map : MonoBehaviour
                 path.AddHexes(vertices);
             }
         }
-    }
+    }*/
 
     public Dictionary<Vector3Int, GameObject> GetMapCubic()
     {

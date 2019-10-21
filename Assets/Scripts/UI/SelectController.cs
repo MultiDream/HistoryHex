@@ -19,7 +19,7 @@ public class SelectController : MonoBehaviour
     {
         // Left mouse will select a new SelectableObj.
         KeyDownSelect(KeyCode.Mouse0);
-        KeyDownSelect(KeyCode.Mouse1);
+        //KeyDownSelect(KeyCode.Mouse1);
     }
 
     public void KeyDownSelect(KeyCode key)
