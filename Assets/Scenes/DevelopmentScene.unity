@@ -334,6 +334,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4962886492842157324, guid: 18b291ddf762ae44f8d1d056379246b3,
+        type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 7950823048148831022, guid: 18b291ddf762ae44f8d1d056379246b3,
         type: 3}
       propertyPath: keyboard
