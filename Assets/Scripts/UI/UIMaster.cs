@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,31 +12,62 @@ public class UIMaster : MonoBehaviour
 {
 	/* We still need to decide the exact process of registering and unregistering UIComponents. */
 
-	// For now, we'll just make some possible UIComponentPrefabs.
-	// We'll want something more permanent, but this will do for now.
-	public GameObject TileLedgerPrefab;
-
-	public KeyboardController keyboard;
+	public GameMaster GM;
+	public GameObject subComponent;
+	public KeyboardController keyboard;			// Needs to be passed in.
+	public SelectController selectController;	// Same deal.
 
     // Start is called before the first frame update
     void Start(){
-		keyboard.BindKey(KeyCode.K, K_Key);
+		BindKeys();
+		keyboard.Listening = true;
+		//Master needs to register to the GameMaster for NextTurnEvent!
+		GM.NextTurn += new NextTurnHandler(Space_Key);
     }
 
     // Update is called once per frame
     void Update(){
     }
 
-	//register a UIComponent
+	// Register a UIComponent. Currently just does the flag.
 	public void RegisterUIComponent(){
+		if (subComponent == null){
+			UIFactory factory = transform.GetComponent<UIFactory>();
+			subComponent = factory.getUI();
+			Color color = GM.Players[GM.currentPlayer].GetComponent<Player>().Colour;
+			subComponent.transform.GetChild(0).GetComponent<Image>().color = color; //Jesus this is long. Clean later.
+		}
 	}
 
 	//unregister a UIComponent
 	public void UnregisterUIComponent(){
+		Destroy(subComponent);
+		subComponent = null;
 	}
 
 	// Key bindings
-	void K_Key(){
-		Debug.Log("K_Key_Pressed");
+	void BindKeys(){
+		keyboard.BindKey(KeyCode.J, J_Key);
+		keyboard.BindKey(KeyCode.K, K_Key);
+	}
+
+	void J_Key() {
+		Debug.Log("Registering UI");
+		RegisterUIComponent();
+	}
+	
+	void K_Key() {
+		Debug.Log("Unregistering UI");
+		UnregisterUIComponent();
+	}
+
+	void Space_Key()
+	{
+		Debug.Log("UIMaster Notified of Space Hit!");
+		if (subComponent != null){
+			Color color = GM.Players[GM.currentPlayer].GetComponent<Player>().Colour;
+			subComponent.transform.GetChild(0).GetComponent<Image>().color = color; //Jesus this is long. Clean later.
+		}
+		return;
 	}
 }
