@@ -126,6 +126,7 @@ public class ArmyEntity : MonoBehaviour
     /// </summary>
     public void MoveAction(Vector3Int direction)
     {
+		Destroy(pathObject);
         Vector3 moveTo = Global.GetCubicVector(direction.x, direction.y, direction.z);
         Vector3Int nextPos = new Vector3Int(Position.x + direction.x, Position.y + direction.y, Position.z + direction.z);
         if (Global.MapFlyWeight.HasHexAtCubic(nextPos))
@@ -142,6 +143,34 @@ public class ArmyEntity : MonoBehaviour
             Position = nextPos;
         }
     }
+
+	/// <summary>
+	/// Adds a supply line from this tile to a baseTile.
+	/// </summary>
+	/// <param name="baseTile">Tile to link a supply line to.</param>
+	public void AddSupplyLine(GameObject baseTile)
+	{
+		//Add logic to check what the other is, and attempt to create a path to that location.
+		HexEntity hex = baseTile.GetComponent<HexEntity>();
+		if (hex == null){
+			// do nothing.
+		} else {
+			//create a path between this tile and that one.
+			if (pathObject != null){
+				//pathObject.GetComponent<HexPath>().Destroy();
+				Destroy(pathObject);
+				pathObject = null;
+			}
+			GameObject armyTile = Global.MapFlyWeight.hexMap[Position];
+			
+			pathObject = Instantiate(Global.MapFlyWeight.hexPathPrefab);
+			HexPath path = pathObject.GetComponent<HexPath>();
+			path.Initialize();
+
+			List<GameObject> hexes = Global.MapFlyWeight.adjacencyMap.NearestAstar(armyTile, baseTile);
+			path.AddHexes(hexes);
+		}
+	}
 
     public void Sieze(GameObject hexTile)
     {
@@ -164,6 +193,12 @@ public class ArmyEntity : MonoBehaviour
     }
     #endregion
 
+	/// <summary>
+	/// Does all the updates 
+	/// </summary>
+	private void OnEndTurn(){
+		
+	}
     #region WireSelectionInterface
 	/// <summary>
 	/// Wires up all the event handlers for the this entity.
@@ -187,27 +222,8 @@ public class ArmyEntity : MonoBehaviour
     }
 
 	private void OnRightClick(GameObject other){
-		//Add logic to check what the other is, and attempt to create a path to that location.
-		HexEntity hex = other.GetComponent<HexEntity>();
-		if (hex == null){
-			// do nothing.
-		} else {
-			//create a path between this tile and that one.
-			if (pathObject != null){
-				pathObject.GetComponent<HexPath>().Destroy();
-				Destroy(pathObject);
-				pathObject = null;
-			}
-			GameObject baseTile = Global.MapFlyWeight.hexMap[Position];
-			GameObject target = other;
-			
-			pathObject = Instantiate(Global.MapFlyWeight.hexPathPrefab);
-			HexPath path = pathObject.GetComponent<HexPath>();
-			path.Initialize();
-
-			List<GameObject> hexes = Global.MapFlyWeight.adjacencyMap.NearestAstar(baseTile, target);
-			path.AddHexes(hexes);
-		}
+		//Depending on the mod, army will do a different action.
+		AddSupplyLine(other);
 	}
     #endregion
 

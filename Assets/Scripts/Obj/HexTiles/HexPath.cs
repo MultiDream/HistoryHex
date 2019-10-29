@@ -24,10 +24,11 @@ public class HexPath : MonoBehaviour
     //Public variables
     public string Name { get; set; }
 
-    #endregion
+	#endregion
 
-    // Start is called before the first frame update
-    void Start()
+	#region Monobehaivor Methods
+	// Start is called before the first frame update
+	void Start()
     {
         Draw();
     }
@@ -37,6 +38,13 @@ public class HexPath : MonoBehaviour
     {
 
     }
+
+	private void OnDestroy() {
+		foreach (GameObject line in lines) {
+			Destroy(line);
+		}
+	}
+	#endregion
 
 	//If Activated, run the extended activation methods.
 	private void ActiveUpdate()
@@ -58,7 +66,6 @@ public class HexPath : MonoBehaviour
         lines = new List<GameObject>();
         //adjacency = new AdjacencyMap();
     }
-
 
     // ContainsHex - wraps the list Contains function.
     public bool ContainsHex(GameObject hex)
@@ -82,6 +89,7 @@ public class HexPath : MonoBehaviour
             AddHex(hex);
     }
 
+	//?
     public bool IsConnected()
     {
         return false;
@@ -129,14 +137,6 @@ public class HexPath : MonoBehaviour
         //GameObject.Destroy(myLine, duration);
     }
 
-    public void Destroy()
-    {
-        foreach (GameObject line in lines)
-        {
-            Destroy(line);
-        }
-    }
-
     private void Draw()
     {
         GameObject hex1, hex2;
@@ -156,10 +156,15 @@ public class HexPath : MonoBehaviour
 	/// <summary>
 	/// Interface for an entity to request food from the hex path entity.
 	/// TODO: Hook this up to the base of food production.
+	/// It may be possible that this should instead be on another component...
 	/// </summary>
 	/// <param name="amountRequested">Amount of food requested</param>
 	/// <returns>Amount of food transported.</returns>
 	public int FoodRequest(int amountRequested){
+		if (amountRequested <= 0)
+		{
+			return 0;
+		}
 		int finalIndex = hexEntities.Count - 1;
 		GameObject baseTile = hexEntities[finalIndex];
 		HexEntity entity = baseTile.GetComponent<HexEntity>();
