@@ -7,7 +7,8 @@ public class ArmyEntity : MonoBehaviour
     #region Properties
     // Internal variables
     private bool activated = false;
-    public Vector3Int Position;
+	private bool hasMoved = false;
+	public Vector3Int Position;
     public float Food;
 	public int Manpower;
 	public string Name;
@@ -21,10 +22,14 @@ public class ArmyEntity : MonoBehaviour
     // SelectionInterface
     private SelectableObj SelectionInterface;
     public EntityDrawer drawer;
-    #endregion
 
-    // Start is called before the first frame update
-    void Start()
+	//Current Action Mode.
+	public ArmyActionMode ActionMode;
+	#endregion
+
+	#region MonobehaivorExtensions
+	// Start is called before the first frame update
+	void Start()
     {
         Initialize();
     }
@@ -35,8 +40,7 @@ public class ArmyEntity : MonoBehaviour
         MapDrawingUpdater();
 
         //If Activated, run the extended activation methods.
-        bool SelectedByController = Global.ActivePlayerId == Controller.PlayerId;
-        if (activated && SelectedByController)
+        if (activated && SelectedByController())
         {
             ActiveUpdate();
         }
@@ -80,37 +84,15 @@ public class ArmyEntity : MonoBehaviour
 
     private void ActiveUpdate()
     {
-        // When active, listen for 7 4 1 and 9 6 3.
-        if (Input.GetKeyDown(KeyCode.Keypad3))
-        {
-            Vector3Int direction = new Vector3Int(0, -1, 1);
-            MoveAction(direction);
-        }
-        else if (Input.GetKeyDown(KeyCode.Keypad1))
-        {
-            Vector3Int direction = new Vector3Int(-1, 0, 1);
-            MoveAction(direction);
-        }
-        else if (Input.GetKeyDown(KeyCode.Keypad4))
-        {
-            Vector3Int direction = new Vector3Int(-1, 1, 0);
-            MoveAction(direction);
-        }
-        else if (Input.GetKeyDown(KeyCode.Keypad6))
-        {
-            Vector3Int direction = new Vector3Int(1, -1, 0);
-            MoveAction(direction);
-        }
-        else if (Input.GetKeyDown(KeyCode.Keypad9))
-        {
-            Vector3Int direction = new Vector3Int(1, 0, -1);
-            MoveAction(direction);
-        }
-        else if (Input.GetKeyDown(KeyCode.Keypad7))
-        {
-            Vector3Int direction = new Vector3Int(0, 1, -1);
-            MoveAction(direction);
-        }
+		//Check for the Mode Change key.
+		if (Input.GetKeyDown(KeyCode.M))
+		{
+			ActionMode = ArmyActionMode.Move;
+		}
+		else if (Input.GetKeyDown(KeyCode.N))
+		{
+			ActionMode = ArmyActionMode.SetSupply;
+		}
 
         return;
     }
@@ -131,13 +113,14 @@ public class ArmyEntity : MonoBehaviour
             }
         }
     }
+	#endregion
 
-    #region Unit Actions
+	#region Unit Actions
 
-    /// <summary>
-    /// Moves the unit across the board relative to current position.
-    /// </summary>
-    public void MoveAction(Vector3Int direction)
+	/// <summary>
+	/// Moves the unit across the board relative to current position.
+	/// </summary>
+	public void MoveAction(Vector3Int direction)
     {
 		Destroy(pathObject);
         Vector3 moveTo = Global.GetCubicVector(direction.x, direction.y, direction.z);
@@ -165,12 +148,15 @@ public class ArmyEntity : MonoBehaviour
 	{
 		//Add logic to check what the other is, and attempt to create a path to that location.
 		HexEntity hex = baseTile.GetComponent<HexEntity>();
-		if (hex == null){
+		if (hex == null)
+		{
 			// do nothing.
-		} else {
+		} 
+		else 
+		{
 			//create a path between this tile and that one.
-			if (pathObject != null){
-				//pathObject.GetComponent<HexPath>().Destroy();
+			if (pathObject != null)
+			{
 				Destroy(pathObject);
 				pathObject = null;
 			}
@@ -185,6 +171,32 @@ public class ArmyEntity : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Moves this army to another tile.
+	/// </summary>
+	/// <param name="targetTile"></param>
+	public void Move(GameObject targetTile){
+		// Add logic to check what the other is, and attempt to create a path to that location.
+		HexEntity TargetHex = targetTile.GetComponent<HexEntity>();
+
+		// Verify the action should be taken.
+		// Did you know C# thinks & has higher priority then | ? Rediculous!
+		if (TargetHex == null || hasMoved ) 
+		{
+			// Do nothing.
+		} 
+		else 
+		{
+			// checks to see if the tile can be moved to.
+			HexEntity myHex = Global.MapFlyWeight.hexMap[Position].GetComponent<HexEntity>();
+			if ( TargetHex.Adjacent(myHex) )
+			{
+				Vector3Int direction = TargetHex.Position - myHex.Position;
+				MoveAction(direction);
+				hasMoved = true;
+			}
+		}
+	}
 	/// <summary>
 	/// Attempts to take control of a tile.
 	/// </summary>
@@ -227,22 +239,27 @@ public class ArmyEntity : MonoBehaviour
 
 	#endregion
 
+	#region WireSelectionInterface
+
 	/// <summary>
 	/// Does everything needed to update the army at the start of the turn.
 	/// </summary>
-	private void OnStartTurn(){
+	private void OnStartTurn() {
+		//Set has moved to false.
+		hasMoved = false;
+
 		// Forage for food. Currently tries to get enough rations for just the current army.
 		ForageTile(Manpower);
 		Food -= Manpower;
 
 		// Starvation mechanic
-		if (Food < 0){
+		if (Food < 0) {
 			Manpower += Mathf.FloorToInt(Food);
 			Food = 0;
 		}
 
 		// Death when no manpower remaining.
-		if (Manpower <= 0){
+		if (Manpower <= 0) {
 			Destroy(gameObject);
 		}
 
@@ -250,11 +267,10 @@ public class ArmyEntity : MonoBehaviour
 		Debug.Log("Current Manpower: " + Manpower);
 	}
 
-    #region WireSelectionInterface
 	/// <summary>
 	/// Wires up all the event handlers for the this entity.
 	/// </summary>
-    private void WireSelectionInterface()
+	private void WireSelectionInterface()
     {
         SelectionInterface.Prepare();
         SelectionInterface.OnSelect += OnSelect;
@@ -265,6 +281,7 @@ public class ArmyEntity : MonoBehaviour
     private void OnSelect()
     {
         activated = true;
+		ActionMode = ArmyActionMode.Move;
     }
 
     private void OnDeselect()
@@ -272,9 +289,23 @@ public class ArmyEntity : MonoBehaviour
         activated = false;
     }
 
+	/// <summary>
+	/// What to do when something has been right clicked.
+	/// </summary>
+	/// <param name="other">The object that has been picked with a raycast.</param>
 	private void OnRightClick(GameObject other){
 		//Depending on the mod, army will do a different action.
-		AddSupplyLine(other);
+		if (activated && SelectedByController()) 
+		{
+			if (ActionMode == ArmyActionMode.Move) 
+			{
+				Move(other);
+			} 
+			else if (ActionMode == ArmyActionMode.SetSupply)
+			{
+				AddSupplyLine(other);
+			}
+		}
 	}
     #endregion
 
@@ -283,4 +314,12 @@ public class ArmyEntity : MonoBehaviour
     {
         drawer.Update();
     }
+
+	/// <summary>
+	/// Returns a boolean of whether the person active
+	/// is allowed to interact with this unit.
+	/// </summary>
+	private bool SelectedByController(){
+		return Global.ActivePlayerId == Controller.PlayerId;
+	}
 }
