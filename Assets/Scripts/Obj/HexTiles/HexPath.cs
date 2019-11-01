@@ -168,7 +168,7 @@ public class HexPath : MonoBehaviour
 		int finalIndex = hexEntities.Count - 1;
 		GameObject baseTile = hexEntities[finalIndex];
 		HexEntity entity = baseTile.GetComponent<HexEntity>();
-		entity.RequestFood(amountRequested);
+		entity.FoodRequest(amountRequested);
 		return amountRequested;
 	}
 }

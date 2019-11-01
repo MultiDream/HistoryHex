@@ -40,6 +40,10 @@ public class SelectableObj : MonoBehaviour
 		}
     }
 
+	void OnDestroy() {
+		OnDeselected();
+	}
+
 	// Logic that only runs if this object is active.
 	private void ActiveUpdate(){
 		if (Input.GetKeyDown(KeyCode.Mouse1)) { //Right Click.
