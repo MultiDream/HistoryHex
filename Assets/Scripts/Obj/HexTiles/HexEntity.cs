@@ -106,6 +106,7 @@ public class HexEntity : MonoBehaviour
         SelectionInterface.Prepare();
         SelectionInterface.OnSelect += OnSelect;
         SelectionInterface.OnDeselect += OnDeselect;
+		SelectionInterface.OnInitializeUI += OnInitializeUI;
     }
 
     private void OnSelect()
@@ -117,6 +118,10 @@ public class HexEntity : MonoBehaviour
     {
         activated = false;
     }
+
+	private void OnInitializeUI(UICom com) {
+		((UIHex)com).SetText(Name, Controller.PlayerId.ToString(), Food.ToString(), "XXX", Population.ToString(), "XXX", "XXX", "XXX");
+	}
 
 	#endregion
 

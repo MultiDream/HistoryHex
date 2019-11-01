@@ -9,7 +9,7 @@ using UnityEngine;
 public class SelectableObj : MonoBehaviour
 {
 	public GameObject UIComponentPrefab; //UIComponent. Attach manually.
-	private GameObject UIComponent;
+	public GameObject UIComponent;
 	private bool active = false;
 	// This is just to inform the entity script what's going on,
 	// we use this to hide away the identity of the
@@ -24,6 +24,8 @@ public class SelectableObj : MonoBehaviour
 	public delegate void RightClickHandler(GameObject other);
 	public event RightClickHandler OnRightClick;
 
+	public delegate void InitializeUIHandler(UICom com);
+	public event InitializeUIHandler OnInitializeUI;
     // Start is called before the first frame update
     void Start()
     {
@@ -63,7 +65,8 @@ public class SelectableObj : MonoBehaviour
 				//Creating a new component without imploding the old one creates memory leaks.
 				throw new System.Exception("Memory Leak vulnerability detected. UI Must not exist before getting created!");
 			}
-			UIComponent = Instantiate(UIComponentPrefab);
+			UIComponent = Instantiate(UIComponentPrefab, UIMaster.instance.transform);
+			OnInitializeUI(UIComponent.GetComponent<UICom>());
 		}
 
         // Do not simplify delegation, intellisense is wrong.
@@ -113,6 +116,7 @@ public class SelectableObj : MonoBehaviour
 		OnSelect = new SelectionHandler(() => PrepareDelegate("OnSelect"));
 		OnDeselect = new SelectionHandler(() => PrepareDelegate("OnDeselect"));
 		OnRightClick = new RightClickHandler((other) => PrepareDelegate("OnRightClick"));
+		OnInitializeUI = new InitializeUIHandler((com) => PrepareDelegate("OnInitializeUI"));
 	}
 
     // Default Delegate to use when preparing subscribers.

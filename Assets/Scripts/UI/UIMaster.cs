@@ -17,8 +17,12 @@ public class UIMaster : MonoBehaviour
 	public KeyboardController keyboard;			// Needs to be passed in.
 	public SelectController selectController;	// Same deal.
 
+	public static UIMaster instance; // Just adding this bc idk how things are intended to be set up
+
     // Start is called before the first frame update
     void Start(){
+		instance = this;
+		
 		BindKeys();
 		keyboard.Listening = true;
 		//Master needs to register to the GameMaster for NextTurnEvent!

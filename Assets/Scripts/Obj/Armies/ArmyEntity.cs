@@ -14,7 +14,7 @@ public class ArmyEntity : MonoBehaviour
     public Player Controller { get; set; }
 	GameObject pathObject;
 	// UI_COMponents.
-	public GameObject UIComponent; // UIComponentPrefab
+	public GameObject UIComponentPrefab; // UIComponentPrefab
     private GameObject UIComponentInstance;
 
     // SelectionInterface
@@ -62,7 +62,6 @@ public class ArmyEntity : MonoBehaviour
         {
             WireSelectionInterface();
         }
-
         //Present UI Components.
     }
 
@@ -209,11 +208,15 @@ public class ArmyEntity : MonoBehaviour
         SelectionInterface.OnSelect += OnSelect;
         SelectionInterface.OnDeselect += OnDeselect;
 		SelectionInterface.OnRightClick += OnRightClick;
+        SelectionInterface.OnInitializeUI += OnInitializeUI;
     }
 
     private void OnSelect()
     {
         activated = true;
+
+        //update army ui
+        //pass function to be executed on 
     }
 
     private void OnDeselect()
@@ -225,6 +228,11 @@ public class ArmyEntity : MonoBehaviour
 		//Depending on the mod, army will do a different action.
 		AddSupplyLine(other);
 	}
+
+    private void OnInitializeUI(UICom com) {
+        ((UIArmy)com).SetText(Name, Controller.PlayerId.ToString(), Food.ToString(), "", "pop", "","","");
+    }
+
     #endregion
 
     //Draw Delegation

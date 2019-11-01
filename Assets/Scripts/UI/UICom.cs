@@ -1,18 +1,15 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UICom : MonoBehaviour
+public abstract class UICom : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    
+    public abstract void SetText(string panelName, string player, string food, string foodGrowth, 
+                    string population, string populationGrowth, string outFood, string outPopulation);
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public abstract void SetButtonListeners(params Action[] actions);
+
+
 }
