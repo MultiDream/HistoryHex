@@ -198,7 +198,19 @@ public class HexEntity : MonoBehaviour
     }
 
 	#endregion
-	
+
+    // NEED TO ADD FUNCTIONS THAT CHECK IF A LABOR POOL SWITCH CAN BE MADE BUT CAN'T IMPLEMENT NOW BECAUSE SUPPLY LINES NOT READY
+
+    // This function actually changes the values in a labor pool after checking if the values in labor pools can be switched
+    // Parameters:
+    // 1) laborPoolAdd: the labor pool gaining population
+    // 2) laborPoolSubtract: the labor pool losing population
+    // 3) amount: the amount of population being switched
+    public void switchLaborPoolAssignments(string laborPoolAdd, string laborPoolSubtract, float amount) {
+        laborPoolDict[laborPoolAdd] += amount;
+        laborPoolDict[laborPoolSubtract] -= amount;
+    }
+
 	// Returns as much food as possible, given a request.
 	public int RequestFood(int request)
 	{
