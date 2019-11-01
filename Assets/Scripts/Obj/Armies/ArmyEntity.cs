@@ -113,6 +113,7 @@ public class ArmyEntity : MonoBehaviour
             }
         }
     }
+
 	#endregion
 
 	#region Unit Actions
@@ -239,6 +240,7 @@ public class ArmyEntity : MonoBehaviour
 
 	#endregion
 
+
 	#region WireSelectionInterface
 
 	/// <summary>
@@ -312,7 +314,11 @@ public class ArmyEntity : MonoBehaviour
 	}
 
     private void OnInitializeUI(UICom com) {
-        ((UIArmy)com).SetText(Name, Controller.PlayerId.ToString(), Food.ToString(), "", "pop", "","","");
+        UIArmy uiArmy = (UIArmy)com;
+        uiArmy.SetText(Name, Controller.PlayerId.ToString(), Food.ToString(), "", Manpower.ToString(), "","","");
+        void ArmyMove() {ActionMode = ArmyActionMode.Move;}
+        void ArmySupply() {ActionMode = ArmyActionMode.SetSupply;}
+        uiArmy.SetButtonListeners(ArmyMove, ArmySupply);
     }
 
     #endregion
