@@ -178,7 +178,7 @@ public class HexEntity : MonoBehaviour
 	#endregion
 	
 	// Returns as much food as possible, given a request.
-	public int RequestFood(int request)
+	public int FoodRequest(int request)
 	{
 		if (request <= 0){
 			return 0;

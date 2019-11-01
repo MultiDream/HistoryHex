@@ -7,12 +7,13 @@ public class ArmyEntity : MonoBehaviour
     #region Properties
     // Internal variables
     private bool activated = false;
-
-    public Vector3Int Position; //Position on the hex grid.
+    public Vector3Int Position;
     public float Food;
-    public string Name { get; set; }
-    public Player Controller { get; set; }
+	public int Manpower;
+	public string Name;
+	public Player Controller;
 	GameObject pathObject;
+
 	// UI_COMponents.
 	public GameObject UIComponent; // UIComponentPrefab
     private GameObject UIComponentInstance;
@@ -44,11 +45,19 @@ public class ArmyEntity : MonoBehaviour
         Draw();
     }
 
-    void Initialize()
+	// Remove the Event Listener. May no longer be required, but not sure.
+	private void OnDestroy() {
+		Destroy(SelectionInterface);
+		Destroy(pathObject);
+		Global.GM.NextTurn -= OnStartTurn;
+
+	}
+
+	void Initialize()
     {
         Name = "UnnamedArmy";
         Food = Mathf.Floor(Random.value * Global.MAXIMUM_FOOD);
-
+		Manpower = 100;
         // Create a drawer.
         drawer = new EntityDrawer(transform);
 
@@ -63,8 +72,11 @@ public class ArmyEntity : MonoBehaviour
             WireSelectionInterface();
         }
 
-        //Present UI Components.
-    }
+		//Wire up the GM
+		Global.GM.NextTurn += OnStartTurn;
+
+		//Present UI Components.
+	}
 
     private void ActiveUpdate()
     {
@@ -119,6 +131,7 @@ public class ArmyEntity : MonoBehaviour
             }
         }
     }
+
     #region Unit Actions
 
     /// <summary>
@@ -172,6 +185,10 @@ public class ArmyEntity : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Attempts to take control of a tile.
+	/// </summary>
+	/// <param name="hexTile"></param>
     public void Sieze(GameObject hexTile)
     {
         HexEntity entity = hexTile.GetComponent<HexEntity>();
@@ -180,7 +197,7 @@ public class ArmyEntity : MonoBehaviour
         entity.army = gameObject;
     }
 
-    /// <summary>
+	/// <summary>
     /// Combats another unit.
     /// </summary>
     public void Combat(GameObject otherArmy)
@@ -191,14 +208,48 @@ public class ArmyEntity : MonoBehaviour
             Destroy(otherArmy);
         }
     }
-    #endregion
 
 	/// <summary>
-	/// Does all the updates 
+	/// Attempt to pull food from the tile.
+	/// Further testing required.
 	/// </summary>
-	private void OnEndTurn(){
-		
+	private void ForageTile(int amount){
+
+		int collected = Global.MapFlyWeight.hexMap[Position].GetComponent<HexEntity>().FoodRequest(amount); //Damn this is long.
+		if (collected < amount){
+			if (pathObject != null){
+				collected += pathObject.GetComponent<HexPath>().FoodRequest(amount - collected);
+			}
+		}
+
+		Food += collected;
 	}
+
+	#endregion
+
+	/// <summary>
+	/// Does everything needed to update the army at the start of the turn.
+	/// </summary>
+	private void OnStartTurn(){
+		// Forage for food. Currently tries to get enough rations for just the current army.
+		ForageTile(Manpower);
+		Food -= Manpower;
+
+		// Starvation mechanic
+		if (Food < 0){
+			Manpower += Mathf.FloorToInt(Food);
+			Food = 0;
+		}
+
+		// Death when no manpower remaining.
+		if (Manpower <= 0){
+			Destroy(gameObject);
+		}
+
+		Debug.Log("Current Food: " + Food);
+		Debug.Log("Current Manpower: " + Manpower);
+	}
+
     #region WireSelectionInterface
 	/// <summary>
 	/// Wires up all the event handlers for the this entity.
