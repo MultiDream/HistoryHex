@@ -47,8 +47,20 @@ public class UIMaster : MonoBehaviour
 
 	// Key bindings
 	void BindKeys(){
+		keyboard.BindKey(KeyCode.F, F_Key);
+		keyboard.BindKey(KeyCode.G, G_Key);
 		keyboard.BindKey(KeyCode.J, J_Key);
 		keyboard.BindKey(KeyCode.K, K_Key);
+	}
+
+	void F_Key() {
+		Debug.Log("Using map mode 'FoodBase'. ");
+		Global.CurrentMapMode = MapMode.Food;
+	}
+
+	void G_Key() {
+		Debug.Log("Using map mode 'Controller'. ");
+		Global.CurrentMapMode = MapMode.Controller;
 	}
 
 	void J_Key() {

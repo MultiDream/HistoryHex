@@ -4,158 +4,232 @@ using UnityEngine;
 
 public class ArmyEntity : MonoBehaviour
 {
-	#region Properties
-	// Internal variables
-	private bool activated = false;
+    #region Properties
+    // Internal variables
+    private bool activated = false;
 
-	public int[] Position; //Position on the hex grid.
-	public float Food;
-	public string Name { get; set; }
-	public Player Controller { get; set; }
-
+    public Vector3Int Position; //Position on the hex grid.
+    public float Food;
+    public string Name { get; set; }
+    public Player Controller { get; set; }
+	GameObject pathObject;
 	// UI_COMponents.
 	public GameObject UIComponent; // UIComponentPrefab
-	private GameObject UIComponentInstance;
+    private GameObject UIComponentInstance;
 
-	// SelectionInterface
-	private SelectableObj SelectionInterface;
-	public EntityDrawer drawer;
-	#endregion
+    // SelectionInterface
+    private SelectableObj SelectionInterface;
+    public EntityDrawer drawer;
+    #endregion
 
-	// Start is called before the first frame update
-	void Start()
+    // Start is called before the first frame update
+    void Start()
     {
-		Initialize();
-	}
+        Initialize();
+    }
 
     // Update is called once per frame
     void Update()
     {
-		// Move the responsibility of setting Unit Viewing modes to another class later.
-		// Shows the Controller Color.
-		if (Input.GetKeyDown(KeyCode.G)) {
-			if (Controller != null) {
-				drawer.Color = Controller.Colour;
-			} else {
-				drawer.Color = Color.black;
-			}
-		}
-		// Clears the map.
-		else if (Input.GetKeyDown(KeyCode.R)) {
-			drawer.Color = Color.white;
-		}
+        MapDrawingUpdater();
 
-		//If Activated, run the extended activation methods.
-		bool SelectedByController = Global.ActivePlayerId == Controller.PlayerId;
-		if (activated && SelectedByController) {
-			ActiveUpdate();
-		}
+        //If Activated, run the extended activation methods.
+        bool SelectedByController = Global.ActivePlayerId == Controller.PlayerId;
+        if (activated && SelectedByController)
+        {
+            ActiveUpdate();
+        }
 
-		//Draw the Entity.
-		Draw();
-	}
+        //Draw the Entity.
+        Draw();
+    }
 
-	void Initialize(){
-		Name = "UnnamedArmy";
-		Food = Mathf.Floor(Random.value * Global.MAXIMUM_FOOD);
+    void Initialize()
+    {
+        Name = "UnnamedArmy";
+        Food = Mathf.Floor(Random.value * Global.MAXIMUM_FOOD);
 
-		// Create a drawer.
-		drawer = new EntityDrawer(transform);
+        // Create a drawer.
+        drawer = new EntityDrawer(transform);
 
-		//Attempt to wire the SelectionInterface.
-		SelectionInterface = transform.GetComponent<SelectableObj>();
-		if (SelectionInterface == null){
-			throw new UnityException("Failed to link Army Entity to a SelectionInterface.");
+        //Attempt to wire the SelectionInterface.
+        SelectionInterface = transform.GetComponent<SelectableObj>();
+        if (SelectionInterface == null)
+        {
+            throw new UnityException("Failed to link Army Entity to a SelectionInterface.");
+        }
+        else
+        {
+            WireSelectionInterface();
+        }
+
+        //Present UI Components.
+    }
+
+    private void ActiveUpdate()
+    {
+        // When active, listen for 7 4 1 and 9 6 3.
+        if (Input.GetKeyDown(KeyCode.Keypad3))
+        {
+            Vector3Int direction = new Vector3Int(0, -1, 1);
+            MoveAction(direction);
+        }
+        else if (Input.GetKeyDown(KeyCode.Keypad1))
+        {
+            Vector3Int direction = new Vector3Int(-1, 0, 1);
+            MoveAction(direction);
+        }
+        else if (Input.GetKeyDown(KeyCode.Keypad4))
+        {
+            Vector3Int direction = new Vector3Int(-1, 1, 0);
+            MoveAction(direction);
+        }
+        else if (Input.GetKeyDown(KeyCode.Keypad6))
+        {
+            Vector3Int direction = new Vector3Int(1, -1, 0);
+            MoveAction(direction);
+        }
+        else if (Input.GetKeyDown(KeyCode.Keypad9))
+        {
+            Vector3Int direction = new Vector3Int(1, 0, -1);
+            MoveAction(direction);
+        }
+        else if (Input.GetKeyDown(KeyCode.Keypad7))
+        {
+            Vector3Int direction = new Vector3Int(0, 1, -1);
+            MoveAction(direction);
+        }
+
+        return;
+    }
+
+    private void MapDrawingUpdater()
+    {
+        // Add a food mapping at some point.
+        // Shows the Control Map.
+        if (Global.CurrentMapMode == MapMode.Controller)
+        {
+            if (Controller != null)
+            {
+                drawer.Color = Controller.Colour;
+            }
+            else
+            {
+                drawer.Color = Color.black;
+            }
+        }
+    }
+    #region Unit Actions
+
+    /// <summary>
+    /// Moves the unit across the board relative to current position.
+    /// </summary>
+    public void MoveAction(Vector3Int direction)
+    {
+		Destroy(pathObject);
+        Vector3 moveTo = Global.GetCubicVector(direction.x, direction.y, direction.z);
+        Vector3Int nextPos = new Vector3Int(Position.x + direction.x, Position.y + direction.y, Position.z + direction.z);
+        if (Global.MapFlyWeight.HasHexAtCubic(nextPos))
+        {
+            //Get the tile for any operations that might be necessary.
+            GameObject nextTile = Global.MapFlyWeight.hexMap[nextPos];
+            GameObject currentTile = Global.MapFlyWeight.hexMap[Position];
+
+            HexEntity currentHexEntity = currentTile.GetComponent<HexEntity>();
+            currentHexEntity.army = null;
+
+            Sieze(nextTile);
+            transform.Translate(moveTo);
+            Position = nextPos;
+        }
+    }
+
+	/// <summary>
+	/// Adds a supply line from this tile to a baseTile.
+	/// </summary>
+	/// <param name="baseTile">Tile to link a supply line to.</param>
+	public void AddSupplyLine(GameObject baseTile)
+	{
+		//Add logic to check what the other is, and attempt to create a path to that location.
+		HexEntity hex = baseTile.GetComponent<HexEntity>();
+		if (hex == null){
+			// do nothing.
 		} else {
-			WireSelectionInterface();
-		}
+			//create a path between this tile and that one.
+			if (pathObject != null){
+				//pathObject.GetComponent<HexPath>().Destroy();
+				Destroy(pathObject);
+				pathObject = null;
+			}
+			GameObject armyTile = Global.MapFlyWeight.hexMap[Position];
+			
+			pathObject = Instantiate(Global.MapFlyWeight.hexPathPrefab);
+			HexPath path = pathObject.GetComponent<HexPath>();
+			path.Initialize();
 
-		//Present UI Components.
+			List<GameObject> hexes = Global.MapFlyWeight.adjacencyMap.NearestAstar(armyTile, baseTile);
+			path.AddHexes(hexes);
+		}
 	}
 
-	private void ActiveUpdate() {
+    public void Sieze(GameObject hexTile)
+    {
+        HexEntity entity = hexTile.GetComponent<HexEntity>();
+        entity.Controller = this.Controller;
+        Combat(entity.army);
+        entity.army = gameObject;
+    }
+
+    /// <summary>
+    /// Combats another unit.
+    /// </summary>
+    public void Combat(GameObject otherArmy)
+    {
+        if (otherArmy != null)
+        {
+            //Seems to destroy the Army, despite not being passed by refrence.
+            Destroy(otherArmy);
+        }
+    }
+    #endregion
+
+	/// <summary>
+	/// Does all the updates 
+	/// </summary>
+	private void OnEndTurn(){
 		
-		// When active, listen for 7 4 1 and 9 6 3.
-		if (Input.GetKeyDown(KeyCode.Keypad3)){
-			int[] direction = new int[] {0, -1, 1};
-			MoveAction(direction);
-		} else if (Input.GetKeyDown(KeyCode.Keypad1)){
-			int[] direction = new int[] { -1, 0, 1 };
-			MoveAction(direction);
-		} else if (Input.GetKeyDown(KeyCode.Keypad4)){
-			int[] direction = new int[] { -1, 1, 0 };
-			MoveAction(direction);
-		} else if (Input.GetKeyDown(KeyCode.Keypad6)) {
-			int[] direction = new int[] { 1, -1, 0 };
-			MoveAction(direction);
-		} else if (Input.GetKeyDown(KeyCode.Keypad9)) {
-			int[] direction = new int[] { 1, 0, -1 };
-			MoveAction(direction);
-		} else if (Input.GetKeyDown(KeyCode.Keypad7)) {
-			int[] direction = new int[] { 0, 1, -1 };
-			MoveAction(direction);
-		}
-
-		return;
 	}
-
-	#region Unit Actions
-
+    #region WireSelectionInterface
 	/// <summary>
-	/// Moves the unit across the board relative to current position.
+	/// Wires up all the event handlers for the this entity.
 	/// </summary>
-	public void MoveAction(int[] direction){
-		Vector3 moveTo = Global.GetCubicVector(direction[0], direction[1], direction[2]);
-		int[] nextPos = new int[] { Position[0] + direction[0], Position[1] + direction[1], Position[2] + direction[2] };
-		if (Global.MapFlyWeight.HasHexAtCubic(nextPos)) {
-			//Get the tile for any operations that might be necessary.
-			GameObject HexTile = Global.MapFlyWeight.hexMap[nextPos];
-			Global.MapFlyWeight.hexMap[Position].GetComponent<HexEntity>().army = null;
-			Sieze(ref HexTile);
-			transform.Translate(moveTo);
-			Position = nextPos;
-		}
-	}
+    private void WireSelectionInterface()
+    {
+        SelectionInterface.Prepare();
+        SelectionInterface.OnSelect += OnSelect;
+        SelectionInterface.OnDeselect += OnDeselect;
+		SelectionInterface.OnRightClick += OnRightClick;
+    }
 
-	public void Sieze(ref GameObject hexTile) {
-		hexTile.GetComponent<HexEntity>().Controller = this.Controller;
-		if(hexTile.GetComponent<HexEntity>().army != null){
-			Destroy(hexTile.GetComponent<HexEntity>().army);
-		}
-		hexTile.GetComponent<HexEntity>().army = gameObject;
-	}
+    private void OnSelect()
+    {
+        activated = true;
+    }
 
-	public void Die(){
-		Destroy(this); //destroy the GameObj. Should handle the events alright. Check to be sure in the future.
-	}
-	/// <summary>
-	/// Combats another unit.
-	/// </summary>
-	public void Combat(){
-		// Not yet implemented!
-		throw new UnityException("");
-	}
-	#endregion
+    private void OnDeselect()
+    {
+        activated = false;
+    }
 
-	#region WireSelectionInterface
-	private void WireSelectionInterface() {
-		SelectionInterface.Prepare();
-		SelectionInterface.OnSelect += OnSelect;
-		SelectionInterface.OnDeselect += OnDeselect;
+	private void OnRightClick(GameObject other){
+		//Depending on the mod, army will do a different action.
+		AddSupplyLine(other);
 	}
+    #endregion
 
-	private void OnSelect() {
-		activated = true;
-	}
-
-	private void OnDeselect() {
-		activated = false;
-	}
-
-	#endregion
-
-	//Draw Delegation
-	private void Draw() {
-		drawer.Update();
-	}
+    //Draw Delegation
+    private void Draw()
+    {
+        drawer.Update();
+    }
 }
