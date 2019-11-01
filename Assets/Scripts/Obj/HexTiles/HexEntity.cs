@@ -24,6 +24,10 @@ public class HexEntity : MonoBehaviour
     public EntityDrawer drawer;
     public GameObject army; // make into an array later, when multiple armies can sit on a tile.
     public float Population;
+    // This dictionary keeps track of labor pools, the key of this dict is a string representing the type of labor and the int
+    // represents the amount of a population that is put into this type of labor
+    private Dictionary<string,int> laborPoolDict = new Dictionary<string,int>();
+
 
     // SelectionInterface
     private SelectableObj SelectionInterface;
@@ -127,6 +131,7 @@ public class HexEntity : MonoBehaviour
         FoodBase = Mathf.Floor(Random.value * Global.MAXIMUM_FOOD);
         drawer = new EntityDrawer(transform.GetChild(0));
         InitializePopulation();
+        InitializeLaborPools();
     }
 
 	// Runs during initialization of tiles and sets a base population for each tile
@@ -138,6 +143,13 @@ public class HexEntity : MonoBehaviour
         {
             Population = FoodBase * 100;
         }
+    }
+
+    // Runs during initialization of tiles and puts a population into a labor pool. Since food is
+    // the default labor pool the entire population is put into the food labor pool. This also creates the types of labor
+    // pools by adding them to the laborPoolDict
+    private void InitializeLaborPools() {
+        laborPoolDict.add();
     }
 
 	#region NextTurn Updates
