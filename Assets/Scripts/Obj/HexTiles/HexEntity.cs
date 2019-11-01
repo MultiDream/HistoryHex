@@ -192,6 +192,9 @@ public class HexEntity : MonoBehaviour
 	// Returns as much food as possible, given a request.
 	public int RequestFood(int request)
 	{
+		if (request <= 0){
+			return 0;
+		}
 		if (request > Food)
 		{
 			request = Mathf.FloorToInt(Food);
@@ -202,7 +205,8 @@ public class HexEntity : MonoBehaviour
 	//Draw Delegation
 	private void Draw()
     {
-        drawer.Update();
+		// Disabled until the drawer is reworked
+        //drawer.Update();
     }
 
 	#region Distance Utilities
