@@ -57,9 +57,20 @@ public static class Global
 }
 
 
-
+/// <summary>
+/// Enum representing the current MapMode.
+/// </summary>
 public enum MapMode
 {
     Food = 0,
     Controller = 1
+}
+
+/// <summary>
+/// Enum representing the current army action to be executed.
+/// </summary>
+public enum ArmyActionMode
+{
+	Move = 0,
+	SetSupply = 1
 }
