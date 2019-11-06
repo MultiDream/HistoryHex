@@ -16,7 +16,7 @@ public class ArmyEntity : MonoBehaviour
 	GameObject pathObject;
 
 	// UI_COMponents.
-	public GameObject UIComponent; // UIComponentPrefab
+	public GameObject UIComponentPrefab; // UIComponentPrefab
     private GameObject UIComponentInstance;
 
     // SelectionInterface
@@ -113,6 +113,7 @@ public class ArmyEntity : MonoBehaviour
             }
         }
     }
+
 	#endregion
 
 	#region Unit Actions
@@ -239,6 +240,7 @@ public class ArmyEntity : MonoBehaviour
 
 	#endregion
 
+
 	#region WireSelectionInterface
 
 	/// <summary>
@@ -276,12 +278,15 @@ public class ArmyEntity : MonoBehaviour
         SelectionInterface.OnSelect += OnSelect;
         SelectionInterface.OnDeselect += OnDeselect;
 		SelectionInterface.OnRightClick += OnRightClick;
+        SelectionInterface.OnInitializeUI += OnInitializeUI;
     }
 
     private void OnSelect()
     {
         activated = true;
-		ActionMode = ArmyActionMode.Move;
+
+        //update army ui
+        //pass function to be executed on 
     }
 
     private void OnDeselect()
@@ -307,6 +312,15 @@ public class ArmyEntity : MonoBehaviour
 			}
 		}
 	}
+
+    private void OnInitializeUI(UICom com) {
+        UIArmy uiArmy = (UIArmy)com;
+        uiArmy.SetText(Name, Controller.PlayerId.ToString(), Food.ToString(), "", Manpower.ToString(), "","","");
+        void ArmyMove() {ActionMode = ArmyActionMode.Move;}
+        void ArmySupply() {ActionMode = ArmyActionMode.SetSupply;}
+        uiArmy.SetButtonListeners(ArmyMove, ArmySupply);
+    }
+
     #endregion
 
     //Draw Delegation
