@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Army : MonoBehaviour
+public class UICom : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
