@@ -2,53 +2,67 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 
 /// <summary>
 /// Controller responsible for handling mouse input.
 /// </summary>
-public class SelectController : MonoBehaviour {
-	public SelectableObj SelectedObj;
-	public GameObject ArmyPrefab;  //Remove this later.
+public class SelectController : MonoBehaviour
+{
+    public SelectableObj SelectedObj;
+    public SelectableObj LastSelected;
+    public GameObject ArmyPrefab;  //Remove this later.
 
-	// Update is called once per frame.
-	// Used to determine if something new has been selected.
-	void Update() {
-		// Left mouse will select a new SelectableObj.
-		if (Input.GetKeyDown(KeyCode.Mouse0)) {
-			if (SelectedObj != null) {
-				Deselect();
-			}
+    // Update is called once per frame.
+    // Used to determine if something new has been selected.
+    void Update()
+    {
+        
+        //UI components need to block all of this
+        
+        // Left mouse will select a new SelectableObj.
+        KeyDownSelect(KeyCode.Mouse0);
+        //KeyDownSelect(KeyCode.Mouse1);
+    }
 
-			var ray = UnityEngine.Camera.main.ScreenPointToRay(Input.mousePosition);
-			RaycastHit hit;
-			Debug.DrawRay(ray.origin, ray.direction, Color.green, 100f); // only draws once. Re-clicking does nothing
-			if (Physics.Raycast(ray, out hit)) {
-				var selectedTransform = hit.transform;
-				SelectedObj = selectedTransform.GetComponent<SelectableObj>();
+    public void KeyDownSelect(KeyCode key)
+    {
+        if (Input.GetKeyDown(key))
+        {
 
-				// If the transform has a selectable Component, run the Selection logic.
-				if (SelectedObj != null) {
-					Select();
-				}
-			}
-		}
-		//Right keys will issue commands to selectableObj.
-		//Army spawning key.Move code elsewhere at some point.
-		//else if (Input.GetKeyDown(KeyCode.V)) {
-		//	if (SelectedObj != null) {
-		//		Vector3 position = SelectedObj.transform.position;
-		//		Quaternion rotation = Quaternion.Euler(0, 0, 0);
-		//		Instantiate(ArmyPrefab, position, rotation);
-		//	}
-		//}
-	}
+            if (SelectedObj != null)
+            {
+                Deselect();
+                LastSelected = SelectedObj;
+            }
 
-	private void Select() {
-		SelectedObj.OnSelected();
-	}
 
-	private void Deselect(){
-		SelectedObj.OnDeselected();
-	}
+            var ray = UnityEngine.Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            Debug.DrawRay(ray.origin, ray.direction, Color.green, 100f); // only draws once. Re-clicking does nothing
+            if (Physics.Raycast(ray, out hit))
+            {
+                var selectedTransform = hit.transform;
+                SelectedObj = selectedTransform.GetComponent<SelectableObj>();
+                // If the transform has a selectable Component, run the Selection logic.
+                if (SelectedObj != null) 
+                {
+                    SelectedObj.LastSelectKey = key;  // Better way to do this ? ? 
+                    Select();
+                }
+            }
+        }
+    }
+
+    private void Select()
+    {
+        SelectedObj.OnSelected();
+    }
+
+    private void Deselect()
+    {
+        SelectedObj.OnDeselected();
+    }
+
 }

@@ -17,8 +17,12 @@ public class UIMaster : MonoBehaviour
 	public KeyboardController keyboard;			// Needs to be passed in.
 	public SelectController selectController;	// Same deal.
 
+	public static UIMaster instance; // Just adding this bc idk how things are intended to be set up
+
     // Start is called before the first frame update
     void Start(){
+		instance = this;
+		
 		BindKeys();
 		keyboard.Listening = true;
 		//Master needs to register to the GameMaster for NextTurnEvent!
@@ -47,8 +51,20 @@ public class UIMaster : MonoBehaviour
 
 	// Key bindings
 	void BindKeys(){
+		keyboard.BindKey(KeyCode.F, F_Key);
+		keyboard.BindKey(KeyCode.G, G_Key);
 		keyboard.BindKey(KeyCode.J, J_Key);
 		keyboard.BindKey(KeyCode.K, K_Key);
+	}
+
+	void F_Key() {
+		Debug.Log("Using map mode 'FoodBase'. ");
+		Global.CurrentMapMode = MapMode.Food;
+	}
+
+	void G_Key() {
+		Debug.Log("Using map mode 'Controller'. ");
+		Global.CurrentMapMode = MapMode.Controller;
 	}
 
 	void J_Key() {
