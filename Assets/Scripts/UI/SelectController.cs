@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 
 /// <summary>
@@ -17,6 +18,9 @@ public class SelectController : MonoBehaviour
     // Used to determine if something new has been selected.
     void Update()
     {
+        
+        //UI components need to block all of this
+        
         // Left mouse will select a new SelectableObj.
         KeyDownSelect(KeyCode.Mouse0);
         //KeyDownSelect(KeyCode.Mouse1);
@@ -26,11 +30,13 @@ public class SelectController : MonoBehaviour
     {
         if (Input.GetKeyDown(key))
         {
+
             if (SelectedObj != null)
             {
                 Deselect();
                 LastSelected = SelectedObj;
             }
+
 
             var ray = UnityEngine.Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -40,7 +46,7 @@ public class SelectController : MonoBehaviour
                 var selectedTransform = hit.transform;
                 SelectedObj = selectedTransform.GetComponent<SelectableObj>();
                 // If the transform has a selectable Component, run the Selection logic.
-                if (SelectedObj != null)
+                if (SelectedObj != null) 
                 {
                     SelectedObj.LastSelectKey = key;  // Better way to do this ? ? 
                     Select();
@@ -58,4 +64,5 @@ public class SelectController : MonoBehaviour
     {
         SelectedObj.OnDeselected();
     }
+
 }

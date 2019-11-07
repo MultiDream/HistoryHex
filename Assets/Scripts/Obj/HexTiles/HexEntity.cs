@@ -23,7 +23,13 @@ public class HexEntity : MonoBehaviour
     public Player Controller { get; set; }
     public EntityDrawer drawer;
     public GameObject army; // make into an array later, when multiple armies can sit on a tile.
-    public float Population;
+    public float TotalPopulation;
+    public float FoodPopulation;
+    public float SupplyLinePopulation;
+    // This dictionary keeps track of labor pools, the key of this dict is a string representing the type of labor and the int
+    // represents the amount of a population that is put into this type of labor
+    private Dictionary<string,float> laborPoolDict = new Dictionary<string,float>();
+
 
     // SelectionInterface
     private SelectableObj SelectionInterface;
@@ -106,6 +112,7 @@ public class HexEntity : MonoBehaviour
         SelectionInterface.Prepare();
         SelectionInterface.OnSelect += OnSelect;
         SelectionInterface.OnDeselect += OnDeselect;
+		SelectionInterface.OnInitializeUI += OnInitializeUI;
     }
 
     private void OnSelect()
@@ -118,6 +125,10 @@ public class HexEntity : MonoBehaviour
         activated = false;
     }
 
+	private void OnInitializeUI(UICom com) {
+		((UIHex)com).SetText(Name, Controller.PlayerId.ToString(), Food.ToString(), "XXX", Population.ToString(), "XXX", "XXX", "XXX");
+	}
+
 	#endregion
 
 	//Start Delegation
@@ -126,7 +137,11 @@ public class HexEntity : MonoBehaviour
         Name = "NoMansLand";
         FoodBase = Mathf.Floor(Random.value * Global.MAXIMUM_FOOD);
         drawer = new EntityDrawer(transform.GetChild(0));
+        FoodPopulation = 0.0f;
+        SupplyLinePopulation = 0.0f;
+        TotalPopulation = 0.0f;
         InitializePopulation();
+        InitializeLaborPools();
     }
 
 	// Runs during initialization of tiles and sets a base population for each tile
@@ -136,8 +151,18 @@ public class HexEntity : MonoBehaviour
         // No Base Food means that no population can be created
         if (FoodBase >= 0)
         {
-            Population = FoodBase * 100;
+            TotalPopulation = FoodBase * 100;
         }
+    }
+
+    // Runs during initialization of tiles and puts a population into a labor pool. Since food is
+    // the default labor pool the entire population is put into the food labor pool. This also creates the types of labor
+    // pools by adding them to the laborPoolDict
+    private void InitializeLaborPools() {
+        // This happens because all the default labor pool poplulation goes into is food
+        FoodPopulation = TotalPopulation;
+        laborPoolDict.Add("Food", FoodPopulation);
+        laborPoolDict.Add("SupplyLines", SupplyLinePopulation);
     }
 
 	#region NextTurn Updates
@@ -154,7 +179,9 @@ public class HexEntity : MonoBehaviour
     // This updates the Population variables 
     private void updatePopulation()
     {
-        Population++;
+        TotalPopulation++;
+        // Since you add to the total population you must add to a labor pool and food is the default labor pool
+        FoodPopulation++;
     }
 
     // This runs every turn and updates food based on population if not attacked after previous turn
@@ -163,7 +190,7 @@ public class HexEntity : MonoBehaviour
     {
         if (FoodBase >= 0 & attacked == false)
         {
-            Food += Population;
+            Food += TotalPopulation;
         }
     }
 
@@ -176,10 +203,25 @@ public class HexEntity : MonoBehaviour
     }
 
 	#endregion
-	
+
+    // NEED TO ADD FUNCTIONS THAT CHECK IF A LABOR POOL SWITCH CAN BE MADE BUT CAN'T IMPLEMENT NOW BECAUSE SUPPLY LINES NOT READY
+
+    // This function actually changes the values in a labor pool after checking if the values in labor pools can be switched
+    // Parameters:
+    // 1) laborPoolAdd: the labor pool gaining population
+    // 2) laborPoolSubtract: the labor pool losing population
+    // 3) amount: the amount of population being switched
+    public void switchLaborPoolAssignments(string laborPoolAdd, string laborPoolSubtract, float amount) {
+        laborPoolDict[laborPoolAdd] += amount;
+        laborPoolDict[laborPoolSubtract] -= amount;
+    }
+
 	// Returns as much food as possible, given a request.
-	public int RequestFood(int request)
+	public int FoodRequest(int request)
 	{
+		if (request <= 0){
+			return 0;
+		}
 		if (request > Food)
 		{
 			request = Mathf.FloorToInt(Food);
@@ -190,7 +232,8 @@ public class HexEntity : MonoBehaviour
 	//Draw Delegation
 	private void Draw()
     {
-        drawer.Update();
+		// Disabled until the drawer is reworked
+        //drawer.Update();
     }
 
 	#region Distance Utilities
