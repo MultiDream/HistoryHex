@@ -51,6 +51,7 @@ public class GameMaster : MonoBehaviour
         Board.setControl(_players); //Needs to run after the map is generated.
         Board.InitPlayerAdjacencies();
 
+        UIMaster.instance.SetCurrentPlayerUI();
     }
 
     // Update is called once per frame

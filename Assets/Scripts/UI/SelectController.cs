@@ -20,7 +20,7 @@ public class SelectController : MonoBehaviour
     {
         
         //UI components need to block all of this
-        
+        if (EventSystem.current.IsPointerOverGameObject()) return;
         // Left mouse will select a new SelectableObj.
         KeyDownSelect(KeyCode.Mouse0);
         //KeyDownSelect(KeyCode.Mouse1);
