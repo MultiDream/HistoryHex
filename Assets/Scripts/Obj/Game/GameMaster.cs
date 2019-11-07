@@ -49,7 +49,7 @@ public class GameMaster : MonoBehaviour
 
         //Possible to refactor by tossing current player into the Global flyweight.
         Board.setControl(_players); //Needs to run after the map is generated.
-
+        UIMaster.instance.SetCurrentPlayerUI();
     }
 
     // Update is called once per frame
