@@ -95,6 +95,7 @@ public class HexPath : MonoBehaviour
 		}
         hexEntities = hexes;
         if (!IsConnected()){
+            Debug.Log("Not connected!");
             Destroy(gameObject);
         }
         else {
@@ -186,6 +187,8 @@ public class HexPath : MonoBehaviour
 			return 0;
 		}
 		int finalIndex = hexEntities.Count - 1;
+        if (finalIndex < 0)
+            return 0;
 		GameObject baseTile = hexEntities[finalIndex];
 		HexEntity entity = baseTile.GetComponent<HexEntity>();
 		entity.FoodRequest(amountRequested);

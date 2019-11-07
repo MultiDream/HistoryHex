@@ -90,7 +90,6 @@ public class ArmyEntity : MonoBehaviour
 		//Check for the Mode Change key.
 		if (Input.GetKeyDown(KeyCode.M))
 		{
-			Debug.Log("In correct Mode!");
 			ActionMode = ArmyActionMode.Move;
 		}
 		else if (Input.GetKeyDown(KeyCode.N))
@@ -178,10 +177,14 @@ public class ArmyEntity : MonoBehaviour
 	}
 
 	public void RefreshSupplyLines(){
-		foreach (HexPath path in supplyLines){
-			List<GameObject> hexes = Global.MapFlyWeight.getPlayerAdjacencyMap(this.Controller).NearestAstar(path.GetHex(0), path.GetHex(path.Length()));
-			path.Refresh(hexes);
-		}
+		if (pathObject == null)
+			return;
+		HexPath path = pathObject.GetComponent<HexPath>();
+		if (path == null)
+			return;
+		GameObject armyTile = Global.MapFlyWeight.hexMap[Position];
+		List<GameObject> hexes = Global.MapFlyWeight.getPlayerAdjacencyMap(this.Controller).NearestAstar(armyTile, path.GetHex(path.Length()-1));
+		path.Refresh(hexes);
 	}
 
 	/// <summary>
@@ -262,6 +265,8 @@ public class ArmyEntity : MonoBehaviour
 	/// Does everything needed to update the army at the start of the turn.
 	/// </summary>
 	private void OnStartTurn() {
+		RefreshSupplyLines();
+
 		//Set has moved to false.
 		hasMoved = false;
 
