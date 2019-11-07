@@ -89,10 +89,30 @@ public class HexPath : MonoBehaviour
             AddHex(hex);
     }
 
-	//?
-    public bool IsConnected()
-    {
-        return false;
+    public void Refresh(List<GameObject> hexes) {
+        foreach (GameObject line in lines) {
+			Destroy(line);
+		}
+        hexEntities = hexes;
+        if (!IsConnected()){
+            Destroy(gameObject);
+        }
+        else {
+            Draw();
+        }
+    }
+
+    public bool IsConnected(){
+        if (hexEntities.Count < 2)
+            return false;
+        for (int i=1; i<hexEntities.Count;i++){
+            HexEntity last = hexEntities[i-1].GetComponent<HexEntity>();
+            HexEntity next = hexEntities[i].GetComponent<HexEntity>();            
+            if (!last.Adjacent(next)){
+                return false;
+            }
+        }
+        return true;
     }
 
     public void DrawCircle(float radius, float lineWidth, float x, float y)
@@ -171,4 +191,14 @@ public class HexPath : MonoBehaviour
 		entity.FoodRequest(amountRequested);
 		return amountRequested;
 	}
+
+    public GameObject GetHex(int i){
+        if (hexEntities.Count > i)
+            return hexEntities[i];
+        return null;
+    }
+
+    public int Length(){
+        return hexEntities.Count;
+    }
 }

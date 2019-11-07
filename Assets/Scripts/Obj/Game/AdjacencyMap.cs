@@ -341,7 +341,7 @@ public class AdjacencyMap
     }
 
     // A* search for finding shortest path.
-    public List<GameObject> NearestAstar(GameObject root, GameObject target, int maxAttempts = 100)
+    public List<GameObject> NearestAstar(GameObject root, GameObject target)
     {
         HexEntity rootEntity = root.GetComponent<HexEntity>();
         HexEntity targetEntity = target.GetComponent<HexEntity>();
@@ -353,11 +353,8 @@ public class AdjacencyMap
         Dictionary<GameObject, float> fScore = new Dictionary<GameObject, float>();
         gScore[root] = 0;
         fScore[root] = rootEntity.Distance(targetEntity);
-        int attempts = 0;
         while (open.Count != 0)
         {
-            if (attempts > maxAttempts)
-                break;
             GameObject current = _minFScore(fScore, open);
             HexEntity currentEntity = current.GetComponent<HexEntity>();
             if (current == target)
@@ -391,7 +388,6 @@ public class AdjacencyMap
                         open.Add(neighbor);
                 }
             }
-            attempts += 1;
         }
         return open;
     }
