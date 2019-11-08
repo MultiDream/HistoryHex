@@ -25,6 +25,9 @@ public class GameMaster : MonoBehaviour
     public GameObject[] Players;
     public Map Board;               //Handles map creation.
 
+	//Button Mappings;
+	private KeyCode NextTurnKey = KeyCode.Space;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -56,9 +59,9 @@ public class GameMaster : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(NextTurnKey))
         {
-            Space_Key();
+            NextTurnKeyPress();
         }
     }
 
@@ -71,7 +74,7 @@ public class GameMaster : MonoBehaviour
     /*-------------------------------------------------
 	 *                  Key Bindings
 	 *-----------------------------------------------*/
-	public void Space_Key()
+	public void NextTurnKeyPress()
     {
         Debug.Log("Space Key Pressed!");
         currentPlayer++;
