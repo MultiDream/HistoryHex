@@ -26,12 +26,13 @@ public class ArtRandomizer : MonoBehaviour
     {
         hexBase.mesh = BaseMeshes[Random.Range(0, BaseMeshes.Length)];
         float rand = Random.Range(0f, 1f);
-        float acc = MaterialWeights[0];
-        int i = 0;
-        while (acc < rand) {
-            acc += MaterialWeights[i++];
+        for (int i = 0; i < MaterialWeights.Length; i++) {
+            if (rand < MaterialWeights[i]) {
+                hexTop.material = TopMaterials[i];
+                break;
+            }
+            rand -= MaterialWeights[i];
         }
-        hexTop.material = TopMaterials[i];
     }
 
     // Update is called once per frame

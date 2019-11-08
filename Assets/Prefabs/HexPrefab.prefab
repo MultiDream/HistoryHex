@@ -23,8 +23,8 @@ MonoBehaviour:
   - {fileID: 2100000, guid: d347bb8e1edf079428ee3c187d10a2f9, type: 2}
   - {fileID: 2100000, guid: 4de8d14024b586445b3be229e3f322b4, type: 2}
   MaterialWeights:
-  - 0.3
-  - 0.7
+  - 0.4
+  - 0.6
 --- !u!1 &8565909793243875799
 GameObject:
   m_ObjectHideFlags: 0
@@ -74,9 +74,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ArmyPrefab: {fileID: 629301489883901089, guid: 7b0ce070045652d449cc0f1c5ff48ac1,
     type: 3}
-  Position: 
-  Food: 0
+  Position: {x: 0, y: 0, z: 0}
+  FoodBase: 0
   army: {fileID: 0}
+  TotalPopulation: 0
+  FoodPopulation: 0
+  SupplyLinePopulation: 0
 --- !u!64 &7235547270692203151
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -105,6 +108,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UIComponentPrefab: {fileID: 5312235066543638287, guid: 452c607705918eb4691fba4a31a32e66,
     type: 3}
+  UIComponent: {fileID: 0}
+  LastSelectKey: 0
 --- !u!1001 &5096243959029192339
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -112,11 +117,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7801856688079270606}
     m_Modifications:
-    - target: {fileID: 2026590799563139822, guid: 00b88030cda2f50478e27b8be2ecd63a,
-        type: 3}
-      propertyPath: m_Name
-      value: Hex
-      objectReference: {fileID: 0}
     - target: {fileID: 2026590799563139823, guid: 00b88030cda2f50478e27b8be2ecd63a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -172,6 +172,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2026590799563139822, guid: 00b88030cda2f50478e27b8be2ecd63a,
+        type: 3}
+      propertyPath: m_Name
+      value: Hex
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 00b88030cda2f50478e27b8be2ecd63a, type: 3}
 --- !u!1 &6532079255615143037 stripped
@@ -205,14 +210,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7801856688079270606}
     m_Modifications:
-    - target: {fileID: 100000, guid: dc25c4cb78552b04e85f08b9de73a549, type: 3}
-      propertyPath: m_Name
-      value: Hexagon
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: dc25c4cb78552b04e85f08b9de73a549, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: dc25c4cb78552b04e85f08b9de73a549, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -264,6 +261,14 @@ PrefabInstance:
     - target: {fileID: 400000, guid: dc25c4cb78552b04e85f08b9de73a549, type: 3}
       propertyPath: m_LocalScale.z
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: dc25c4cb78552b04e85f08b9de73a549, type: 3}
+      propertyPath: m_Name
+      value: Hexagon
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: dc25c4cb78552b04e85f08b9de73a549, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2300000, guid: dc25c4cb78552b04e85f08b9de73a549, type: 3}
       propertyPath: m_Materials.Array.data[0]
