@@ -126,7 +126,7 @@ public class HexEntity : MonoBehaviour
     }
 
 	private void OnInitializeUI(UICom com) {
-		((UIHex)com).SetText(Name, Controller.PlayerId.ToString(), Food.ToString(), "XXX", Population.ToString(), "XXX", "XXX", "XXX");
+		((UIHex)com).SetText(Name, Controller.PlayerId.ToString(), Food.ToString(), "XXX", TotalPopulation.ToString(), "XXX", "XXX", "XXX");
 	}
 
 	#endregion
@@ -264,5 +264,6 @@ public class HexEntity : MonoBehaviour
                 (distance.x == 1 && distance.y == 0 && distance.z == 1) ||
                 (distance.x == 0 && distance.y == 1 && distance.z == 1));
     }
+
 	#endregion
 }

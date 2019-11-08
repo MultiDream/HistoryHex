@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using static System.Array;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,6 +26,13 @@ public class ArmyEntity : MonoBehaviour
 
 	//Current Action Mode.
 	public ArmyActionMode ActionMode;
+
+	//DiceRoller 
+	private DiceRoller roller;
+	public int PowerPerRoll = 100;
+	public int PowerPerDamage = 20;
+	public int MaxOffenseRolls = 3;
+	public int MaxDefenseRolls = 2;
 	#endregion
 
 	#region MonobehaivorExtensions
@@ -62,6 +70,7 @@ public class ArmyEntity : MonoBehaviour
         Name = "UnnamedArmy";
         Food = Mathf.Floor(Random.value * Global.MAXIMUM_FOOD);
 		Manpower = 100;
+		roller = new DiceRoller(6);
         // Create a drawer.
         drawer = new EntityDrawer(transform);
 
@@ -131,13 +140,26 @@ public class ArmyEntity : MonoBehaviour
             //Get the tile for any operations that might be necessary.
             GameObject nextTile = Global.MapFlyWeight.hexMap[nextPos];
             GameObject currentTile = Global.MapFlyWeight.hexMap[Position];
-
+			HexEntity nextHexEntity = nextTile.GetComponent<HexEntity>();
             HexEntity currentHexEntity = currentTile.GetComponent<HexEntity>();
+
+			if (nextHexEntity.army == null){
+
             currentHexEntity.army = null;
 
             Sieze(nextTile);
             transform.Translate(moveTo);
             Position = nextPos;
+			}else{
+				Combat(nextHexEntity.army);
+				if (nextHexEntity.army == null){
+					currentHexEntity.army = null;
+
+					Sieze(nextTile);
+					transform.Translate(moveTo);
+					Position = nextPos;
+				}
+			}
         }
     }
 
@@ -213,14 +235,66 @@ public class ArmyEntity : MonoBehaviour
 	/// <summary>
     /// Combats another unit.
     /// </summary>
-    public void Combat(GameObject otherArmy)
+    public void Combat(GameObject otherArmyObject)
     {
-        if (otherArmy != null)
-        {
-            //Seems to destroy the Army, despite not being passed by refrence.
-            Destroy(otherArmy);
+        if (otherArmyObject != null)
+        { 
+			ArmyEntity otherArmy = otherArmyObject.GetComponent<ArmyEntity>();
+			List<int> myRolls = ArmyRoll(true);
+			List<int> theirRolls = otherArmy.ArmyRoll(false);
+			Debug.Log("My rolls " + myRolls);
+			Debug.Log("And theirs " + myRolls);
+			DisplayRolls(myRolls, transform.position, new Vector3(0,2,0), 2);
+			DisplayRolls(theirRolls, otherArmyObject.transform.position, new Vector3(0,2,0), 2);
+			int myDamage = 0, theirDamage = 0;
+			for (int i = 0; i < theirRolls.Count && i < myRolls.Count; i++){
+				if (myRolls[i] <= theirRolls[i])
+					myDamage++;
+				if (myRolls[i] >= theirRolls[i])
+					theirDamage++;
+			}
+			Manpower -= myDamage*PowerPerDamage;
+			otherArmy.Manpower -= theirDamage*PowerPerDamage;
+			CheckDead();
+			otherArmy.CheckDead();
         }
     }
+
+	private void DisplayRolls(List<int> rolls, Vector3 position, Vector3 offset, float lifespan){
+        GameObject textObject = new GameObject();
+        TextMesh textComponent = textObject.AddComponent<TextMesh>();
+		textObject.transform.position = position + offset;
+        string text = "";
+        foreach (int roll in rolls){
+                text += roll + " ";
+        }
+		Debug.Log("Rolled ! " + text);
+        textComponent.text = text;
+		textComponent.color = Color.red;
+		textComponent.fontSize = 10;
+        Destroy(textObject, lifespan);
+    }
+
+	public void CheckDead(){
+		// Death when no manpower remaining.
+		if (Manpower <= 0) {
+			Destroy(gameObject);
+			Global.MapFlyWeight.hexMap[Position].GetComponent<HexEntity>().army = null;
+		}
+	}
+
+	public List<int> ArmyRoll(bool offense){
+		List<int> rolls = roller.Roll(GetNumberRolls(offense));
+		rolls.Sort();
+		return rolls;
+	}
+
+	private int GetNumberRolls(bool offense){
+		float n = Mathf.Floor(Mathf.Max(1f,Manpower/PowerPerRoll));
+		if(offense)
+			return (int) Mathf.Min(n, MaxOffenseRolls);
+		return (int) Mathf.Min(n, MaxDefenseRolls);
+	}
 
 	/// <summary>
 	/// Attempt to pull food from the tile.
@@ -260,10 +334,7 @@ public class ArmyEntity : MonoBehaviour
 			Food = 0;
 		}
 
-		// Death when no manpower remaining.
-		if (Manpower <= 0) {
-			Destroy(gameObject);
-		}
+		CheckDead();
 
 		Debug.Log("Current Food: " + Food);
 		Debug.Log("Current Manpower: " + Manpower);
