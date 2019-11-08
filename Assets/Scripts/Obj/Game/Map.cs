@@ -13,6 +13,7 @@ public class Map : MonoBehaviour
     public GameObject hexPathPrefab;
     public Dictionary<Vector3Int, GameObject> hexMap; //Cubic is default.
     public AdjacencyMap adjacencyMap;
+    private Dictionary<Player, AdjacencyMap> playerAdjacencyMaps;
     public bool LabelHexes = false;
     private GameObject pathObject;
     private GameObject lastObject;
@@ -92,7 +93,38 @@ public class Map : MonoBehaviour
         {
             adjacencyMap.AddVertex(hex);
         }
+    }
 
+    public void InitPlayerAdjacencies(){
+        playerAdjacencyMaps = new Dictionary<Player, AdjacencyMap>();
+        foreach (GameObject hexObject in hexMap.Values){
+            HexEntity hex = hexObject.GetComponent<HexEntity>();
+            if (hex.Controller == null)
+                continue;
+            if (!playerAdjacencyMaps.ContainsKey(hex.Controller))
+                playerAdjacencyMaps[hex.Controller] = new AdjacencyMap();
+            playerAdjacencyMaps[hex.Controller].AddVertex(hexObject);
+        }
+    }
+
+    public AdjacencyMap getPlayerAdjacencyMap(Player p){
+        if (playerAdjacencyMaps.ContainsKey(p)){
+            return playerAdjacencyMaps[p];
+        }
+        else {
+            return null;
+        }
+    }
+
+    public void TransferHexOwner(GameObject hexObject, Player transferTo){
+        HexEntity hex = hexObject.GetComponent<HexEntity>();
+        Player transferFrom = hex.Controller;
+        hex.Controller = transferTo;
+        if (transferFrom != null && playerAdjacencyMaps.ContainsKey(transferFrom))
+            playerAdjacencyMaps[transferFrom].RemoveVertex(hexObject);
+        if (!playerAdjacencyMaps.ContainsKey(hex.Controller))
+            playerAdjacencyMaps[hex.Controller] = new AdjacencyMap();
+        playerAdjacencyMaps[transferTo].AddVertex(hexObject);
     }
 
     public Dictionary<Vector3Int, GameObject> GetMapAxial()

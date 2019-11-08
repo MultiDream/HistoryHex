@@ -25,6 +25,8 @@ public class ArmyEntity : MonoBehaviour
 
 	//Current Action Mode.
 	public ArmyActionMode ActionMode;
+
+	private List<HexPath> supplyLines;
 	#endregion
 
 	#region MonobehaivorExtensions
@@ -59,6 +61,7 @@ public class ArmyEntity : MonoBehaviour
 
 	void Initialize()
     {
+		supplyLines = new List<HexPath>();
         Name = "UnnamedArmy";
         Food = Mathf.Floor(Random.value * Global.MAXIMUM_FOOD);
 		Manpower = 100;
@@ -167,9 +170,21 @@ public class ArmyEntity : MonoBehaviour
 			HexPath path = pathObject.GetComponent<HexPath>();
 			path.Initialize();
 
-			List<GameObject> hexes = Global.MapFlyWeight.adjacencyMap.NearestAstar(armyTile, baseTile);
+			List<GameObject> hexes = Global.MapFlyWeight.getPlayerAdjacencyMap(this.Controller).NearestAstar(armyTile, baseTile);
 			path.AddHexes(hexes);
+			supplyLines.Add(path);
 		}
+	}
+
+	public void RefreshSupplyLines(){
+		if (pathObject == null)
+			return;
+		HexPath path = pathObject.GetComponent<HexPath>();
+		if (path == null)
+			return;
+		GameObject armyTile = Global.MapFlyWeight.hexMap[Position];
+		List<GameObject> hexes = Global.MapFlyWeight.getPlayerAdjacencyMap(this.Controller).NearestAstar(armyTile, path.GetHex(path.Length()-1));
+		path.Refresh(hexes);
 	}
 
 	/// <summary>
@@ -205,21 +220,24 @@ public class ArmyEntity : MonoBehaviour
     public void Sieze(GameObject hexTile)
     {
         HexEntity entity = hexTile.GetComponent<HexEntity>();
-        entity.Controller = this.Controller;
-        Combat(entity.army);
-        entity.army = gameObject;
+        bool wonCombat = Combat(entity.army);
+		if (wonCombat){
+			Global.MapFlyWeight.TransferHexOwner(hexTile, this.Controller);
+			entity.army = gameObject;
+		}
     }
 
 	/// <summary>
-    /// Combats another unit.
+    /// Combats another unit. Return true if winning combat, false otherwise
     /// </summary>
-    public void Combat(GameObject otherArmy)
+    public bool Combat(GameObject otherArmy)
     {
         if (otherArmy != null)
         {
             //Seems to destroy the Army, despite not being passed by refrence.
             Destroy(otherArmy);
         }
+		return true;
     }
 
 	/// <summary>
@@ -247,6 +265,8 @@ public class ArmyEntity : MonoBehaviour
 	/// Does everything needed to update the army at the start of the turn.
 	/// </summary>
 	private void OnStartTurn() {
+		RefreshSupplyLines();
+
 		//Set has moved to false.
 		hasMoved = false;
 
