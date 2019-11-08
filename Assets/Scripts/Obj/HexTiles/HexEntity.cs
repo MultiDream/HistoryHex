@@ -169,9 +169,9 @@ public class HexEntity : MonoBehaviour
 	// This updates every turn and decides if updatePopulation() is run
 	private void checkUpdatePopulation()
     {
-        if (turnCounter >= 4 && Food >= 0)
+		updatePopulation();
+		if (turnCounter >= 4 && Food >= 0)
         {
-            updatePopulation();
             turnCounter = 0;
         }
     }
@@ -179,9 +179,10 @@ public class HexEntity : MonoBehaviour
     // This updates the Population variables 
     private void updatePopulation()
     {
-        TotalPopulation++;
+		int increase = Mathf.FloorToInt(TotalPopulation * 0.02f);
+		TotalPopulation += increase;
         // Since you add to the total population you must add to a labor pool and food is the default labor pool
-        FoodPopulation++;
+        FoodPopulation += increase;
     }
 
     // This runs every turn and updates food based on population if not attacked after previous turn
