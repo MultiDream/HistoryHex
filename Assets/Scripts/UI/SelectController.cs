@@ -18,7 +18,6 @@ public class SelectController : MonoBehaviour
     // Used to determine if something new has been selected.
     void Update()
     {
-        
         //UI components need to block all of this
         if (EventSystem.current.IsPointerOverGameObject()) return;
         // Left mouse will select a new SelectableObj.
@@ -31,12 +30,7 @@ public class SelectController : MonoBehaviour
         if (Input.GetKeyDown(key))
         {
 
-            if (SelectedObj != null)
-            {
-                Deselect();
-                LastSelected = SelectedObj;
-            }
-
+            ClearSelected();
 
             var ray = UnityEngine.Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -52,6 +46,13 @@ public class SelectController : MonoBehaviour
                     Select();
                 }
             }
+        }
+    }
+
+    public void ClearSelected() {
+        if (SelectedObj != null) {
+            Deselect();
+            LastSelected = SelectedObj;
         }
     }
 

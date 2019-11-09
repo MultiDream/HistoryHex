@@ -14,7 +14,6 @@ public class HexEntity : MonoBehaviour
     private bool attacked = false;
 
     public Renderer hexbase;
-    public Color selectedColor;
 
     //Prefabs
     public GameObject ArmyPrefab;
@@ -115,7 +114,7 @@ public class HexEntity : MonoBehaviour
     private void OnSelect()
     {
         activated = true;
-        ChangeMaterial(selectedColor);
+        ChangeMaterial(Controller.Colour);
     }
 
     private void OnDeselect()
@@ -183,6 +182,13 @@ public class HexEntity : MonoBehaviour
         updateFood();
         checkUpdatePopulation();
         turnCounter++;
+    }
+
+    public void UpdateController(Player newController) {
+        Controller = newController;
+        Material m = hexbase.material;
+        m.SetColor("_Color", Controller.Colour);
+
     }
 
 	#endregion
