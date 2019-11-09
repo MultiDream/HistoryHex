@@ -14,9 +14,9 @@ public class UIHex : UICom
         villageText.text = panelName;
         playerText.text = "Player " + player;
         foodText.text = food;
-        foodGrowthText.text = "(" + foodGrowth + ")";
+        foodGrowthText.text = "( +" + foodGrowth + ")";
         populationText.text  = population;
-        populationGrowthText.text = "(" + populationGrowth + ")";
+        populationGrowthText.text = "( +" + populationGrowth + ")";
         outFoodText.text = outFood;
         outPopulationText.text = outPopulation;
     }

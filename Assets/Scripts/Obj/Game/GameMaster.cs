@@ -8,6 +8,7 @@ using UnityEngine;
 // Relevant Delegates:
 public delegate void NextTurnHandler(); //Handles moving game forward one turn.
 public delegate void NextCycleHandler(); //Handles restarting the player cycle.
+public delegate void EndGameHandler();
 
 /// <summary>
 /// Master Class for the game. Holds important logic and classes for intializing
@@ -24,12 +25,13 @@ public class GameMaster : MonoBehaviour
     public int currentPlayer = 0;
     public GameObject[] Players;
     public Map Board;               //Handles map creation.
-
+	
 	//Button Mappings;
 	private KeyCode NextTurnKey = KeyCode.Space;
+	private KeyCode SurrenderKey = KeyCode.Escape;
 
-    // Start is called before the first frame update
-    void Start()
+	// Start is called before the first frame update
+	void Start()
     {
 		//Throws itself up into Globally Accessible Scope.
 		Global.GM = this;
@@ -63,7 +65,11 @@ public class GameMaster : MonoBehaviour
         {
             NextTurnKeyPress();
         }
-    }
+
+		if (Input.GetKeyDown(SurrenderKey)) {
+			SurrenderKeyPress();
+		}
+	}
 
     void FixedUpdate()
     {
@@ -76,7 +82,7 @@ public class GameMaster : MonoBehaviour
 	 *-----------------------------------------------*/
 	public void NextTurnKeyPress()
     {
-        Debug.Log("Space Key Pressed!");
+        //Debug.Log("Space Key Pressed!");
         currentPlayer++;
         if (currentPlayer >= NumberOfPlayers)
         {
@@ -87,6 +93,13 @@ public class GameMaster : MonoBehaviour
 
         OnNextTurn();
     }
+
+	public void SurrenderKeyPress()
+	{
+		//if (SurrenderPrompt()){ Prompt player for surrender.
+
+		Debug.Log("Player " + currentPlayer + " has surrendered.");
+	}
 	#endregion
 
 	#region EventBindings
@@ -115,5 +128,18 @@ public class GameMaster : MonoBehaviour
 	static void LogNextCycle() {
 		Debug.Log("OnNextCycle Event Fired!");
 	}
+
+	public event EndGameHandler EndGame = new EndGameHandler(LogEndGame);
+	private void OnEndGame(){
+		EndGame(); // Event will never be null.
+	}
+	/// <summary>
+	/// Default function for logging next Cycle Events firing.
+	/// </summary>
+	static void LogEndGame() {
+		Debug.Log("OnNextCycle Event Fired!");
+	}
+
+
 	#endregion
 }

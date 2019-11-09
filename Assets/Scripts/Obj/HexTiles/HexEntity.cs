@@ -126,7 +126,9 @@ public class HexEntity : MonoBehaviour
     }
 
 	private void OnInitializeUI(UICom com) {
-		((UIHex)com).SetText(Name, Controller.PlayerId.ToString(), Food.ToString(), "XXX", TotalPopulation.ToString(), "XXX", "XXX", "XXX");
+		((UIHex)com).SetText(Name, Controller.PlayerId.ToString(), Food.ToString(),
+		FoodBase.ToString(), TotalPopulation.ToString(), Mathf.FloorToInt(TotalPopulation * 0.02f).ToString(),
+		"XXX", "XXX");
 	}
 
 	#endregion
@@ -191,7 +193,7 @@ public class HexEntity : MonoBehaviour
     {
         if (FoodBase >= 0 & attacked == false)
         {
-            Food += TotalPopulation;
+            Food += TotalPopulation * FoodBase; //Times some constant.
         }
     }
 
