@@ -126,7 +126,9 @@ public class HexEntity : MonoBehaviour
     }
 
 	private void OnInitializeUI(UICom com) {
-		((UIHex)com).SetText(Name, Controller.PlayerId.ToString(), Food.ToString(), "XXX", TotalPopulation.ToString(), "XXX", "XXX", "XXX");
+		((UIHex)com).SetText(Name, Controller.PlayerId.ToString(), Food.ToString(),
+		FoodBase.ToString(), TotalPopulation.ToString(), Mathf.FloorToInt(TotalPopulation * 0.02f).ToString(),
+		"XXX", "XXX");
 	}
 
 	#endregion
@@ -169,9 +171,9 @@ public class HexEntity : MonoBehaviour
 	// This updates every turn and decides if updatePopulation() is run
 	private void checkUpdatePopulation()
     {
-        if (turnCounter >= 4 && Food >= 0)
+		updatePopulation();
+		if (turnCounter >= 4 && Food >= 0)
         {
-            updatePopulation();
             turnCounter = 0;
         }
     }
@@ -179,9 +181,10 @@ public class HexEntity : MonoBehaviour
     // This updates the Population variables 
     private void updatePopulation()
     {
-        TotalPopulation++;
+		int increase = Mathf.FloorToInt(TotalPopulation * 0.02f);
+		TotalPopulation += increase;
         // Since you add to the total population you must add to a labor pool and food is the default labor pool
-        FoodPopulation++;
+        FoodPopulation += increase;
     }
 
     // This runs every turn and updates food based on population if not attacked after previous turn
@@ -190,7 +193,7 @@ public class HexEntity : MonoBehaviour
     {
         if (FoodBase >= 0 & attacked == false)
         {
-            Food += TotalPopulation;
+            Food += TotalPopulation * FoodBase; //Times some constant.
         }
     }
 
