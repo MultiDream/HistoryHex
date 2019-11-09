@@ -20,6 +20,8 @@ public class HexPath : MonoBehaviour
     private List<GameObject> hexEntities; // list of tiles
     private AdjacencyMap adjacency;
     private List<GameObject> lines;
+    [SerializeField] private Material pathMaterial;
+    [SerializeField] private Material pathEndMaterial;
     //Prefabs
     //Public variables
     public string Name { get; set; }
@@ -121,6 +123,7 @@ public class HexPath : MonoBehaviour
         GameObject container = new GameObject();
         var segments = 360;
         var line = container.AddComponent<LineRenderer>();
+        line.material = pathEndMaterial;
         line.useWorldSpace = false;
         line.startWidth = lineWidth;
         line.endWidth = lineWidth;
@@ -148,7 +151,7 @@ public class HexPath : MonoBehaviour
         GameObject myLine = new GameObject();
         myLine.transform.position = start;
         LineRenderer lr = myLine.AddComponent<LineRenderer>();
-        //lr.material = new Material(Shader.Find("Standard"));
+        lr.material = pathMaterial;
         lr.startColor = color;
         lr.endColor = color;
         lr.SetWidth(0.1f, 0.1f);
