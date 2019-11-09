@@ -1,9 +1,8 @@
-﻿Shader "Unlit/HexPath"
+﻿Shader "Unlit/HexEnd"
 {
     Properties
     {
         [HDR] _Color ("Color", Color) = (1,1,1,1)
-        [HDR] _Color2 ("Color 2", Color) = (0,0,0,1)
     }
     SubShader
     {
@@ -52,7 +51,7 @@
                 // sample the texture
                 // apply fog
                 // UNITY_APPLY_FOG(i.fogCoord, col);
-                return ((i.uv.x + 0.05 * i.uv.y) + _Time.y) % 1 > 0.5 ? _Color : _Color2;
+                return _Color;
             }
             ENDCG
         }
