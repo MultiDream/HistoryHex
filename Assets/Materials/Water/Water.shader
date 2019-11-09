@@ -31,6 +31,8 @@
         sampler2D _FoamTex;
 		sampler2D _CameraDepthTexture;
 
+        float4 _FoamTex_ST;
+
         struct Input
         {
             float2 uv_MainTex;
@@ -90,8 +92,10 @@
             float intersect = 1 - (sceneZ - surfZ);
             fixed4 m = tex2D (_MainTex, IN.uv_MainTex) * _Color;
 
-            float foam0 = 1 - tex2D (_FoamTex, IN.uv_MainTex * 7 - float2(_Time.x * 3, cos(IN.uv_MainTex.x))).r;
-            float foam1 = 1 - tex2D (_FoamTex, IN.uv_MainTex * 9 + float2(sin(IN.uv_MainTex.y), _Time.x * 3)).b;
+            float2 foam0uv = TRANSFORM_TEX(IN.uv_MainTex, _FoamTex) * 7 - float2(_Time.x * 3, cos(IN.uv_MainTex.x));
+            float2 foam1uv = TRANSFORM_TEX(IN.uv_MainTex, _FoamTex) * 9 + float2(sin(IN.uv_MainTex.y), _Time.x * 3);
+            float foam0 = 1 - tex2D (_FoamTex, foam0uv).r;
+            float foam1 = 1 - tex2D (_FoamTex, foam1uv).b;
             float mask = (foam0 * foam1) * 0.95;
             mask = saturate(pow(mask, 1));
 
