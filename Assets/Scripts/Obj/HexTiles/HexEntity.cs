@@ -265,5 +265,6 @@ public class HexEntity : MonoBehaviour
                 (distance.x == 1 && distance.y == 0 && distance.z == 1) ||
                 (distance.x == 0 && distance.y == 1 && distance.z == 1));
     }
+
 	#endregion
 }
