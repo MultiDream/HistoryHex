@@ -84,7 +84,7 @@ public class UIMaster : MonoBehaviour
 	void Space_Key()
 	{
 		Debug.Log("UIMaster Notified of Space Hit!");
-		SetCurrentPlayerUI();
+		SetCurrentPlayerHUD();
 		if (subComponent != null){
 			Color color = GM.Players[GM.currentPlayer].GetComponent<Player>().Colour;
 			subComponent.transform.GetChild(0).GetComponent<Image>().color = color; //Jesus this is long. Clean later.
@@ -92,7 +92,9 @@ public class UIMaster : MonoBehaviour
 		return;
 	}
 
-	public void SetCurrentPlayerUI() {
+	public void SetCurrentPlayerHUD() {
+		selectController.ClearSelected();
+		
 		Color color = GM.Players[GM.currentPlayer].GetComponent<Player>().Colour;
 		color.a = 0.5f;
 		currentPlayerImage.color = color;
