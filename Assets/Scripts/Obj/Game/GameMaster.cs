@@ -24,6 +24,7 @@ public class GameMaster : MonoBehaviour
     public int NumberOfPlayers;
     public int currentPlayer = 0;
     public GameObject[] Players;
+    public HistoryHex.GameStates.PlayerTurn[] playerTurnStates;
     public Map Board;               //Handles map creation.
 	
 	//Button Mappings;
@@ -66,14 +67,25 @@ public class GameMaster : MonoBehaviour
             NextTurnKeyPress();
         }
 
+<<<<<<< Updated upstream
 		if (Input.GetKeyDown(SurrenderKey)) {
 			SurrenderKeyPress();
 		}
 	}
+=======
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            GameEnd();
+        }
+    }
+>>>>>>> Stashed changes
 
     void FixedUpdate()
     {
         //Board.DrawSelectedPath(UIMasterPrefab.GetComponent<UIMaster>().selectController);
+    }
+
+    public void GameEnd() {
+        playerTurnStates[Global.ActivePlayerId].OnGameEnd();
     }
 
     #region KeyBindings
@@ -83,6 +95,7 @@ public class GameMaster : MonoBehaviour
 	public void NextTurnKeyPress()
     {
         //Debug.Log("Space Key Pressed!");
+        playerTurnStates[Global.ActivePlayerId].OnTurnEnd();
         currentPlayer++;
         if (currentPlayer >= NumberOfPlayers)
         {
