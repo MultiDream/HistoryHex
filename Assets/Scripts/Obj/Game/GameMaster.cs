@@ -24,12 +24,15 @@ public class GameMaster : MonoBehaviour
     public int NumberOfPlayers;
     public int currentPlayer = 0;
     public GameObject[] Players;
+    public HistoryHex.StateMachine fsm;
     public HistoryHex.GameStates.PlayerTurn[] playerTurnStates;
+    public HistoryHex.GameStates.Pause pauseState;
+    public HistoryHex.GameStates.ConfirmExit confirmExit;
     public Map Board;               //Handles map creation.
 	
 	//Button Mappings;
 	private KeyCode NextTurnKey = KeyCode.Space;
-	private KeyCode SurrenderKey = KeyCode.Escape;
+    private KeyCode PauseKey = KeyCode.Escape;
 
 	// Start is called before the first frame update
 	void Start()
@@ -67,17 +70,10 @@ public class GameMaster : MonoBehaviour
             NextTurnKeyPress();
         }
 
-<<<<<<< Updated upstream
-		if (Input.GetKeyDown(SurrenderKey)) {
-			SurrenderKeyPress();
-		}
-	}
-=======
-        if (Input.GetKeyDown(KeyCode.Escape)) {
-            GameEnd();
+        if (Input.GetKeyDown(PauseKey)) {
+            PauseKeyPress();
         }
-    }
->>>>>>> Stashed changes
+	}
 
     void FixedUpdate()
     {
@@ -86,6 +82,14 @@ public class GameMaster : MonoBehaviour
 
     public void GameEnd() {
         playerTurnStates[Global.ActivePlayerId].OnGameEnd();
+    }
+
+    public void ExitGame() {
+        pauseState.OnEndGamePressed();
+    }
+
+    public void ConfirmExitGame() {
+        confirmExit.OnEndGamePressed();
     }
 
     #region KeyBindings
@@ -107,11 +111,17 @@ public class GameMaster : MonoBehaviour
         OnNextTurn();
     }
 
-	public void SurrenderKeyPress()
+	public void PauseKeyPress()
 	{
-		//if (SurrenderPrompt()){ Prompt player for surrender.
-
-		Debug.Log("Player " + currentPlayer + " has surrendered.");
+        if (fsm.GetCurrentState() == pauseState) {
+            pauseState.OnReturnToGame(Global.ActivePlayerId);
+        }
+        else if (fsm.GetCurrentState() == confirmExit) {
+            confirmExit.OnCancelPressed();
+        }
+        else {
+            playerTurnStates[Global.ActivePlayerId].OnPause(pauseState);
+        }
 	}
 	#endregion
 

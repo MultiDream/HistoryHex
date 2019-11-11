@@ -20,6 +20,10 @@ namespace HistoryHex {
                 changeState(transition);
             }
 
+            public void OnPause(IState pauseState) {
+                changeState(pauseState);
+            }
+
             public void OnGameEnd() {
                 changeState(gameEnd);
             }
