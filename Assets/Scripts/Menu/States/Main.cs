@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 namespace HistoryHex {
@@ -15,15 +16,15 @@ namespace HistoryHex {
             private Action<IState> changeState;
 
             public void OnStartPressed() {
-                // TODO: Application.LoadScene()
+                SceneManager.LoadScene("Scenes/DevelopmentSceneArt");
             }
 
             public void OnCreditsPressed() {
-                changeState(options);
+                changeState(credits);
             }
 
             public void OnOptionsPressed() {
-                changeState(credits);
+                changeState(options);
             }
 
             public override void Enter(IState previousState) {
