@@ -13,6 +13,7 @@ namespace HistoryHex {
             public ConfirmExit confirmExit;
 
             public GameObject ui;
+            public GameObject tileUi;
 
             private Action<IState> changeState;
 
@@ -27,6 +28,7 @@ namespace HistoryHex {
             }
 
             public override void Enter(IState previousState) {
+                tileUi.SetActive(false);
                 ui.SetActive(true);
             }
 
@@ -36,6 +38,7 @@ namespace HistoryHex {
 
             public override void Exit() {
                 ui.SetActive(false);
+                tileUi.SetActive(true);
             }
         }
     }

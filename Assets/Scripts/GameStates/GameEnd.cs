@@ -2,13 +2,17 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using TMPro;
 
 namespace HistoryHex {
     namespace GameStates {
         public class GameEnd : MBState {
             public GameObject ui;
+            public TextMeshProUGUI winner;
             public GameObject returnToMenu;
+            public GameObject tileUi;
+
+            private int winnerId = -0xFF;
 
             private Action<IState> changeState;
 
@@ -18,13 +22,19 @@ namespace HistoryHex {
             }
 
             public void OnReturnToMenuPressed() {
-                SceneManager.LoadScene("Scenes/Menus/MainMenu");
+                SceneManager.LoadScene("Scenes/TitleScreen");
+            }
+
+            public void SetDisplayResults(int winnerId) {
+                this.winnerId = winnerId;
             }
 
             public override void Enter(IState previousState) {
+                ui.SetActive(true);
+                tileUi.SetActive(false);
+                winner.SetText("Player " + (winnerId + 1) + " wins");
                 returnToMenu.SetActive(false);
                 StartCoroutine(KickOffTimer());
-                // TODO: ui.DisplayWinner();
             }
 
             public override void Execute(Action<IState> changeState) {

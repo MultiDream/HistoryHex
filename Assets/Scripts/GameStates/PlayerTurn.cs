@@ -12,6 +12,8 @@ namespace HistoryHex {
             public MBState transition;
             public MBState gameEnd;
 
+            public UIMaster tileUi;
+
             public GameObject endTurnButton;
 
             private Action<IState> changeState;
@@ -39,6 +41,9 @@ namespace HistoryHex {
 
             public override void Exit() {
                 // TODO: ui.Disable();
+                Debug.Log("PLAYER TURN EXIT");
+                //tileUi.UnregisterUIComponent();
+                //      ^ this line is supposed to be a way to make the UI for a tile disappear.
                 endTurnButton.SetActive(false);
             }
         }

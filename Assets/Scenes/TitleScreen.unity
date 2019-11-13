@@ -1498,11 +1498,6 @@ PrefabInstance:
       propertyPath: optionsMenu
       value: 
       objectReference: {fileID: 878798866}
-    - target: {fileID: 4775543471863015080, guid: ab69750a75cdba746803f3fdd9bf171e,
-        type: 3}
-      propertyPath: main
-      value: 
-      objectReference: {fileID: 908327828}
     - target: {fileID: 4775543471041873907, guid: ab69750a75cdba746803f3fdd9bf171e,
         type: 3}
       propertyPath: creditsMenu

@@ -10,11 +10,12 @@ namespace HistoryHex {
             public Pause pause;
 
             public GameObject ui;
+            public GameObject tileUi;
 
             private Action<IState> changeState;
 
             public void OnEndGamePressed() {
-                SceneManager.LoadScene("Scenes/Menus/MainMenu");
+                SceneManager.LoadScene("Scenes/TitleScreen");
             }
 
             public void OnCancelPressed() {
@@ -22,6 +23,7 @@ namespace HistoryHex {
             }
 
             public override void Enter(IState previousState) {
+                tileUi.SetActive(false);
                 ui.SetActive(true);
             }
 
@@ -31,6 +33,7 @@ namespace HistoryHex {
 
             public override void Exit() {
                 ui.SetActive(false);
+                tileUi.SetActive(true);
             }
         }
     }
