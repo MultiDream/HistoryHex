@@ -197,7 +197,7 @@ public class HexPath : MonoBehaviour
             return 0;
 		GameObject baseTile = hexEntities[finalIndex];
 		HexEntity entity = baseTile.GetComponent<HexEntity>();
-		return entity.FoodRequest(amountRequested,this.Length());
+		return entity.FoodRequest(amountRequested,this.Length()-1);
 	}
 
 	public void RegisterOrder(){

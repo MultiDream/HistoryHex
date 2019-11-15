@@ -214,6 +214,7 @@ public class HexEntity : MonoBehaviour
 		ResetSpentLabor();
         updateFood();
         checkUpdatePopulation();
+		allocateLabor();
         turnCounter++;
     }
 
