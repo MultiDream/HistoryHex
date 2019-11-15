@@ -17,24 +17,32 @@ public delegate void EndGameHandler();
 
 public class GameMaster : MonoBehaviour
 {
-
     //Prefabs needed for this Component and sub components.
     public GameObject playerPrefab;
     public GameObject UIMasterPrefab;
     public int NumberOfPlayers;
     public int currentPlayer = 0;
     public GameObject[] Players;
+    public HistoryHex.StateMachine fsm;
+    public HistoryHex.GameStates.PlayerTurn[] playerTurnStates;
+    public HistoryHex.GameStates.Pause pauseState;
+    public HistoryHex.GameStates.ConfirmExit confirmExit;
+    public HistoryHex.GameStates.GameEnd gameEndState;
     public Map Board;               //Handles map creation.
 	
 	//Button Mappings;
 	private KeyCode NextTurnKey = KeyCode.Space;
-	private KeyCode SurrenderKey = KeyCode.Escape;
+    private KeyCode PauseKey = KeyCode.Escape;
+
+    private bool enableKeys = true;
 
 	// Start is called before the first frame update
 	void Start()
     {
 		//Throws itself up into Globally Accessible Scope.
 		Global.GM = this;
+
+        enableKeys = true;
 
 		Players = new GameObject[NumberOfPlayers];
         for (int i = 0; i < NumberOfPlayers; i++)
@@ -61,19 +69,38 @@ public class GameMaster : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(NextTurnKey))
+        if (enableKeys && Input.GetKeyDown(NextTurnKey))
         {
             NextTurnKeyPress();
         }
 
-		if (Input.GetKeyDown(SurrenderKey)) {
-			SurrenderKeyPress();
-		}
+        if (enableKeys && Input.GetKeyDown(PauseKey)) {
+            PauseKeyPress();
+        }
+
+        // TEMPORARY
+        if (Input.GetKeyDown(KeyCode.Alpha8)) {
+            GameEnd();
+        }
 	}
 
     void FixedUpdate()
     {
         //Board.DrawSelectedPath(UIMasterPrefab.GetComponent<UIMaster>().selectController);
+    }
+
+    public void GameEnd() {
+        enableKeys = false;
+        gameEndState.SetDisplayResults(Global.ActivePlayerId);
+        playerTurnStates[Global.ActivePlayerId].OnGameEnd();
+    }
+
+    public void ExitGame() {
+        pauseState.OnEndGamePressed();
+    }
+
+    public void ConfirmExitGame() {
+        confirmExit.OnEndGamePressed();
     }
 
     #region KeyBindings
@@ -82,7 +109,8 @@ public class GameMaster : MonoBehaviour
 	 *-----------------------------------------------*/
 	public void NextTurnKeyPress()
     {
-        //Debug.Log("Space Key Pressed!");
+        Debug.Log("Space Key Pressed!");
+        playerTurnStates[Global.ActivePlayerId].OnTurnEnd();
         currentPlayer++;
         if (currentPlayer >= NumberOfPlayers)
         {
@@ -94,11 +122,17 @@ public class GameMaster : MonoBehaviour
         OnNextTurn();
     }
 
-	public void SurrenderKeyPress()
+	public void PauseKeyPress()
 	{
-		//if (SurrenderPrompt()){ Prompt player for surrender.
-
-		Debug.Log("Player " + currentPlayer + " has surrendered.");
+        if (fsm.GetCurrentState() == pauseState) {
+            pauseState.OnReturnToGame(Global.ActivePlayerId);
+        }
+        else if (fsm.GetCurrentState() == confirmExit) {
+            confirmExit.OnCancelPressed();
+        }
+        else {
+            playerTurnStates[Global.ActivePlayerId].OnPause(pauseState);
+        }
 	}
 	#endregion
 
