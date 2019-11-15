@@ -148,7 +148,6 @@ public class ArmyEntity : MonoBehaviour
 
             if (nextHexEntity.army == null)
             {
-
                 currentHexEntity.army = null;
 
                 Sieze(nextTile);
@@ -195,10 +194,13 @@ public class ArmyEntity : MonoBehaviour
             pathObject = Instantiate(Global.MapFlyWeight.hexPathPrefab);
             HexPath path = pathObject.GetComponent<HexPath>();
             path.Initialize();
+			path.army = this;
 
             List<GameObject> hexes = Global.MapFlyWeight.getPlayerAdjacencyMap(this.Controller).NearestAstar(armyTile, baseTile);
             path.AddHexes(hexes);
             supplyLines.Add(path);
+
+			path.RegisterOrder();
         }
     }
 
@@ -242,18 +244,14 @@ public class ArmyEntity : MonoBehaviour
         }
     }
     /// <summary>
-    /// Attempts to take control of a tile.
+    /// Moves into a tile, and takes control. Assumes tile is unoccupied.
     /// </summary>
     /// <param name="hexTile"></param>
     public void Sieze(GameObject hexTile)
     {
         HexEntity entity = hexTile.GetComponent<HexEntity>();
-        bool wonCombat = Combat(entity.army);
-        if (wonCombat)
-        {
-            Global.MapFlyWeight.TransferHexOwner(hexTile, this.Controller);
-            entity.army = gameObject;
-        }
+        Global.MapFlyWeight.TransferHexOwner(hexTile, this.Controller);
+        entity.army = gameObject;
     }
 
     /// <summary>
@@ -334,7 +332,7 @@ public class ArmyEntity : MonoBehaviour
     private void ForageTile(int amount)
     {
 
-        int collected = Global.MapFlyWeight.hexMap[Position].GetComponent<HexEntity>().FoodRequest(amount); //Damn this is long.
+        int collected = Global.MapFlyWeight.hexMap[Position].GetComponent<HexEntity>().FoodRequest(amount,0); //Damn this is long.
         if (collected < amount)
         {
             if (pathObject != null)
@@ -347,8 +345,7 @@ public class ArmyEntity : MonoBehaviour
     }
 
     #endregion
-
-
+	
     #region WireSelectionInterface
 
     /// <summary>
@@ -401,7 +398,9 @@ public class ArmyEntity : MonoBehaviour
     private void OnDeselect()
     {
         activated = false;
-    }
+		ActionMode = ArmyActionMode.Move;
+
+	}
 
     /// <summary>
     /// What to do when something has been right clicked.
