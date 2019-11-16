@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8323398178626441624}
   - component: {fileID: 8323398178626441627}
   m_Layer: 0
-  m_Name: HexPath
+  m_Name: HexPathPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43,3 +43,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7501ef38584899e4391bd7c49a5cae2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pathMaterial: {fileID: 2100000, guid: abb898e8d75ee4700aed96cc662f3ae6, type: 2}
+  pathEndMaterial: {fileID: 2100000, guid: 07344436e3c4a4ccbb7f44c988dd2c17, type: 2}

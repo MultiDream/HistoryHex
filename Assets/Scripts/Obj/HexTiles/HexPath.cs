@@ -20,9 +20,13 @@ public class HexPath : MonoBehaviour
     private List<GameObject> hexEntities; // list of tiles
     private AdjacencyMap adjacency;
     private List<GameObject> lines;
-    //Prefabs
-    //Public variables
+    [SerializeField] private Material pathMaterial;
+    [SerializeField] private Material pathEndMaterial;
+	//Prefabs
+
+	//Public variables
     public string Name { get; set; }
+	public ArmyEntity army;
 
 	#endregion
 
@@ -43,6 +47,7 @@ public class HexPath : MonoBehaviour
 		foreach (GameObject line in lines) {
 			Destroy(line);
 		}
+		UnRegisterOrder(); //Decouple from the supply line.
 	}
 	#endregion
 
@@ -121,6 +126,7 @@ public class HexPath : MonoBehaviour
         GameObject container = new GameObject();
         var segments = 360;
         var line = container.AddComponent<LineRenderer>();
+        line.material = pathEndMaterial;
         line.useWorldSpace = false;
         line.startWidth = lineWidth;
         line.endWidth = lineWidth;
@@ -148,7 +154,7 @@ public class HexPath : MonoBehaviour
         GameObject myLine = new GameObject();
         myLine.transform.position = start;
         LineRenderer lr = myLine.AddComponent<LineRenderer>();
-        //lr.material = new Material(Shader.Find("Standard"));
+        lr.material = pathMaterial;
         lr.startColor = color;
         lr.endColor = color;
         lr.SetWidth(0.1f, 0.1f);
@@ -181,7 +187,7 @@ public class HexPath : MonoBehaviour
 	/// </summary>
 	/// <param name="amountRequested">Amount of food requested</param>
 	/// <returns>Amount of food transported.</returns>
-	public int FoodRequest(int amountRequested){
+	public int FoodRequest(int amountRequested) {
 		if (amountRequested <= 0)
 		{
 			return 0;
@@ -191,11 +197,24 @@ public class HexPath : MonoBehaviour
             return 0;
 		GameObject baseTile = hexEntities[finalIndex];
 		HexEntity entity = baseTile.GetComponent<HexEntity>();
-		entity.FoodRequest(amountRequested);
-		return amountRequested;
+		return entity.FoodRequest(amountRequested,this.Length()-1);
 	}
 
-    public GameObject GetHex(int i){
+	public void RegisterOrder(){
+		int finalIndex = hexEntities.Count - 1;
+		GameObject baseTile = hexEntities[finalIndex];
+		HexEntity entity = baseTile.GetComponent<HexEntity>();
+		entity.CreateOrder(this);
+	}
+
+	public void UnRegisterOrder() {
+		int finalIndex = hexEntities.Count - 1;
+		GameObject baseTile = hexEntities[finalIndex];
+		HexEntity entity = baseTile.GetComponent<HexEntity>();
+		entity.DeleteOrder(this);
+	}
+
+	public GameObject GetHex(int i){
         if (hexEntities.Count > i)
             return hexEntities[i];
         return null;
