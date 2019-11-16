@@ -148,12 +148,24 @@ public class GameMaster : MonoBehaviour
 	private void OnNextTurn()
     {
 		NextTurn(); // Event will never be null.
+		HexUpdate();
+		ArmyUpdate();
     }
 
+	public event NextTurnHandler HexUpdate = new NextTurnHandler(LogNextTurn); //Contains subscribers to next turn method.
+	private void OnHexUpdate() {
+		HexUpdate(); // Event will never be null.
+	}
+
+	public event NextTurnHandler ArmyUpdate = new NextTurnHandler(LogNextTurn); //Contains subscribers to next turn method.
+	private void OnArmyUpdate() {
+		ArmyUpdate(); // Event will never be null.
+
+	}
 	/// <summary>
 	/// Default function for logging next Turn Events firing.
 	/// </summary>
-    static void LogNextTurn()
+	static void LogNextTurn()
     {
         Debug.Log("OnNextTurn Event Fired!");
     }
@@ -162,6 +174,7 @@ public class GameMaster : MonoBehaviour
 	private void OnNextCycle() {
 		NextCycle(); // Event will never be null.
 	}
+
 	/// <summary>
 	/// Default function for logging next Cycle Events firing.
 	/// </summary>
@@ -169,17 +182,17 @@ public class GameMaster : MonoBehaviour
 		Debug.Log("OnNextCycle Event Fired!");
 	}
 
-	public event EndGameHandler EndGame = new EndGameHandler(LogEndGame);
+	public event EndGameHandler EndGame = new EndGameHandler(LogEvent);
 	private void OnEndGame(){
 		EndGame(); // Event will never be null.
 	}
-	/// <summary>
-	/// Default function for logging next Cycle Events firing.
-	/// </summary>
-	static void LogEndGame() {
-		Debug.Log("OnNextCycle Event Fired!");
-	}
 
+	/// <summary>
+	/// Default function for logging Events firing.
+	/// </summary>
+	static void LogEvent() {
+		Debug.Log($"Event Fired!");
+	}
 
 	#endregion
 }

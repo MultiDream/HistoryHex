@@ -68,7 +68,7 @@ public class Map : MonoBehaviour
                         GameObject Hex = Instantiate(hexPrefab, position, rotation);
 
 						// Subscribes HexEntity's updateTurn function to GM's NextTurn event.
-						Global.GM.NextTurn += Hex.GetComponent<HexEntity>().updateTurn;
+						Global.GM.HexUpdate += Hex.GetComponent<HexEntity>().updateTurn;
                         Hex.AddComponent<TextMesh>();
                         if (LabelHexes)
                         {

@@ -63,7 +63,7 @@ public class ArmyEntity : MonoBehaviour
     {
         Destroy(SelectionInterface);
         Destroy(pathObject);
-        Global.GM.NextTurn -= OnStartTurn;
+        Global.GM.ArmyUpdate -= OnStartTurn;
 
     }
 
@@ -89,7 +89,7 @@ public class ArmyEntity : MonoBehaviour
         }
 
         //Wire up the GM
-        Global.GM.NextTurn += OnStartTurn;
+        Global.GM.ArmyUpdate += OnStartTurn;
 
         //Present UI Components.
     }
