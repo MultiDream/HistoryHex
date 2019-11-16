@@ -81,7 +81,7 @@ public class HexEntity : MonoBehaviour
     private void ActiveUpdate()
     {
         // Army spawn code.
-        if (Input.GetKeyDown(raiseArmy))
+        if (Input.GetKeyDown(raiseArmy) && SelectedByController())
         {
             Vector3 position = transform.position;
             Quaternion rotation = Quaternion.Euler(0, 0, 0);
@@ -91,10 +91,16 @@ public class HexEntity : MonoBehaviour
             ArmyEntity armyEntity = army.transform.GetComponent<ArmyEntity>();
             armyEntity.Position = Position;
             armyEntity.Controller = Controller;
-
         }
     }
 
+	/// <summary>
+	/// Determines whether the controller is the one who has selected this object.
+	/// </summary>
+	/// <returns></returns>
+	private bool SelectedByController(){
+		return Controller.PlayerId == Global.ActivePlayerId;
+	}
     private void MapDrawingUpdater()
     {
         // Shows the Food Map.
