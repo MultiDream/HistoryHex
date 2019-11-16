@@ -40,6 +40,10 @@ public class HexEntity : MonoBehaviour
 
     // SelectionInterface
     private SelectableObj SelectionInterface;
+
+	//KeyBindings
+	KeyCode raiseArmy = KeyCode.V;
+
     #endregion
 
     // Start is called before the first frame update
@@ -77,7 +81,7 @@ public class HexEntity : MonoBehaviour
     private void ActiveUpdate()
     {
         // Army spawn code.
-        if (Input.GetKeyDown(KeyCode.V))
+        if (Input.GetKeyDown(raiseArmy))
         {
             Vector3 position = transform.position;
             Quaternion rotation = Quaternion.Euler(0, 0, 0);
