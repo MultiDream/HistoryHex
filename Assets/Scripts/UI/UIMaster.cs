@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 /// <summary>
 /// This script's purpose is to manage a series of other UI components.
@@ -16,6 +17,9 @@ public class UIMaster : MonoBehaviour
 	public GameObject subComponent;
 	public KeyboardController keyboard;			// Needs to be passed in.
 	public SelectController selectController;	// Same deal.
+
+	public TextMeshProUGUI currentPlayerText;
+	public Image currentPlayerImage;
 
 	public static UIMaster instance; // Just adding this bc idk how things are intended to be set up
 
@@ -80,10 +84,20 @@ public class UIMaster : MonoBehaviour
 	void Space_Key()
 	{
 		Debug.Log("UIMaster Notified of Space Hit!");
+		SetCurrentPlayerHUD();
 		if (subComponent != null){
 			Color color = GM.Players[GM.currentPlayer].GetComponent<Player>().Colour;
 			subComponent.transform.GetChild(0).GetComponent<Image>().color = color; //Jesus this is long. Clean later.
 		}
 		return;
+	}
+
+	public void SetCurrentPlayerHUD() {
+		selectController.ClearSelected();
+		
+		Color color = GM.Players[GM.currentPlayer].GetComponent<Player>().Colour;
+		color.a = 0.5f;
+		currentPlayerImage.color = color;
+		currentPlayerText.text = "Player " + GM.currentPlayer;
 	}
 }

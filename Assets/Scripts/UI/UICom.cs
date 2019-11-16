@@ -11,5 +11,4 @@ public abstract class UICom : MonoBehaviour
 
     public abstract void SetButtonListeners(params Action[] actions);
 
-
 }

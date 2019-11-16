@@ -45,10 +45,15 @@ public class GameMaster : MonoBehaviour
         enableKeys = true;
 
 		Players = new GameObject[NumberOfPlayers];
+        float split = 1.0f / NumberOfPlayers;
+        float centeringOffset = split/2f;
+        float rangeOffset = centeringOffset;
+
         for (int i = 0; i < NumberOfPlayers; i++)
         {
+            float center = i*split + centeringOffset;
             Players[i] = Instantiate(playerPrefab);
-            Players[i].transform.GetComponent<Player>().Colour = UnityEngine.Random.ColorHSV();
+            Players[i].transform.GetComponent<Player>().Colour = UnityEngine.Random.ColorHSV(center - rangeOffset, center + rangeOffset, 0.3f, 1f, 0.3f, 1f);
             Players[i].transform.GetComponent<Player>().PlayerId = i;
         }
 
@@ -64,6 +69,7 @@ public class GameMaster : MonoBehaviour
         Board.setControl(_players); //Needs to run after the map is generated.
         Board.InitPlayerAdjacencies();
 
+        UIMaster.instance.SetCurrentPlayerHUD();
     }
 
     // Update is called once per frame

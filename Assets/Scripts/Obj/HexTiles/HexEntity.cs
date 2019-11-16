@@ -14,6 +14,8 @@ public class HexEntity : MonoBehaviour
     // This variable calculates if an attack was made on this tile after your previous turn
     private bool attacked = false;
 
+    public Renderer hexbase;
+
     //Prefabs
     public GameObject ArmyPrefab;
     //Public variables
@@ -123,11 +125,13 @@ public class HexEntity : MonoBehaviour
     private void OnSelect()
     {
         activated = true;
+        ChangeMaterial(Controller.Colour);
     }
 
     private void OnDeselect()
     {
         activated = false;
+        ChangeMaterial(new Color(0,0,0,0));
     }
 
 	private void OnInitializeUI(UICom com) {
@@ -216,6 +220,13 @@ public class HexEntity : MonoBehaviour
         checkUpdatePopulation();
 		allocateLabor();
         turnCounter++;
+    }
+
+    public void UpdateController(Player newController) {
+        Controller = newController;
+        Material m = hexbase.material;
+        m.SetColor("_Color", Controller.Colour);
+
     }
 
 	#endregion
@@ -340,6 +351,11 @@ public class HexEntity : MonoBehaviour
     {
 		// Disabled until the drawer is reworked
         //drawer.Update();
+    }
+
+    void ChangeMaterial(Color c) {
+        Material m = hexbase.material;
+        m.SetColor("_Emission", c);
     }
 
 	#region Distance Utilities

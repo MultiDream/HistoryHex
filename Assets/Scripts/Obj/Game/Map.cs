@@ -202,7 +202,7 @@ public class Map : MonoBehaviour
     {
         foreach (GameObject hexObj in hexMap.Values)
         {
-            hexObj.GetComponent<HexEntity>().Controller = players[Mathf.FloorToInt(Random.value * players.Length)];
+            hexObj.GetComponent<HexEntity>().UpdateController(players[Mathf.FloorToInt(Random.value * players.Length)]);
         }
     }
 
