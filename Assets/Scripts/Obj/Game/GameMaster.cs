@@ -109,6 +109,35 @@ public class GameMaster : MonoBehaviour
         confirmExit.OnEndGamePressed();
     }
 
+	/// <summary>
+	/// Tests to see if end conditions have been met.
+	/// If so, a playerId is given to represent the winner
+	/// of the game. Else, return -1.
+	/// </summary>
+	/// <returns></returns>
+	public void TestEndConditions(){
+		HashSet<int> remainingPlayers = RemainingPlayers();
+		if (remainingPlayers.Count <= 1) 
+		{
+			int winner = remainingPlayers.RemoveWhere(_ => true); //Removes first element in set.
+			enableKeys = false;
+			gameEndState.SetDisplayResults(winner);
+			playerTurnStates[winner].OnGameEnd();
+		} 
+			
+	}
+
+	private HashSet<int> RemainingPlayers(){
+		HashSet<int> remainingPlayers = new HashSet<int>();
+
+		HexEntity entity;
+		foreach (GameObject hexObj in Board.hexMap.Values){
+			entity = hexObj.GetComponent<HexEntity>();
+			remainingPlayers.Add(entity.Controller.PlayerId);
+		}
+
+		return remainingPlayers;
+	}
     #region KeyBindings
     /*-------------------------------------------------
 	 *                  Key Bindings
@@ -147,6 +176,7 @@ public class GameMaster : MonoBehaviour
 	public event NextTurnHandler NextTurn = new NextTurnHandler(LogNextTurn); //Contains subscribers to next turn method.
 	private void OnNextTurn()
     {
+		TestEndConditions();
 		NextTurn(); // Event will never be null.
 		HexUpdate();
 		ArmyUpdate();
