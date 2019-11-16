@@ -250,6 +250,7 @@ public class ArmyEntity : MonoBehaviour
     public void Sieze(GameObject hexTile)
     {
         HexEntity entity = hexTile.GetComponent<HexEntity>();
+		entity.UpdateController(Controller);
         Global.MapFlyWeight.TransferHexOwner(hexTile, this.Controller);
         entity.army = gameObject;
     }
