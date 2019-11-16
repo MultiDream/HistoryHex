@@ -18,6 +18,7 @@ public class HexEntity : MonoBehaviour
 
     //Prefabs
     public GameObject ArmyPrefab;
+
     //Public variables
     public Vector3Int Position; //Position on the hex grid.
     public float FoodBase;
@@ -26,9 +27,19 @@ public class HexEntity : MonoBehaviour
     public Player Controller { get; set; }
     public EntityDrawer drawer;
     public GameObject army; // make into an array later, when multiple armies can sit on a tile.
-    public float TotalPopulation;
-    public float FoodPopulation;
-    public float SupplyLinePopulation;
+
+	private float _totalPopulation;
+	public float TotalPopulation {
+		get
+		{
+			return _totalPopulation;
+		} 
+		set 
+		{
+			allocateLabor();
+			_totalPopulation = value;
+		}
+	}
 
     // This dictionary keeps track of labor pools, the key of this dict is a string representing the type of labor and the int
     // represents the amount of a population that is put into this type of labor
@@ -81,8 +92,9 @@ public class HexEntity : MonoBehaviour
     private void ActiveUpdate()
     {
         // Army spawn code.
-        if (Input.GetKeyDown(raiseArmy) && SelectedByController())
+        if (Input.GetKeyDown(raiseArmy) && SelectedByController() && TotalPopulation >= 200)
         {
+			TotalPopulation -= 100;
             Vector3 position = transform.position;
             Quaternion rotation = Quaternion.Euler(0, 0, 0);
             this.army = Instantiate(ArmyPrefab, position, rotation);
@@ -180,14 +192,10 @@ public class HexEntity : MonoBehaviour
         if (FoodBase >= 0)
         {
             TotalPopulation = FoodBase * 100;
-			FoodPopulation = TotalPopulation;
-			SupplyLinePopulation = 0.0f;
 		} 
 		else 
 		{
 			TotalPopulation = 0.0f;
-			FoodPopulation = 0.0f;
-			SupplyLinePopulation = 0.0f;
 		}
 
     }
@@ -208,8 +216,6 @@ public class HexEntity : MonoBehaviour
     {
 		int increase = Mathf.FloorToInt(TotalPopulation * 0.02f);
 		TotalPopulation += increase;
-        // Since you add to the total population you must add to a labor pool and food is the default labor pool
-        FoodPopulation += increase;
     }
 
     // This runs every turn and updates food based on population if not attacked after previous turn
@@ -267,11 +273,17 @@ public class HexEntity : MonoBehaviour
 	// pools by adding them to the laborPoolDict
 	private void InitializeLaborPools() {
 		// This happens because all the default labor pool poplulation goes into is food
-		FoodPopulation = TotalPopulation;
-		laborPool.Add(LaborPool.Food, FoodPopulation);
-		laborPool.Add(LaborPool.Supply, 0);
-		spentLaborPool.Add(LaborPool.Food, 0);
-		spentLaborPool.Add(LaborPool.Supply, 0);
+
+		// Somehow, these are already being added BEFORE we define them here.
+		// Not sure how or why. 
+		//laborPool.Add(LaborPool.Food, TotalPopulation);
+		//laborPool.Add(LaborPool.Supply, 0);
+		//spentLaborPool.Add(LaborPool.Food, 0);
+		//spentLaborPool.Add(LaborPool.Supply, 0);
+		laborPool[LaborPool.Food] =  TotalPopulation;
+		laborPool[LaborPool.Supply] = 0;
+		spentLaborPool[LaborPool.Food] = 0;
+		spentLaborPool[LaborPool.Supply] = 0;
 	}
 
 	//Sets the spent labor to zero.
