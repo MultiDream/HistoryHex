@@ -47,11 +47,16 @@ namespace HistoryHex {
             //audioDict.Add(nameof(audioMap.musicGame), audioMap.musicGame);
         }
 
-        public void Play2dEffect(string id, float oneOffVolumeScale = 1.0f) {
+        public void Play2dEffect(string id, float oneOffVolumeScale = 1.0f, float startTime = 0.0f) {
             AudioClip soundEffect;
             audioDict.TryGetValue(id, out soundEffect);
 
+            uiSoundSource.time = startTime;
             uiSoundSource.PlayOneShot(soundEffect, volumeScale * oneOffVolumeScale);
+        }
+
+        public void StopSound() {
+            uiSoundSource.Stop();
         }
 
         public void SetVolumeScale(float volumeScale) {
