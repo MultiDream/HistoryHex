@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,8 +14,11 @@ public class HexEntity : MonoBehaviour
     // This variable calculates if an attack was made on this tile after your previous turn
     private bool attacked = false;
 
+    public Renderer hexbase;
+
     //Prefabs
     public GameObject ArmyPrefab;
+
     //Public variables
     public Vector3Int Position; //Position on the hex grid.
     public float FoodBase;
@@ -23,16 +27,34 @@ public class HexEntity : MonoBehaviour
     public Player Controller { get; set; }
     public EntityDrawer drawer;
     public GameObject army; // make into an array later, when multiple armies can sit on a tile.
-    public float TotalPopulation;
-    public float FoodPopulation;
-    public float SupplyLinePopulation;
+
+	private float _totalPopulation;
+	public float TotalPopulation {
+		get
+		{
+			return _totalPopulation;
+		} 
+		set 
+		{
+			allocateLabor();
+			_totalPopulation = value;
+		}
+	}
+
     // This dictionary keeps track of labor pools, the key of this dict is a string representing the type of labor and the int
     // represents the amount of a population that is put into this type of labor
-    private Dictionary<string,float> laborPoolDict = new Dictionary<string,float>();
+    private Dictionary<LaborPool,float> laborPool = new Dictionary<LaborPool, float>();
 
+	//Supply line related variables
+	private Dictionary<LaborPool, float> spentLaborPool = new Dictionary<LaborPool, float>();
+	public List<TransportOrder> supplyLines = new List<TransportOrder>();
 
     // SelectionInterface
     private SelectableObj SelectionInterface;
+
+	//KeyBindings
+	KeyCode raiseArmy = KeyCode.V;
+
     #endregion
 
     // Start is called before the first frame update
@@ -70,8 +92,9 @@ public class HexEntity : MonoBehaviour
     private void ActiveUpdate()
     {
         // Army spawn code.
-        if (Input.GetKeyDown(KeyCode.V))
+        if (Input.GetKeyDown(raiseArmy) && SelectedByController() && TotalPopulation >= 200)
         {
+			TotalPopulation -= 100;
             Vector3 position = transform.position;
             Quaternion rotation = Quaternion.Euler(0, 0, 0);
             this.army = Instantiate(ArmyPrefab, position, rotation);
@@ -80,10 +103,16 @@ public class HexEntity : MonoBehaviour
             ArmyEntity armyEntity = army.transform.GetComponent<ArmyEntity>();
             armyEntity.Position = Position;
             armyEntity.Controller = Controller;
-
         }
     }
 
+	/// <summary>
+	/// Determines whether the controller is the one who has selected this object.
+	/// </summary>
+	/// <returns></returns>
+	private bool SelectedByController(){
+		return Controller.PlayerId == Global.ActivePlayerId;
+	}
     private void MapDrawingUpdater()
     {
         // Shows the Food Map.
@@ -118,30 +147,39 @@ public class HexEntity : MonoBehaviour
     private void OnSelect()
     {
         activated = true;
+        ChangeMaterial(Controller.Colour);
     }
 
     private void OnDeselect()
     {
         activated = false;
+        ChangeMaterial(new Color(0,0,0,0));
     }
 
 	private void OnInitializeUI(UICom com) {
+		float expectedNextFood = laborPool[LaborPool.Food] * FoodBase;
 		((UIHex)com).SetText(Name, Controller.PlayerId.ToString(), Food.ToString(),
-		FoodBase.ToString(), TotalPopulation.ToString(), Mathf.FloorToInt(TotalPopulation * 0.02f).ToString(),
-		"XXX", "XXX");
+		(expectedNextFood).ToString(), TotalPopulation.ToString(),
+		Mathf.FloorToInt(TotalPopulation * 0.02f).ToString(),
+		(foodNeed()).ToString(), laborPool[LaborPool.Supply].ToString());
 	}
 
+	private float foodNeed(){
+		float need = 0;
+		foreach(TransportOrder order in supplyLines ){
+			need += order.amount;
+		}
+		return need;
+	}
 	#endregion
 
 	//Start Delegation
 	private void Initialize()
     {
+		// Linked to the GM's next turn in the Map class.
         Name = "NoMansLand";
         FoodBase = Mathf.Floor(Random.value * Global.MAXIMUM_FOOD);
         drawer = new EntityDrawer(transform.GetChild(0));
-        FoodPopulation = 0.0f;
-        SupplyLinePopulation = 0.0f;
-        TotalPopulation = 0.0f;
         InitializePopulation();
         InitializeLaborPools();
     }
@@ -154,17 +192,12 @@ public class HexEntity : MonoBehaviour
         if (FoodBase >= 0)
         {
             TotalPopulation = FoodBase * 100;
-        }
-    }
+		} 
+		else 
+		{
+			TotalPopulation = 0.0f;
+		}
 
-    // Runs during initialization of tiles and puts a population into a labor pool. Since food is
-    // the default labor pool the entire population is put into the food labor pool. This also creates the types of labor
-    // pools by adding them to the laborPoolDict
-    private void InitializeLaborPools() {
-        // This happens because all the default labor pool poplulation goes into is food
-        FoodPopulation = TotalPopulation;
-        laborPoolDict.Add("Food", FoodPopulation);
-        laborPoolDict.Add("SupplyLines", SupplyLinePopulation);
     }
 
 	#region NextTurn Updates
@@ -183,8 +216,6 @@ public class HexEntity : MonoBehaviour
     {
 		int increase = Mathf.FloorToInt(TotalPopulation * 0.02f);
 		TotalPopulation += increase;
-        // Since you add to the total population you must add to a labor pool and food is the default labor pool
-        FoodPopulation += increase;
     }
 
     // This runs every turn and updates food based on population if not attacked after previous turn
@@ -193,50 +224,160 @@ public class HexEntity : MonoBehaviour
     {
         if (FoodBase >= 0 & attacked == false)
         {
-            Food += TotalPopulation * FoodBase; //Times some constant.
+            Food += laborPool[LaborPool.Food] * FoodBase; //Times some constant.
         }
     }
 
     // This runs after every turn run by the Controlling Player
     public void updateTurn()
     {
+		ResetSpentLabor();
         updateFood();
         checkUpdatePopulation();
+		allocateLabor();
         turnCounter++;
+    }
+
+    public void UpdateController(Player newController) {
+        Controller = newController;
+        Material m = hexbase.material;
+        m.SetColor("_Color", Controller.Colour);
+
     }
 
 	#endregion
 
-    // NEED TO ADD FUNCTIONS THAT CHECK IF A LABOR POOL SWITCH CAN BE MADE BUT CAN'T IMPLEMENT NOW BECAUSE SUPPLY LINES NOT READY
+	#region LaborPools
+	// NEED TO ADD FUNCTIONS THAT CHECK IF A LABOR POOL SWITCH CAN BE MADE BUT CAN'T IMPLEMENT NOW BECAUSE SUPPLY LINES NOT READY
 
-    // This function actually changes the values in a labor pool after checking if the values in labor pools can be switched
-    // Parameters:
-    // 1) laborPoolAdd: the labor pool gaining population
-    // 2) laborPoolSubtract: the labor pool losing population
-    // 3) amount: the amount of population being switched
-    public void switchLaborPoolAssignments(string laborPoolAdd, string laborPoolSubtract, float amount) {
-        laborPoolDict[laborPoolAdd] += amount;
-        laborPoolDict[laborPoolSubtract] -= amount;
+	// This function actually changes the values in a labor pool after checking if the values in labor pools can be switched
+	// Parameters:
+	// 1) laborPoolAdd: the labor pool gaining population
+	// 2) laborPoolSubtract: the labor pool losing population
+	// 3) amount: the amount of population being switched
+	public void switchLaborPoolAssignments(LaborPool laborPoolAdd, LaborPool laborPoolSubtract, float amount) {
+		if(laborPool[laborPoolSubtract] >= amount)
+		{
+			laborPool[laborPoolAdd] += amount;
+			laborPool[laborPoolSubtract] -= amount;
+		}
+        else
+		{
+			laborPool[laborPoolAdd] += laborPool[laborPoolSubtract];
+			laborPool[laborPoolSubtract] = 0;
+		}
     }
 
-	// Returns as much food as possible, given a request.
-	public int FoodRequest(int request)
+	// Runs during initialization of tiles and puts a population into a labor pool. Since food is
+	// the default labor pool the entire population is put into the food labor pool. This also creates the types of labor
+	// pools by adding them to the laborPoolDict
+	private void InitializeLaborPools() {
+		// This happens because all the default labor pool poplulation goes into is food
+
+		// Somehow, these are already being added BEFORE we define them here.
+		// Not sure how or why. 
+		//laborPool.Add(LaborPool.Food, TotalPopulation);
+		//laborPool.Add(LaborPool.Supply, 0);
+		//spentLaborPool.Add(LaborPool.Food, 0);
+		//spentLaborPool.Add(LaborPool.Supply, 0);
+		laborPool[LaborPool.Food] =  TotalPopulation;
+		laborPool[LaborPool.Supply] = 0;
+		spentLaborPool[LaborPool.Food] = 0;
+		spentLaborPool[LaborPool.Supply] = 0;
+	}
+
+	//Sets the spent labor to zero.
+	private void ResetSpentLabor(){
+		List<LaborPool> pools = new List<LaborPool>(spentLaborPool.Keys);
+		foreach (LaborPool pool in pools){
+			spentLaborPool[pool] = 0;
+		}
+	}
+
+	//Determines the allocation of supply line labor.
+	private void allocateLabor(){
+		int supplyDemand = supplyNeed();
+		laborPool[LaborPool.Food] = Mathf.Max(TotalPopulation-supplyDemand,0) ;
+		laborPool[LaborPool.Supply] = Mathf.Min(supplyDemand,TotalPopulation);
+	}
+
+	private int supplyNeed(){
+		int supplyDemand = 0;
+		foreach (TransportOrder order in supplyLines) {
+			supplyDemand += order.amount * (order.requestor.Length() - 1);
+		}
+		return supplyDemand;
+	}
+	/// <summary>
+	/// Returns as much food as possible, given a request.
+	/// </summary>
+	/// <param name="request">The amount of food beind requested</param>
+	/// <param name="distance">The distance the food will have to travel.</param>
+	/// <returns></returns>
+	public int FoodRequest(int request, int distance) 
 	{
-		if (request <= 0){
+		// Do not allow negative requests.
+		if (request <= 0) {
 			return 0;
 		}
-		if (request > Food)
-		{
-			request = Mathf.FloorToInt(Food);
+
+		int payload = 0;
+
+		// If the food requested exceeds the amount in the tile,
+		// you will only recieve what the tile can provide.
+		if (request > Food) {
+			payload = Mathf.FloorToInt(Food);
+		} else {
+			payload = request;
 		}
-		Food -= request;
-		return request;
+
+		//Calculate Transport Cost.
+		int laborCost = payload * distance;
+
+		//Resize the payload to meet available resources for the request.
+		int availableTransport = Mathf.FloorToInt(laborPool[LaborPool.Supply] - spentLaborPool[LaborPool.Supply]);
+		if (laborCost > availableTransport)
+		{
+			// Reduce the payload to what can actually be transported.
+			payload = availableTransport / distance;
+			spentLaborPool[LaborPool.Supply] += availableTransport;
+		}
+		else 
+		{
+			spentLaborPool[LaborPool.Supply] += laborCost;
+		}
+		Food -= payload;
+		return payload;
 	}
+
+	public void CreateOrder(HexPath path)
+	{
+		TransportOrder order = new TransportOrder();
+		order.requestor = path;
+		order.amount = path.army.Manpower;
+		supplyLines.Add(order);
+		allocateLabor();
+	}
+
+	public void DeleteOrder(HexPath path) {
+		TransportOrder order = supplyLines.First(x => x.requestor == path);
+		supplyLines.Remove(order);
+		allocateLabor();
+	}
+
+	#endregion
+
+
 	//Draw Delegation
 	private void Draw()
     {
 		// Disabled until the drawer is reworked
         //drawer.Update();
+    }
+
+    void ChangeMaterial(Color c) {
+        Material m = hexbase.material;
+        m.SetColor("_Emission", c);
     }
 
 	#region Distance Utilities

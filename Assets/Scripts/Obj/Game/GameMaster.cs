@@ -17,18 +17,24 @@ public delegate void EndGameHandler();
 
 public class GameMaster : MonoBehaviour
 {
-
     //Prefabs needed for this Component and sub components.
     public GameObject playerPrefab;
     public GameObject UIMasterPrefab;
     public int NumberOfPlayers;
     public int currentPlayer = 0;
     public GameObject[] Players;
+    public HistoryHex.StateMachine fsm;
+    public HistoryHex.GameStates.PlayerTurn[] playerTurnStates;
+    public HistoryHex.GameStates.Pause pauseState;
+    public HistoryHex.GameStates.ConfirmExit confirmExit;
+    public HistoryHex.GameStates.GameEnd gameEndState;
     public Map Board;               //Handles map creation.
 	
 	//Button Mappings;
 	private KeyCode NextTurnKey = KeyCode.Space;
-	private KeyCode SurrenderKey = KeyCode.Escape;
+    private KeyCode PauseKey = KeyCode.Escape;
+
+    private bool enableKeys = true;
 
 	// Start is called before the first frame update
 	void Start()
@@ -36,11 +42,18 @@ public class GameMaster : MonoBehaviour
 		//Throws itself up into Globally Accessible Scope.
 		Global.GM = this;
 
+        enableKeys = true;
+
 		Players = new GameObject[NumberOfPlayers];
+        float split = 1.0f / NumberOfPlayers;
+        float centeringOffset = split/2f;
+        float rangeOffset = centeringOffset;
+
         for (int i = 0; i < NumberOfPlayers; i++)
         {
+            float center = i*split + centeringOffset;
             Players[i] = Instantiate(playerPrefab);
-            Players[i].transform.GetComponent<Player>().Colour = UnityEngine.Random.ColorHSV();
+            Players[i].transform.GetComponent<Player>().Colour = UnityEngine.Random.ColorHSV(center - rangeOffset, center + rangeOffset, 0.3f, 1f, 0.3f, 1f);
             Players[i].transform.GetComponent<Player>().PlayerId = i;
         }
 
@@ -56,19 +69,25 @@ public class GameMaster : MonoBehaviour
         Board.setControl(_players); //Needs to run after the map is generated.
         Board.InitPlayerAdjacencies();
 
+        UIMaster.instance.SetCurrentPlayerHUD();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(NextTurnKey))
+        if (enableKeys && Input.GetKeyDown(NextTurnKey))
         {
             NextTurnKeyPress();
         }
 
-		if (Input.GetKeyDown(SurrenderKey)) {
-			SurrenderKeyPress();
-		}
+        if (enableKeys && Input.GetKeyDown(PauseKey)) {
+            PauseKeyPress();
+        }
+
+        // TEMPORARY
+        if (Input.GetKeyDown(KeyCode.Alpha8)) {
+            GameEnd();
+        }
 	}
 
     void FixedUpdate()
@@ -76,13 +95,57 @@ public class GameMaster : MonoBehaviour
         //Board.DrawSelectedPath(UIMasterPrefab.GetComponent<UIMaster>().selectController);
     }
 
+    public void GameEnd() {
+        enableKeys = false;
+        gameEndState.SetDisplayResults(Global.ActivePlayerId);
+        playerTurnStates[Global.ActivePlayerId].OnGameEnd();
+    }
+
+    public void ExitGame() {
+        pauseState.OnEndGamePressed();
+    }
+
+    public void ConfirmExitGame() {
+        confirmExit.OnEndGamePressed();
+    }
+
+	/// <summary>
+	/// Tests to see if end conditions have been met.
+	/// If so, a playerId is given to represent the winner
+	/// of the game. Else, return -1.
+	/// </summary>
+	/// <returns></returns>
+	public void TestEndConditions(){
+		HashSet<int> remainingPlayers = RemainingPlayers();
+		if (remainingPlayers.Count <= 1) 
+		{
+			int winner = remainingPlayers.RemoveWhere(_ => true); //Removes first element in set.
+			enableKeys = false;
+			gameEndState.SetDisplayResults(winner);
+			playerTurnStates[winner].OnGameEnd();
+		} 
+			
+	}
+
+	private HashSet<int> RemainingPlayers(){
+		HashSet<int> remainingPlayers = new HashSet<int>();
+
+		HexEntity entity;
+		foreach (GameObject hexObj in Board.hexMap.Values){
+			entity = hexObj.GetComponent<HexEntity>();
+			remainingPlayers.Add(entity.Controller.PlayerId);
+		}
+
+		return remainingPlayers;
+	}
     #region KeyBindings
     /*-------------------------------------------------
 	 *                  Key Bindings
 	 *-----------------------------------------------*/
 	public void NextTurnKeyPress()
     {
-        //Debug.Log("Space Key Pressed!");
+        Debug.Log("Space Key Pressed!");
+        playerTurnStates[Global.ActivePlayerId].OnTurnEnd();
         currentPlayer++;
         if (currentPlayer >= NumberOfPlayers)
         {
@@ -94,11 +157,17 @@ public class GameMaster : MonoBehaviour
         OnNextTurn();
     }
 
-	public void SurrenderKeyPress()
+	public void PauseKeyPress()
 	{
-		//if (SurrenderPrompt()){ Prompt player for surrender.
-
-		Debug.Log("Player " + currentPlayer + " has surrendered.");
+        if (fsm.GetCurrentState() == pauseState) {
+            pauseState.OnReturnToGame(Global.ActivePlayerId);
+        }
+        else if (fsm.GetCurrentState() == confirmExit) {
+            confirmExit.OnCancelPressed();
+        }
+        else {
+            playerTurnStates[Global.ActivePlayerId].OnPause(pauseState);
+        }
 	}
 	#endregion
 
@@ -107,13 +176,26 @@ public class GameMaster : MonoBehaviour
 	public event NextTurnHandler NextTurn = new NextTurnHandler(LogNextTurn); //Contains subscribers to next turn method.
 	private void OnNextTurn()
     {
+		TestEndConditions();
 		NextTurn(); // Event will never be null.
+		HexUpdate();
+		ArmyUpdate();
     }
 
+	public event NextTurnHandler HexUpdate = new NextTurnHandler(LogNextTurn); //Contains subscribers to next turn method.
+	private void OnHexUpdate() {
+		HexUpdate(); // Event will never be null.
+	}
+
+	public event NextTurnHandler ArmyUpdate = new NextTurnHandler(LogNextTurn); //Contains subscribers to next turn method.
+	private void OnArmyUpdate() {
+		ArmyUpdate(); // Event will never be null.
+
+	}
 	/// <summary>
 	/// Default function for logging next Turn Events firing.
 	/// </summary>
-    static void LogNextTurn()
+	static void LogNextTurn()
     {
         Debug.Log("OnNextTurn Event Fired!");
     }
@@ -122,6 +204,7 @@ public class GameMaster : MonoBehaviour
 	private void OnNextCycle() {
 		NextCycle(); // Event will never be null.
 	}
+
 	/// <summary>
 	/// Default function for logging next Cycle Events firing.
 	/// </summary>
@@ -129,17 +212,17 @@ public class GameMaster : MonoBehaviour
 		Debug.Log("OnNextCycle Event Fired!");
 	}
 
-	public event EndGameHandler EndGame = new EndGameHandler(LogEndGame);
+	public event EndGameHandler EndGame = new EndGameHandler(LogEvent);
 	private void OnEndGame(){
 		EndGame(); // Event will never be null.
 	}
-	/// <summary>
-	/// Default function for logging next Cycle Events firing.
-	/// </summary>
-	static void LogEndGame() {
-		Debug.Log("OnNextCycle Event Fired!");
-	}
 
+	/// <summary>
+	/// Default function for logging Events firing.
+	/// </summary>
+	static void LogEvent() {
+		Debug.Log($"Event Fired!");
+	}
 
 	#endregion
 }
