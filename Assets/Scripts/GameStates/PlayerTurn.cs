@@ -16,9 +16,12 @@ namespace HistoryHex {
 
             public GameObject endTurnButton;
 
+            public ArbitrarySounds sounds;
+
             private Action<IState> changeState;
 
             public void OnTurnEnd() {
+                sounds.OnTurnEnd();
                 changeState(transition);
             }
 
