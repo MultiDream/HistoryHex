@@ -92,17 +92,9 @@ public class HexEntity : MonoBehaviour
     private void ActiveUpdate()
     {
         // Army spawn code.
-        if (Input.GetKeyDown(raiseArmy) && SelectedByController() && TotalPopulation >= 200)
+        if (Input.GetKeyDown(raiseArmy))
         {
-			TotalPopulation -= 100;
-            Vector3 position = transform.position;
-            Quaternion rotation = Quaternion.Euler(0, 0, 0);
-            this.army = Instantiate(ArmyPrefab, position, rotation);
-
-            //Set an army up.
-            ArmyEntity armyEntity = army.transform.GetComponent<ArmyEntity>();
-            armyEntity.Position = Position;
-            armyEntity.Controller = Controller;
+			RaiseArmy();
         }
     }
 
@@ -157,11 +149,15 @@ public class HexEntity : MonoBehaviour
     }
 
 	private void OnInitializeUI(UICom com) {
+		UIHex uiHex = (UIHex)com;
 		float expectedNextFood = laborPool[LaborPool.Food] * FoodBase;
-		((UIHex)com).SetText(Name, Controller.PlayerId.ToString(), Food.ToString(),
+
+		uiHex.SetText(Name, Controller.PlayerId.ToString(), Food.ToString(),
 		(expectedNextFood).ToString(), TotalPopulation.ToString(),
 		Mathf.FloorToInt(TotalPopulation * 0.02f).ToString(),
 		(foodNeed()).ToString(), laborPool[LaborPool.Supply].ToString());
+
+		uiHex.SetButtonListeners(RaiseArmy);
 	}
 
 	private float foodNeed(){
@@ -177,7 +173,7 @@ public class HexEntity : MonoBehaviour
 	private void Initialize()
     {
 		// Linked to the GM's next turn in the Map class.
-        Name = "NoMansLand";
+        Name = "Village";
         FoodBase = Mathf.Floor(Random.value * Global.MAXIMUM_FOOD);
         drawer = new EntityDrawer(transform.GetChild(0));
         InitializePopulation();
@@ -186,6 +182,7 @@ public class HexEntity : MonoBehaviour
 
 	// Runs during initialization of tiles and sets a base population for each tile
 	// The base population now is equal to base food but this can be changed as more is implemented 
+
 	private void InitializePopulation()
     {
         // No Base Food means that no population can be created
@@ -199,6 +196,21 @@ public class HexEntity : MonoBehaviour
 		}
 
     }
+
+	public void RaiseArmy(){
+		// Army spawn code.
+		if (SelectedByController() && TotalPopulation >= 200) {
+			TotalPopulation -= 100;
+			Vector3 position = transform.position;
+			Quaternion rotation = Quaternion.Euler(0, 0, 0);
+			this.army = Instantiate(ArmyPrefab, position, rotation);
+
+			//Set an army up.
+			ArmyEntity armyEntity = army.transform.GetComponent<ArmyEntity>();
+			armyEntity.Position = Position;
+			armyEntity.Controller = Controller;
+		}
+	}
 
 	#region NextTurn Updates
 	// This updates every turn and decides if updatePopulation() is run

@@ -2,14 +2,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
 using TMPro;
 
 public class UIHex : UICom
 {
     [SerializeField] private TextMeshProUGUI villageText, playerText, foodText, foodGrowthText,
                          populationText, populationGrowthText, outFoodText, outPopulationText;
-    
-    public override void SetText(string panelName, string player, string food, string foodGrowth, 
+	[SerializeField] private Button raiseArmyButton;
+
+	public override void SetText(string panelName, string player, string food, string foodGrowth, 
                     string population, string populationGrowth, string outFood, string outPopulation) {
         villageText.text = panelName;
         playerText.text = "Player " + player;
@@ -22,6 +25,7 @@ public class UIHex : UICom
     }
 
     public override void SetButtonListeners(params Action[] actions) {
-        return;
+		raiseArmyButton.onClick.AddListener(() => actions[0]());
+		return;
     }
 }
