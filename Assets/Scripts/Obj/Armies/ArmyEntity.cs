@@ -2,6 +2,7 @@
 using static System.Array;
 using System.Collections.Generic;
 using UnityEngine;
+using HistoryHex;
 
 public class ArmyEntity : MonoBehaviour
 {
@@ -256,6 +257,11 @@ public class ArmyEntity : MonoBehaviour
 		entity.UpdateController(Controller);
         Global.MapFlyWeight.TransferHexOwner(hexTile, this.Controller);
         entity.army = gameObject;
+
+		//Play the movement sound
+		GameObject AudioObj = GameObject.Find("AudioManagerGame");
+		ArbitrarySounds sounds = AudioObj.GetComponentInChildren<ArbitrarySounds>();
+		sounds.OnArmyMove();
     }
 
     /// <summary>
@@ -285,7 +291,13 @@ public class ArmyEntity : MonoBehaviour
             CheckDead();
             otherArmy.CheckDead();
         }
-        return otherArmyObject == null;
+
+		//Play the movement sound
+		GameObject AudioObj = GameObject.Find("AudioManagerGame");
+		ArbitrarySounds sounds = AudioObj.GetComponentInChildren<ArbitrarySounds>();
+		sounds.OnArmyAttack();
+
+		return otherArmyObject == null;
     }
 
     private void DisplayRolls(List<int> rolls, Vector3 position, Vector3 offset, float lifespan)
