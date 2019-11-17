@@ -150,6 +150,10 @@ public class ArmyEntity : MonoBehaviour
             HexEntity nextHexEntity = nextTile.GetComponent<HexEntity>();
             HexEntity currentHexEntity = currentTile.GetComponent<HexEntity>();
 
+			if (nextHexEntity.army.GetComponent<ArmyEntity>().Controller.PlayerId == Controller.PlayerId){
+				return;
+			}
+
             if (nextHexEntity.army == null)
             {
                 currentHexEntity.army = null;
