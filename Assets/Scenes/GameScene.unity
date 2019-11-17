@@ -153,6 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraPos: {x: 0, y: 0, z: 0}
+  Limit: 
 --- !u!81 &23680187
 AudioListener:
   m_ObjectHideFlags: 0
@@ -212,7 +213,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 23680185}
   m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: 0, y: 10, z: -2}
+  m_LocalPosition: {x: 0, y: 10, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1916,11 +1917,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameMasterPrefab
       objectReference: {fileID: 0}
-    - target: {fileID: 1977217408252973863, guid: 23b94d6d44eb7c24b9e1d615b8da48f6,
-        type: 3}
-      propertyPath: radius
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 3535882639757679602, guid: 23b94d6d44eb7c24b9e1d615b8da48f6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2021,6 +2017,11 @@ PrefabInstance:
       propertyPath: confirmExit
       value: 
       objectReference: {fileID: 400329203}
+    - target: {fileID: 1977217408252973863, guid: 23b94d6d44eb7c24b9e1d615b8da48f6,
+        type: 3}
+      propertyPath: radius
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 1521641938337772199, guid: 23b94d6d44eb7c24b9e1d615b8da48f6,
         type: 3}
       propertyPath: m_RootOrder
@@ -3531,6 +3532,31 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameStateMachine
       objectReference: {fileID: 0}
+    - target: {fileID: 8630515850263087578, guid: b61b686b4dddfe243b893fc7f00695c0,
+        type: 3}
+      propertyPath: endTurnButton
+      value: 
+      objectReference: {fileID: 2072484747}
+    - target: {fileID: 8630515849124892097, guid: b61b686b4dddfe243b893fc7f00695c0,
+        type: 3}
+      propertyPath: returnToMenu
+      value: 
+      objectReference: {fileID: 423080479}
+    - target: {fileID: 8630515848837712926, guid: b61b686b4dddfe243b893fc7f00695c0,
+        type: 3}
+      propertyPath: ui
+      value: 
+      objectReference: {fileID: 1869938720}
+    - target: {fileID: 8630515850262938137, guid: b61b686b4dddfe243b893fc7f00695c0,
+        type: 3}
+      propertyPath: ui
+      value: 
+      objectReference: {fileID: 1553034151}
+    - target: {fileID: 8630515849532208375, guid: b61b686b4dddfe243b893fc7f00695c0,
+        type: 3}
+      propertyPath: endTurnButton
+      value: 
+      objectReference: {fileID: 2072484747}
     - target: {fileID: 2599480567758506472, guid: b61b686b4dddfe243b893fc7f00695c0,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3586,16 +3612,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8630515850263087578, guid: b61b686b4dddfe243b893fc7f00695c0,
-        type: 3}
-      propertyPath: endTurnButton
-      value: 
-      objectReference: {fileID: 2072484747}
-    - target: {fileID: 8630515849532208375, guid: b61b686b4dddfe243b893fc7f00695c0,
-        type: 3}
-      propertyPath: endTurnButton
-      value: 
-      objectReference: {fileID: 2072484747}
     - target: {fileID: 8630515848666663374, guid: b61b686b4dddfe243b893fc7f00695c0,
         type: 3}
       propertyPath: panel
@@ -3616,20 +3632,5 @@ PrefabInstance:
       propertyPath: text
       value: 
       objectReference: {fileID: 1318726311}
-    - target: {fileID: 8630515849124892097, guid: b61b686b4dddfe243b893fc7f00695c0,
-        type: 3}
-      propertyPath: returnToMenu
-      value: 
-      objectReference: {fileID: 423080479}
-    - target: {fileID: 8630515850262938137, guid: b61b686b4dddfe243b893fc7f00695c0,
-        type: 3}
-      propertyPath: ui
-      value: 
-      objectReference: {fileID: 1553034151}
-    - target: {fileID: 8630515848837712926, guid: b61b686b4dddfe243b893fc7f00695c0,
-        type: 3}
-      propertyPath: ui
-      value: 
-      objectReference: {fileID: 1869938720}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b61b686b4dddfe243b893fc7f00695c0, type: 3}
