@@ -78,15 +78,16 @@ Material:
     - _GrassCutoff: -0.015
     - _Metallic: 0
     - _Mode: 0
-    - _MountainCutoff: 0.05
-    - _NoiseAmount: 0.04
+    - _MountainCutoff: 0.06
+    - _NoiseAmount: 0.02
     - _OcclusionStrength: 1
     - _Offset: 0.5
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
-    - _SnowCutoff: 0.21
+    - _SnowCutoff: 0.1
     - _SpecularHighlights: 1
     - _SrcBlend: 1
+    - _TerrainAmount: 0.25
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
