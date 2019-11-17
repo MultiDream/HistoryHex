@@ -140,6 +140,11 @@ MonoBehaviour:
   PowerPerDamage: 20
   MaxOffenseRolls: 3
   MaxDefenseRolls: 2
+  singleSpriteSlotHolder: {fileID: 8517680750068135725}
+  doubleSpriteSlotHolder: {fileID: 6264659716693727964}
+  tripleSpriteSlotHolder: {fileID: 6957226678717875482}
+  unitSpritePrefab: {fileID: 319294297776255319, guid: 2b85fb7200645b64dbc9fe31dcdaa9f7,
+    type: 3}
 --- !u!1 &2106658298683197658
 GameObject:
   m_ObjectHideFlags: 0
