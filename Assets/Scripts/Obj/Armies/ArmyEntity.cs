@@ -139,7 +139,7 @@ public class ArmyEntity : MonoBehaviour
     /// </summary>
     public void MoveAction(Vector3Int direction)
     {
-        Destroy(pathObject);
+        //Destroy(pathObject);
         Vector3 moveTo = Global.GetCubicVector(direction.x, direction.y, direction.z);
         Vector3Int nextPos = new Vector3Int(Position.x + direction.x, Position.y + direction.y, Position.z + direction.z);
         if (Global.MapFlyWeight.HasHexAtCubic(nextPos))
@@ -157,6 +157,7 @@ public class ArmyEntity : MonoBehaviour
                 Sieze(nextTile);
                 transform.Translate(moveTo);
                 Position = nextPos;
+                RefreshSupplyLines();
             }
             else
             {
@@ -164,10 +165,10 @@ public class ArmyEntity : MonoBehaviour
                 if (nextHexEntity.army == null)
                 {
                     currentHexEntity.army = null;
-
                     Sieze(nextTile);
                     transform.Translate(moveTo);
                     Position = nextPos;
+                    RefreshSupplyLines();
                 }
             }
         }
