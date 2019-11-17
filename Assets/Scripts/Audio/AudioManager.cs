@@ -21,6 +21,7 @@ namespace HistoryHex {
 
         public AudioSource uiSoundSource;
         public AudioSource oceanSource;
+        public AudioSource musicSource;
         public AudioMap audioMap;
 
         private Dictionary<string, AudioClip> audioDict;
@@ -32,6 +33,7 @@ namespace HistoryHex {
 
             volumeScale = PlayerPrefs.GetFloat("volume", 1.0f);
             oceanSource.volume *= volumeScale;
+            musicSource.volume *= volumeScale;
 
             audioDict.Add(nameof(audioMap.buttonHover), audioMap.buttonHover);
             audioDict.Add(nameof(audioMap.buttonPress), audioMap.buttonPress);
