@@ -137,4 +137,4 @@ MonoBehaviour:
   - anim: {fileID: 22100000, guid: 0e52a1508825f9d4896571b830f6411b, type: 2}
     likelihood: 0.7
   - anim: {fileID: 22100000, guid: 7a6f731e73c2a3142a3d42352f120f93, type: 2}
-    likelihood: 0.7
+    likelihood: 0.293
