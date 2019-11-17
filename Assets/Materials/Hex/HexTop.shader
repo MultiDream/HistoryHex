@@ -13,6 +13,7 @@
         _SnowCutoff ("Snow Cutoff", Float) = 0.5
 
         _Terrain ("Terrain Texture", 2D) = "white" {}
+		_TerrainAmount ("Terrain Amount", Float) = 0.5
         _Noise ("Noise Texture", 2D) = "white" {}
         _NoiseAmount ("Noise Amount", Float) = 0.05
         _Mask ("Mask", 2D) = "white" {}
@@ -50,7 +51,7 @@
         fixed4 _Noise_ST;
         fixed4 _Terrain_ST;
 
-        float _Offset, _NoiseAmount;
+        float _Offset, _NoiseAmount, _TerrainAmount;
         float _GrassCutoff, _MountainCutoff, _SnowCutoff;
 
         // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
@@ -66,6 +67,7 @@
 			float4 world = mul( unity_ObjectToWorld, v.vertex );
             float mask = tex2Dlod(_Mask, float4(v.texcoord.xy, 0, 0));
             v.vertex.z += tex2Dlod(_Terrain, float4(TRANSFORM_TEX(world.xz + float2(.5 * sin(world.x), 0), _Terrain) * 0.1, 0, 0)) * _Offset * mask;
+			v.vertex.z *= _TerrainAmount;
             // v.vertex.z += tex2Dlod(_Terrain, float4(TRANSFORM_TEX(world.xz, _Terrain) * 0.1, 0, 0)) * _Offset * mask;
             o.localPos = v.vertex;
         }
