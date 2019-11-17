@@ -27,6 +27,11 @@ namespace HistoryHex {
                 changeState(options);
             }
 
+			public void OnExitPressed(){
+				Debug.Log("Application Closed");
+				Application.Quit();
+			}
+
             public override void Enter(IState previousState) {
                 mainMenu.SetActive(true);
             }
