@@ -2,8 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
+
 using UnityEngine.UI;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;// Required when using Event data.
 using TMPro;
 
 public class UIHex : UICom
@@ -24,7 +26,27 @@ public class UIHex : UICom
         outPopulationText.text = outPopulation;
     }
 
-    public override void SetButtonListeners(params Action[] actions) {
+	public void AllowRaiseArmy(){
+		ColorBlock colors = raiseArmyButton.colors;
+		colors.highlightedColor = Color.yellow;
+		colors.normalColor = Color.white;
+		colors.selectedColor = Color.white;
+		colors.pressedColor = Color.grey;
+
+		raiseArmyButton.colors = colors;
+	}
+
+	public void DenyRaiseArmy() {
+		ColorBlock colors = raiseArmyButton.colors;
+		colors.highlightedColor = Color.grey;
+		colors.normalColor = Color.grey;
+		colors.pressedColor = Color.grey;
+		colors.selectedColor = Color.grey;
+
+		raiseArmyButton.colors = colors;
+	}
+
+	public override void SetButtonListeners(params Action[] actions) {
 		raiseArmyButton.onClick.AddListener(() => actions[0]());
 		return;
     }

@@ -157,7 +157,15 @@ public class HexEntity : MonoBehaviour
 		Mathf.FloorToInt(TotalPopulation * 0.02f).ToString(),
 		(foodNeed()).ToString(), laborPool[LaborPool.Supply].ToString());
 
-		uiHex.SetButtonListeners(RaiseArmy);
+		if (TotalPopulation >= 200 && SelectedByController())
+		{
+			uiHex.SetButtonListeners(RaiseArmy);
+			uiHex.AllowRaiseArmy();
+		}
+		else 
+		{
+			uiHex.DenyRaiseArmy();
+		}
 	}
 
 	private float foodNeed(){
