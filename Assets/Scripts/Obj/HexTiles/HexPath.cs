@@ -138,7 +138,7 @@ public class HexPath : MonoBehaviour
         for (int i = 0; i < pointCount; i++)
         {
             var rad = Mathf.Deg2Rad * (i * 360f / segments);
-            points[i] = new Vector3(Mathf.Sin(rad) * radius + x, 0.1f, Mathf.Cos(rad) * radius + y);
+            points[i] = new Vector3(Mathf.Sin(rad) * radius + x, 0.2f, Mathf.Cos(rad) * radius + y);
         }
 
         line.SetPositions(points);
@@ -147,10 +147,10 @@ public class HexPath : MonoBehaviour
 
     private void DrawSegment(Vector3 start, Vector3 end, Color color, string textToWrite = "")
     {
-        start += new Vector3(0, 0.1f, 0);
-        end += new Vector3(0, 0.1f, 0);
-        DrawCircle(0.1f, 0.1f, start.x, start.z);
-        DrawCircle(0.1f, 0.1f, end.x, end.z);
+        start += new Vector3(0, 0.2f, 0);
+        end += new Vector3(0, 0.2f, 0);
+        DrawCircle(0.1f, 0.3f, start.x, start.z);
+        DrawCircle(0.1f, 0.3f, end.x, end.z);
         GameObject myLine = new GameObject();
         myLine.transform.position = start;
         LineRenderer lr = myLine.AddComponent<LineRenderer>();
@@ -158,8 +158,8 @@ public class HexPath : MonoBehaviour
         lr.startColor = color;
         lr.endColor = color;
         lr.SetWidth(0.1f, 0.1f);
-        lr.SetPosition(0, start);
-        lr.SetPosition(1, end);
+        lr.SetPosition(0, start+new Vector3(0,0.0f,0));
+        lr.SetPosition(1, end+new Vector3(0,0.0f,0));
         lines.Add(myLine);
         //GameObject.Destroy(myLine, duration);
     }
