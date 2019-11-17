@@ -242,7 +242,6 @@ public class HexEntity : MonoBehaviour
         Controller = newController;
         Material m = hexbase.material;
         m.SetColor("_Color", Controller.Colour);
-
     }
 
 	#endregion

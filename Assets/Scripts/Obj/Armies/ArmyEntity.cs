@@ -92,6 +92,9 @@ public class ArmyEntity : MonoBehaviour
         Global.GM.ArmyUpdate += OnStartTurn;
 
         //Present UI Components.
+
+        // Create sprites
+        CreateSprites();
     }
 
     private void ActiveUpdate()
@@ -250,6 +253,7 @@ public class ArmyEntity : MonoBehaviour
     public void Sieze(GameObject hexTile)
     {
         HexEntity entity = hexTile.GetComponent<HexEntity>();
+		entity.UpdateController(Controller);
         Global.MapFlyWeight.TransferHexOwner(hexTile, this.Controller);
         entity.army = gameObject;
     }
@@ -392,15 +396,24 @@ public class ArmyEntity : MonoBehaviour
         activated = true;
 
         //update army ui
+        foreach (UnitSprite unitSprite in currentSpriteSlotHolder.GetComponentsInChildren<UnitSprite>())
+        {
+            unitSprite.StartPosing();
+        }
         //pass function to be executed on 
     }
 
     private void OnDeselect()
     {
+        Debug.Log("Deselect army entitiy");
         activated = false;
 		ActionMode = ArmyActionMode.Move;
 
-	}
+        foreach (UnitSprite unitSprite in currentSpriteSlotHolder.GetComponentsInChildren<UnitSprite>())
+        {
+            unitSprite.StopPosing();
+        }
+    }
 
     /// <summary>
     /// What to do when something has been right clicked.
@@ -431,6 +444,73 @@ public class ArmyEntity : MonoBehaviour
         uiArmy.SetButtonListeners(ArmyMove, ArmySupply);
     }
 
+    #endregion
+
+    #region SpriteRepresentation
+    public Transform singleSpriteSlotHolder;
+    public Transform doubleSpriteSlotHolder;
+    public Transform tripleSpriteSlotHolder;
+    public GameObject unitSpritePrefab;
+    Transform currentSpriteSlotHolder;
+
+    public void CreateSprites()
+    {
+        int oldNumSprites = 0;
+
+        if (currentSpriteSlotHolder != null)
+        {
+            oldNumSprites = currentSpriteSlotHolder.childCount;
+        }
+
+        int requiredSprites = 3;
+
+        Transform nextSpritesHolder = tripleSpriteSlotHolder;
+        if (Manpower < 33)
+        {
+            requiredSprites = 1;
+            nextSpritesHolder = singleSpriteSlotHolder;
+        }
+        else if (Manpower < 66)
+        {
+            requiredSprites = 2;
+            nextSpritesHolder = doubleSpriteSlotHolder;
+        }
+
+        int spritesPlaced = 0;
+
+        for (int i = 0; i < oldNumSprites; i++)
+        {
+            if (spritesPlaced < requiredSprites)
+            {
+                // move the old sprite to the new slot
+                currentSpriteSlotHolder.GetChild(0).GetChild(0).SetParent(nextSpritesHolder);
+                spritesPlaced++;
+            }
+        }
+
+
+        // instantiate remaining sprites
+        for (; spritesPlaced < requiredSprites; spritesPlaced++)
+        {
+            GameObject newUnitSprite = GameObject.Instantiate(unitSpritePrefab, nextSpritesHolder.GetChild(spritesPlaced));
+            //newUnitSprite.transform.SetParent(nextSpritesHolder);
+        }
+
+        currentSpriteSlotHolder = nextSpritesHolder;
+
+        ChangeFacingDirection(Random.Range(0, 2) == 0);
+    }
+
+    void ChangeFacingDirection(bool faceLeft)
+    {
+        float facingDir = faceLeft ? -1 : 1;
+
+        foreach(Transform slot in currentSpriteSlotHolder)
+        {
+            Transform spriteTransform = slot.GetChild(0).transform;
+            spriteTransform.localScale = new Vector3(spriteTransform.localScale.x * facingDir, spriteTransform.localScale.y, spriteTransform.localScale.z);
+        }
+    }
     #endregion
 
     //Draw Delegation
