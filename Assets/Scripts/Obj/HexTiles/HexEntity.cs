@@ -157,7 +157,8 @@ public class HexEntity : MonoBehaviour
 		Mathf.FloorToInt(TotalPopulation * 0.02f).ToString(),
 		(foodNeed()).ToString(), laborPool[LaborPool.Supply].ToString());
 
-		if (TotalPopulation >= 200 && SelectedByController())
+		
+		if (allowArmySpawn())
 		{
 			uiHex.SetButtonListeners(RaiseArmy);
 			uiHex.AllowRaiseArmy();
@@ -205,9 +206,13 @@ public class HexEntity : MonoBehaviour
 
     }
 
+	private bool allowArmySpawn() {
+		return SelectedByController() && TotalPopulation >= 200 && army == null;
+	}
+
 	public void RaiseArmy(){
 		// Army spawn code.
-		if (SelectedByController() && TotalPopulation >= 200) {
+		if (allowArmySpawn()) {
 			TotalPopulation -= 100;
 			Vector3 position = transform.position;
 			Quaternion rotation = Quaternion.Euler(0, 0, 0);
