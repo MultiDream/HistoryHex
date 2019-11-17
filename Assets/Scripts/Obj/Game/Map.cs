@@ -68,7 +68,7 @@ public class Map : MonoBehaviour
                         GameObject Hex = Instantiate(hexPrefab, position, rotation);
 
 						// Subscribes HexEntity's updateTurn function to GM's NextTurn event.
-						Global.GM.NextTurn += Hex.GetComponent<HexEntity>().updateTurn;
+						Global.GM.HexUpdate += Hex.GetComponent<HexEntity>().updateTurn;
                         Hex.AddComponent<TextMesh>();
                         if (LabelHexes)
                         {
@@ -202,7 +202,7 @@ public class Map : MonoBehaviour
     {
         foreach (GameObject hexObj in hexMap.Values)
         {
-            hexObj.GetComponent<HexEntity>().Controller = players[Mathf.FloorToInt(Random.value * players.Length)];
+            hexObj.GetComponent<HexEntity>().UpdateController(players[Mathf.FloorToInt(Random.value * players.Length)]);
         }
     }
 

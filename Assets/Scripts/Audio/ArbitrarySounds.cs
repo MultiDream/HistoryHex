@@ -11,7 +11,7 @@ namespace HistoryHex {
         }
 
         private IEnumerator StopPlaying() {
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(1.0f);
             audioManager.StopSound();
         }
 

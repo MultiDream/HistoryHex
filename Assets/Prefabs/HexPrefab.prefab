@@ -72,6 +72,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a3632bd861b3c047a2461e1dff1eeee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hexbase: {fileID: 6532079253953246884}
+  selectedColor: {r: 0.7830189, g: 0.73401713, b: 0.003693494, a: 1}
   ArmyPrefab: {fileID: 629301489883901089, guid: 7b0ce070045652d449cc0f1c5ff48ac1,
     type: 3}
   Position: {x: 0, y: 0, z: 0}
@@ -194,6 +196,12 @@ Transform:
 --- !u!33 &6532079253953246887 stripped
 MeshFilter:
   m_CorrespondingSourceObject: {fileID: 2026590799046549556, guid: 00b88030cda2f50478e27b8be2ecd63a,
+    type: 3}
+  m_PrefabInstance: {fileID: 5096243959029192339}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &6532079253953246884 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2026590799046549559, guid: 00b88030cda2f50478e27b8be2ecd63a,
     type: 3}
   m_PrefabInstance: {fileID: 5096243959029192339}
   m_PrefabAsset: {fileID: 0}
