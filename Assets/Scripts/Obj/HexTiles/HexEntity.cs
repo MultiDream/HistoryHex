@@ -27,6 +27,7 @@ public class HexEntity : MonoBehaviour
     public Player Controller { get; set; }
     public EntityDrawer drawer;
     public GameObject army; // make into an array later, when multiple armies can sit on a tile.
+    public HexPopulation hexPopulation;
 
 	private float _totalPopulation;
 	public float TotalPopulation {
@@ -203,7 +204,7 @@ public class HexEntity : MonoBehaviour
 		{
 			TotalPopulation = 0.0f;
 		}
-
+        hexPopulation.SetPopulation(TotalPopulation);
     }
 
 	private bool allowArmySpawn() {
@@ -241,6 +242,8 @@ public class HexEntity : MonoBehaviour
     {
 		int increase = Mathf.FloorToInt(TotalPopulation * 0.02f);
 		TotalPopulation += increase;
+
+        hexPopulation.SetPopulation(TotalPopulation);
     }
 
     // This runs every turn and updates food based on population if not attacked after previous turn
