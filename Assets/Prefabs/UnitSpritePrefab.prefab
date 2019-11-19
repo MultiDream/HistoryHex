@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 6205144250396632013}
   - component: {fileID: 5056442411027435953}
   - component: {fileID: 891845380474532276}
+  - component: {fileID: 5173156989559971749}
+  - component: {fileID: 6060629168371960124}
   m_Layer: 0
   m_Name: UnitSpritePrefab
   m_TagString: Untagged
@@ -138,3 +140,34 @@ MonoBehaviour:
     likelihood: 0.7
   - anim: {fileID: 22100000, guid: 7a6f731e73c2a3142a3d42352f120f93, type: 2}
     likelihood: 0.293
+--- !u!114 &5173156989559971749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 319294297776255319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cd9cee08e33e4248be05e4c26a6125b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _spriteRenderer: {fileID: 3099267089839237778}
+  defaultPalette: {fileID: 11400000, guid: 25da84271e104c04a9d759471354830d, type: 2}
+--- !u!114 &6060629168371960124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 319294297776255319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 890d8cd244b004848822707c98d70b06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  swapKey: 110
+  swapper: {fileID: 5173156989559971749}
+  palettes:
+  - {fileID: 11400000, guid: 25da84271e104c04a9d759471354830d, type: 2}
+  - {fileID: 11400000, guid: 7faaf3a82d5099e469eca046937c7ef9, type: 2}
