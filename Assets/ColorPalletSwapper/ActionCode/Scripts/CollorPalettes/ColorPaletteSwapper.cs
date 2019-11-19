@@ -59,7 +59,7 @@ namespace ActionCode.ColorPalettes
                 return;
             }
 
-            Texture2D texture = _spriteRenderer.sprite.texture;
+            Texture2D texture = Instantiate(_spriteRenderer.sprite.texture) as Texture2D;
             if (texture.format == TextureFormat.ARGB32 ||
                 texture.format == TextureFormat.RGBA32 ||
                 texture.format == TextureFormat.RGB24 ||
@@ -78,6 +78,9 @@ namespace ActionCode.ColorPalettes
                 }
                 texture.Apply();
                 _lastPalletId = palette.Id;
+                MaterialPropertyBlock block = new MaterialPropertyBlock();
+                block.SetTexture("_MainTex", texture);
+                _spriteRenderer.SetPropertyBlock(block);
             }
             else Debug.LogErrorFormat("Unsupported texture format - texture {0} needs to be ARGB32, RGBA32, RGB24, Alpha8 or one of float formats. " +
                 "Current value is {1}. Set texture {0} compression to None.", 

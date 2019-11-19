@@ -170,4 +170,4 @@ MonoBehaviour:
   swapper: {fileID: 5173156989559971749}
   palettes:
   - {fileID: 11400000, guid: 25da84271e104c04a9d759471354830d, type: 2}
-  - {fileID: 11400000, guid: 7faaf3a82d5099e469eca046937c7ef9, type: 2}
+  - {fileID: 11400000, guid: 2de52b1b1136b2c479f0023bcad1fa9b, type: 2}
