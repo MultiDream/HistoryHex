@@ -14,11 +14,12 @@ namespace HistoryHex {
 
             public UIMaster tileUi;
 
-            public GameObject endTurnButton;
+            public ArbitrarySounds sounds;
 
             private Action<IState> changeState;
 
             public void OnTurnEnd() {
+                sounds.OnTurnEnd();
                 changeState(transition);
             }
 
@@ -32,7 +33,6 @@ namespace HistoryHex {
 
             public override void Enter(IState previousState) {
                 // TODO: ui.SetForPlayer(id);
-                endTurnButton.SetActive(true);
             }
 
             public override void Execute(Action<IState> changeState) {
@@ -43,8 +43,7 @@ namespace HistoryHex {
                 // TODO: ui.Disable();
                 Debug.Log("PLAYER TURN EXIT");
                 //tileUi.UnregisterUIComponent();
-                //      ^ this line is supposed to be a way to make the UI for a tile disappear.
-                endTurnButton.SetActive(false);
+                //      ^ this line is supposed to be a way to make the UI for a tile disappear.\
             }
         }
     }

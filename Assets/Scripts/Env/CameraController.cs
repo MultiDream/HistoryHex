@@ -6,8 +6,13 @@ public class CameraController : MonoBehaviour
 {
 	public Vector3 cameraPos;
 	public const float frameDiv = 10;
-    // Start is called before the first frame update
-    void Start()
+
+	public float LeftRightLimit = 10;
+	public float UpDownLimit = 10;
+	public float ZoomInLimit = 10;
+	public float ZoomOutLimit = 2;
+	// Start is called before the first frame update
+	void Start()
     {
         
     }
@@ -35,6 +40,27 @@ public class CameraController : MonoBehaviour
 			cameraPos += Vector3.down * frameDiv;
 		}
 
-		GetComponent<Camera>().transform.position += cameraPos * Time.deltaTime;
+		Vector3 newPos = GetComponent<Camera>().transform.position + cameraPos * Time.deltaTime;
+		// Limit Zoom
+		Limit(ref newPos.y, ZoomInLimit, ZoomOutLimit);
+
+		// Limit UpDown
+		Limit(ref newPos.z, UpDownLimit - newPos.y, -1 * UpDownLimit);
+
+		// Limit LeftRight
+		Limit(ref newPos.x, LeftRightLimit, -1 * LeftRightLimit);
+
+		GetComponent<Camera>().transform.position = newPos;
+	}
+
+	private void Limit(ref float value, float upper, float lower){
+		if (value > upper)
+		{
+			value = upper;
+		} 
+		else if (value < lower)
+		{
+			value = lower;
+		}
 	}
 }

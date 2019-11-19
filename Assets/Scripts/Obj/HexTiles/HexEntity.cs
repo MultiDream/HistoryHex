@@ -27,6 +27,7 @@ public class HexEntity : MonoBehaviour
     public Player Controller { get; set; }
     public EntityDrawer drawer;
     public GameObject army; // make into an array later, when multiple armies can sit on a tile.
+    public HexPopulation hexPopulation;
 
 	private float _totalPopulation;
 	public float TotalPopulation {
@@ -92,17 +93,9 @@ public class HexEntity : MonoBehaviour
     private void ActiveUpdate()
     {
         // Army spawn code.
-        if (Input.GetKeyDown(raiseArmy) && SelectedByController() && TotalPopulation >= 200)
+        if (Input.GetKeyDown(raiseArmy))
         {
-			TotalPopulation -= 100;
-            Vector3 position = transform.position;
-            Quaternion rotation = Quaternion.Euler(0, 0, 0);
-            this.army = Instantiate(ArmyPrefab, position, rotation);
-
-            //Set an army up.
-            ArmyEntity armyEntity = army.transform.GetComponent<ArmyEntity>();
-            armyEntity.Position = Position;
-            armyEntity.Controller = Controller;
+			RaiseArmy();
         }
     }
 
@@ -157,11 +150,24 @@ public class HexEntity : MonoBehaviour
     }
 
 	private void OnInitializeUI(UICom com) {
+		UIHex uiHex = (UIHex)com;
 		float expectedNextFood = laborPool[LaborPool.Food] * FoodBase;
-		((UIHex)com).SetText(Name, Controller.PlayerId.ToString(), Food.ToString(),
+
+		uiHex.SetText(Name, Controller.PlayerId.ToString(), Food.ToString(),
 		(expectedNextFood).ToString(), TotalPopulation.ToString(),
 		Mathf.FloorToInt(TotalPopulation * 0.02f).ToString(),
 		(foodNeed()).ToString(), laborPool[LaborPool.Supply].ToString());
+
+		
+		if (allowArmySpawn())
+		{
+			uiHex.SetButtonListeners(RaiseArmy);
+			uiHex.AllowRaiseArmy();
+		}
+		else 
+		{
+			uiHex.DenyRaiseArmy();
+		}
 	}
 
 	private float foodNeed(){
@@ -177,7 +183,7 @@ public class HexEntity : MonoBehaviour
 	private void Initialize()
     {
 		// Linked to the GM's next turn in the Map class.
-        Name = "NoMansLand";
+        Name = "Village";
         FoodBase = Mathf.Floor(Random.value * Global.MAXIMUM_FOOD);
         drawer = new EntityDrawer(transform.GetChild(0));
         InitializePopulation();
@@ -186,6 +192,7 @@ public class HexEntity : MonoBehaviour
 
 	// Runs during initialization of tiles and sets a base population for each tile
 	// The base population now is equal to base food but this can be changed as more is implemented 
+
 	private void InitializePopulation()
     {
         // No Base Food means that no population can be created
@@ -197,8 +204,27 @@ public class HexEntity : MonoBehaviour
 		{
 			TotalPopulation = 0.0f;
 		}
-
+        hexPopulation.SetPopulation(TotalPopulation);
     }
+
+	private bool allowArmySpawn() {
+		return SelectedByController() && TotalPopulation >= 200 && army == null;
+	}
+
+	public void RaiseArmy(){
+		// Army spawn code.
+		if (allowArmySpawn()) {
+			TotalPopulation -= 100;
+			Vector3 position = transform.position;
+			Quaternion rotation = Quaternion.Euler(0, 0, 0);
+			this.army = Instantiate(ArmyPrefab, position, rotation);
+
+			//Set an army up.
+			ArmyEntity armyEntity = army.transform.GetComponent<ArmyEntity>();
+			armyEntity.Position = Position;
+			armyEntity.Controller = Controller;
+		}
+	}
 
 	#region NextTurn Updates
 	// This updates every turn and decides if updatePopulation() is run
@@ -216,6 +242,8 @@ public class HexEntity : MonoBehaviour
     {
 		int increase = Mathf.FloorToInt(TotalPopulation * 0.02f);
 		TotalPopulation += increase;
+
+        hexPopulation.SetPopulation(TotalPopulation);
     }
 
     // This runs every turn and updates food based on population if not attacked after previous turn
@@ -242,7 +270,6 @@ public class HexEntity : MonoBehaviour
         Controller = newController;
         Material m = hexbase.material;
         m.SetColor("_Color", Controller.Colour);
-
     }
 
 	#endregion
