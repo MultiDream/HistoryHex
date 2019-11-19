@@ -34,7 +34,7 @@ public class ArmyEntity : MonoBehaviour
     public int PowerPerDamage = 20;
     public int MaxOffenseRolls = 3;
     public int MaxDefenseRolls = 2;
-    private List<HexPath> supplyLines;
+    public List<HexPath> supplyLines;
     #endregion
 
     #region MonobehaivorExtensions
@@ -220,8 +220,8 @@ public class ArmyEntity : MonoBehaviour
         HexPath path = pathObject.GetComponent<HexPath>();
         if (path == null)
             return;
-        GameObject armyTile = Global.MapFlyWeight.hexMap[Position];
-        List<GameObject> hexes = Global.MapFlyWeight.getPlayerAdjacencyMap(this.Controller).NearestAstar(armyTile, path.GetHex(path.Length() - 1));
+        GameObject armyTile = Global.GM.Board.hexMap[Position];
+        List<GameObject> hexes = Global.GM.Board.getPlayerAdjacencyMap(this.Controller).NearestAstar(armyTile, path.GetHex(path.Length() - 1));
         path.Refresh(hexes);
     }
 
@@ -259,8 +259,8 @@ public class ArmyEntity : MonoBehaviour
     public void Sieze(GameObject hexTile)
     {
         HexEntity entity = hexTile.GetComponent<HexEntity>();
+        Global.MapFlyWeight.TransferHexOwner(hexTile, Controller);
 		entity.UpdateController(Controller);
-        Global.MapFlyWeight.TransferHexOwner(hexTile, this.Controller);
         entity.army = gameObject;
 
 		//Play the movement sound
@@ -328,6 +328,7 @@ public class ArmyEntity : MonoBehaviour
         {
             Destroy(gameObject);
             Global.MapFlyWeight.hexMap[Position].GetComponent<HexEntity>().army = null;
+            Controller.armies.Remove(this);
         }
     }
 
@@ -544,4 +545,5 @@ public class ArmyEntity : MonoBehaviour
     {
         return Global.ActivePlayerId == Controller.PlayerId;
     }
+
 }
