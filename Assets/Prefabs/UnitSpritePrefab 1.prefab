@@ -14,8 +14,9 @@ GameObject:
   - component: {fileID: 5056442411027435953}
   - component: {fileID: 891845380474532276}
   - component: {fileID: 5173156989559971749}
+  - component: {fileID: 2512782530415473329}
   m_Layer: 0
-  m_Name: UnitSpritePrefab
+  m_Name: UnitSpritePrefab 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -153,3 +154,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _spriteRenderer: {fileID: 3099267089839237778}
   defaultPalette: {fileID: 11400000, guid: 2de52b1b1136b2c479f0023bcad1fa9b, type: 2}
+--- !u!114 &2512782530415473329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 319294297776255319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 890d8cd244b004848822707c98d70b06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  swapKey: 110
+  swapper: {fileID: 5173156989559971749}
+  palettes:
+  - {fileID: 11400000, guid: 2de52b1b1136b2c479f0023bcad1fa9b, type: 2}
+  - {fileID: 11400000, guid: 2de52b1b1136b2c479f0023bcad1fa9b, type: 2}

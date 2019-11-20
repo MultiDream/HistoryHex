@@ -53,8 +53,6 @@ public class UnitSprite : MonoBehaviour
 
             anim.runtimeAnimatorController = animController;
         }
-
-        StartPosing();
     }
 
     // Update is called once per frame

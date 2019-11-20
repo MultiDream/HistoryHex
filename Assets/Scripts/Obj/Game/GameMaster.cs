@@ -36,8 +36,8 @@ public class GameMaster : MonoBehaviour
 
     private bool enableKeys = true;
 
-	// Start is called before the first frame update
-	void Start()
+    // Start is called before the first frame update
+    void Start()
     {
 		//Throws itself up into Globally Accessible Scope.
 		Global.GM = this;
@@ -49,11 +49,17 @@ public class GameMaster : MonoBehaviour
         float centeringOffset = split/2f;
         float rangeOffset = centeringOffset;
 
+        Color[] teamColors =
+        {
+            Color.blue,
+            Color.red
+        };
+
         for (int i = 0; i < NumberOfPlayers; i++)
         {
             float center = i*split + centeringOffset;
             Players[i] = Instantiate(playerPrefab);
-            Players[i].transform.GetComponent<Player>().Colour = UnityEngine.Random.ColorHSV(center - rangeOffset, center + rangeOffset, 0.3f, 1f, 0.3f, 1f);
+            Players[i].transform.GetComponent<Player>().Colour = teamColors[i];// UnityEngine.Random.ColorHSV(center - rangeOffset, center + rangeOffset, 0.3f, 1f, 0.3f, 1f);
             Players[i].transform.GetComponent<Player>().PlayerId = i;
         }
 
@@ -142,7 +148,7 @@ public class GameMaster : MonoBehaviour
     /*-------------------------------------------------
 	 *                  Key Bindings
 	 *-----------------------------------------------*/
-	public void NextTurnKeyPress()
+    public void NextTurnKeyPress()
     {
         Debug.Log("Space Key Pressed!");
         playerTurnStates[Global.ActivePlayerId].OnTurnEnd();
