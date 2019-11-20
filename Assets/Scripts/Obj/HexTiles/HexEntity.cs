@@ -151,7 +151,7 @@ public class HexEntity : MonoBehaviour
 
 	private void OnInitializeUI(UICom com) {
 		UIHex uiHex = (UIHex)com;
-		float expectedNextFood = laborPool[LaborPool.Food] * FoodBase;
+		float expectedNextFood = laborPool[LaborPool.Food]; //* FoodBase;
 
 		float FoodSupply = 0;
 		if (supplyNeed() != 0)
@@ -262,7 +262,7 @@ public class HexEntity : MonoBehaviour
     {
         if (FoodBase >= 0 & attacked == false)
         {
-            Food += laborPool[LaborPool.Food] * FoodBase; //Times some constant.
+			Food += laborPool[LaborPool.Food]; //* FoodBase; //Times some constant.
         }
     }
 
