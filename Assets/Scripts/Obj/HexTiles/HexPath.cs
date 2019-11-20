@@ -214,6 +214,15 @@ public class HexPath : MonoBehaviour
 		entity.DeleteOrder(this);
 	}
 
+    public void UnRegisterMatchedOrder(HexEntity matchObject){
+        int finalIndex = hexEntities.Count - 1;
+        if (finalIndex < 1)
+            return;
+		GameObject baseTile = hexEntities[finalIndex];
+        if (matchObject == baseTile.GetComponent<HexEntity>())
+            UnRegisterOrder();
+    }
+
 	public GameObject GetHex(int i){
         if (hexEntities.Count > i)
             return hexEntities[i];

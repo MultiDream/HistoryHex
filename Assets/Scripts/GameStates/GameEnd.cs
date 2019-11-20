@@ -32,7 +32,7 @@ namespace HistoryHex {
             public override void Enter(IState previousState) {
                 ui.SetActive(true);
                 tileUi.SetActive(false);
-                winner.SetText("Player " + (winnerId + 1) + " wins");
+                winner.SetText("Player " + (winnerId) + " wins");
                 returnToMenu.SetActive(false);
                 StartCoroutine(KickOffTimer());
             }

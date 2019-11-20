@@ -14,7 +14,10 @@ public class CameraController : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
     {
-        
+		LeftRightLimit = 10 * (PlayerPrefs.GetInt("MapSize",3) / 5.0f);
+		UpDownLimit = 10 * (PlayerPrefs.GetInt("MapSize", 3) / 5.0f); ;
+		ZoomInLimit = 10;
+		ZoomOutLimit = 2;
     }
 
     // Update is called once per frame
@@ -45,7 +48,7 @@ public class CameraController : MonoBehaviour
 		Limit(ref newPos.y, ZoomInLimit, ZoomOutLimit);
 
 		// Limit UpDown
-		Limit(ref newPos.z, UpDownLimit - newPos.y, -1 * UpDownLimit);
+		Limit(ref newPos.z, UpDownLimit - newPos.y, -1 * (UpDownLimit + newPos.y));
 
 		// Limit LeftRight
 		Limit(ref newPos.x, LeftRightLimit, -1 * LeftRightLimit);

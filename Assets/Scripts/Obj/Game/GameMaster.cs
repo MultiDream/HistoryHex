@@ -63,6 +63,7 @@ public class GameMaster : MonoBehaviour
             Players[i].transform.GetComponent<Player>().PlayerId = i;
         }
 
+		Board.radius = PlayerPrefs.GetInt("MapSize",3);
         Board.InitMap();
 
         Player[] _players = new Player[NumberOfPlayers];
@@ -103,8 +104,8 @@ public class GameMaster : MonoBehaviour
 
     public void GameEnd() {
         enableKeys = false;
-        gameEndState.SetDisplayResults(Global.ActivePlayerId);
-        playerTurnStates[Global.ActivePlayerId].OnGameEnd();
+        gameEndState.SetDisplayResults(99);
+        //playerTurnStates[Global.ActivePlayerId].OnGameEnd();
     }
 
     public void ExitGame() {

@@ -12,7 +12,20 @@ public class ArmyEntity : MonoBehaviour
     private bool hasMoved = false;
     public Vector3Int Position;
     public float Food;
-    public int Manpower;
+
+	private int _manpower;
+    public int Manpower{
+		get{
+			return _manpower;
+		}
+		set{
+			int amountLost = _manpower - value;
+			_manpower = value;
+			if (amountLost >= 0){
+				DisplayDmg(amountLost, transform.position, new Vector3(0, 2.5f, 0), 2);
+			}
+		}
+	}
     public string Name;
     public Player Controller;
     GameObject pathObject;
@@ -34,7 +47,7 @@ public class ArmyEntity : MonoBehaviour
     public int PowerPerDamage = 20;
     public int MaxOffenseRolls = 3;
     public int MaxDefenseRolls = 2;
-    private List<HexPath> supplyLines;
+    public List<HexPath> supplyLines;
     #endregion
 
     #region MonobehaivorExtensions
@@ -76,7 +89,7 @@ public class ArmyEntity : MonoBehaviour
     void Initialize()
     {
         supplyLines = new List<HexPath>();
-        Name = "UnnamedArmy";
+        Name = "Army";
         Food = Mathf.Floor(Random.value * Global.MAXIMUM_FOOD);
         Manpower = 100;
         roller = new DiceRoller(6);
@@ -225,8 +238,8 @@ public class ArmyEntity : MonoBehaviour
         HexPath path = pathObject.GetComponent<HexPath>();
         if (path == null)
             return;
-        GameObject armyTile = Global.MapFlyWeight.hexMap[Position];
-        List<GameObject> hexes = Global.MapFlyWeight.getPlayerAdjacencyMap(this.Controller).NearestAstar(armyTile, path.GetHex(path.Length() - 1));
+        GameObject armyTile = Global.GM.Board.hexMap[Position];
+        List<GameObject> hexes = Global.GM.Board.getPlayerAdjacencyMap(this.Controller).NearestAstar(armyTile, path.GetHex(path.Length() - 1));
         path.Refresh(hexes);
     }
 
@@ -264,8 +277,8 @@ public class ArmyEntity : MonoBehaviour
     public void Sieze(GameObject hexTile)
     {
         HexEntity entity = hexTile.GetComponent<HexEntity>();
+        Global.MapFlyWeight.TransferHexOwner(hexTile, Controller);
 		entity.UpdateController(Controller);
-        Global.MapFlyWeight.TransferHexOwner(hexTile, this.Controller);
         entity.army = gameObject;
 
 		//Play the movement sound
@@ -286,8 +299,9 @@ public class ArmyEntity : MonoBehaviour
             List<int> theirRolls = otherArmy.ArmyRoll(false);
             Debug.Log("My rolls " + myRolls);
             Debug.Log("And theirs " + myRolls);
-            DisplayRolls(myRolls, transform.position, new Vector3(0, 2, 0), 2);
-            DisplayRolls(theirRolls, otherArmyObject.transform.position, new Vector3(0, 2, 0), 2);
+            //DisplayRolls(myRolls, transform.position, new Vector3(0, 3, 0), 2);
+            //DisplayRolls(theirRolls, otherArmyObject.transform.position, new Vector3(0, 3, 0), 2);
+
             int myDamage = 0, theirDamage = 0;
             for (int i = 0; i < theirRolls.Count && i < myRolls.Count; i++)
             {
@@ -296,8 +310,14 @@ public class ArmyEntity : MonoBehaviour
                 if (myRolls[i] >= theirRolls[i])
                     theirDamage++;
             }
-            Manpower -= myDamage * PowerPerDamage;
-            otherArmy.Manpower -= theirDamage * PowerPerDamage;
+			
+			myDamage *= PowerPerDamage;
+			theirDamage *= PowerPerDamage;
+			//DisplayDmg(myDamage, transform.position, new Vector3(0, 2.5f, 0), 2);
+			//DisplayDmg(theirDamage, otherArmyObject.transform.position, new Vector3(0, 2.5f, 0), 2);
+
+			Manpower -= myDamage;
+            otherArmy.Manpower -= PowerPerDamage;
             CheckDead();
             otherArmy.CheckDead();
         }
@@ -309,13 +329,14 @@ public class ArmyEntity : MonoBehaviour
 
 		return otherArmyObject == null;
     }
-
     private void DisplayRolls(List<int> rolls, Vector3 position, Vector3 offset, float lifespan)
     {
         GameObject textObject = new GameObject();
         TextMesh textComponent = textObject.AddComponent<TextMesh>();
         textObject.transform.position = position + offset;
-        string text = "";
+		textObject.transform.localScale = new Vector3(0.5f,0.5f,0.5f);
+
+		string text = "";
         foreach (int roll in rolls)
         {
             text += roll + " ";
@@ -326,13 +347,25 @@ public class ArmyEntity : MonoBehaviour
         Destroy(textObject, lifespan);
     }
 
-    public void CheckDead()
+	private void DisplayDmg(int amount, Vector3 position, Vector3 offset, float lifespan) {
+		GameObject textObject = new GameObject();
+		TextMesh textComponent = textObject.AddComponent<TextMesh>();
+		textObject.transform.position = position + offset;
+		textObject.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
+
+		textComponent.text = "- "+ amount.ToString();
+		textComponent.color = Color.red;
+		textComponent.fontSize = 20;
+		Destroy(textObject, lifespan);
+	}
+	public void CheckDead()
     {
         // Death when no manpower remaining.
         if (Manpower <= 0)
         {
             Destroy(gameObject);
             Global.MapFlyWeight.hexMap[Position].GetComponent<HexEntity>().army = null;
+            Controller.armies.Remove(this);
         }
     }
 
@@ -460,7 +493,7 @@ public class ArmyEntity : MonoBehaviour
     private void OnInitializeUI(UICom com)
     {
         UIArmy uiArmy = (UIArmy)com;
-        uiArmy.SetText(Name, Controller.PlayerId.ToString(), Food.ToString(), "", Manpower.ToString(), "", "", "");
+        uiArmy.SetText(Name, (Controller.PlayerId + 1).ToString(), Food.ToString(), "", Manpower.ToString(), "", "", "");
         void ArmyMove() { ActionMode = ArmyActionMode.Move; }
         void ArmySupply() { ActionMode = ArmyActionMode.SetSupply; }
         uiArmy.SetButtonListeners(ArmyMove, ArmySupply);
@@ -564,4 +597,5 @@ public class ArmyEntity : MonoBehaviour
     {
         return Global.ActivePlayerId == Controller.PlayerId;
     }
+
 }
