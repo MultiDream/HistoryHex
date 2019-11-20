@@ -12,7 +12,20 @@ public class ArmyEntity : MonoBehaviour
     private bool hasMoved = false;
     public Vector3Int Position;
     public float Food;
-    public int Manpower;
+
+	private int _manpower;
+    public int Manpower{
+		get{
+			return _manpower;
+		}
+		set{
+			int amountLost = _manpower - value;
+			_manpower = value;
+			if (amountLost >= 0){
+				DisplayDmg(amountLost, transform.position, new Vector3(0, 2.5f, 0), 2);
+			}
+		}
+	}
     public string Name;
     public Player Controller;
     GameObject pathObject;
@@ -295,8 +308,8 @@ public class ArmyEntity : MonoBehaviour
 			
 			myDamage *= PowerPerDamage;
 			theirDamage *= PowerPerDamage;
-			DisplayDmg(myDamage, transform.position, new Vector3(0, 2.5f, 0), 2);
-			DisplayDmg(theirDamage, otherArmyObject.transform.position, new Vector3(0, 2.5f, 0), 2);
+			//DisplayDmg(myDamage, transform.position, new Vector3(0, 2.5f, 0), 2);
+			//DisplayDmg(theirDamage, otherArmyObject.transform.position, new Vector3(0, 2.5f, 0), 2);
 
 			Manpower -= myDamage;
             otherArmy.Manpower -= PowerPerDamage;
@@ -311,7 +324,6 @@ public class ArmyEntity : MonoBehaviour
 
 		return otherArmyObject == null;
     }
-
     private void DisplayRolls(List<int> rolls, Vector3 position, Vector3 offset, float lifespan)
     {
         GameObject textObject = new GameObject();
