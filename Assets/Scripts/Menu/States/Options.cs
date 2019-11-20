@@ -23,7 +23,7 @@ namespace HistoryHex {
 
 			public void OnMapSizeOptionChange(float value) {
 				//Need to transform appropriately.
-				int transformedValue = Mathf.FloorToInt(value * 8.0f) + 2;
+				int transformedValue = Mathf.FloorToInt(value * 5.0f) + 1;
 				PlayerPrefs.SetInt("MapSize", transformedValue);
 			}
 
