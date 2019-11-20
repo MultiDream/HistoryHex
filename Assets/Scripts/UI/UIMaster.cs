@@ -72,8 +72,8 @@ public class UIMaster : MonoBehaviour
 	}
 
 	void J_Key() {
-		Debug.Log("Registering UI");
-		RegisterUIComponent();
+		//Debug.Log("Registering UI");
+		//RegisterUIComponent();
 	}
 	
 	void K_Key() {

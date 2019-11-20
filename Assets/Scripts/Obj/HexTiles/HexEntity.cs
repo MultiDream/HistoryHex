@@ -156,7 +156,7 @@ public class HexEntity : MonoBehaviour
 		uiHex.SetText(Name, Controller.PlayerId.ToString(), Food.ToString(),
 		(expectedNextFood).ToString(), TotalPopulation.ToString(),
 		Mathf.FloorToInt(TotalPopulation * 0.02f).ToString(),
-		(foodNeed()).ToString(), laborPool[LaborPool.Supply].ToString());
+		(foodNeed()).ToString(), laborPool[LaborPool.Supply].ToString() + " / " + supplyNeed());
 
 		
 		if (allowArmySpawn())
