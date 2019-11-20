@@ -23,6 +23,7 @@ public class ArmyEntity : MonoBehaviour
 			_manpower = value;
 			if (amountLost >= 0){
 				DisplayDmg(amountLost, transform.position, new Vector3(0, 2.5f, 0), 2);
+                CreateSprites();
 			}
 		}
 	}
@@ -70,6 +71,11 @@ public class ArmyEntity : MonoBehaviour
 
         //Draw the Entity.
         Draw();
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            CreateSprites();
+        }
     }
 
     // Remove the Event Listener. May no longer be required, but not sure.
@@ -503,6 +509,9 @@ public class ArmyEntity : MonoBehaviour
     public GameObject unitSpritePrefab;
     Transform currentSpriteSlotHolder;
 
+    public Material team1Mat;
+    public Material team2Mat;
+    
     public void CreateSprites()
     {
         int oldNumSprites = 0;
@@ -533,17 +542,29 @@ public class ArmyEntity : MonoBehaviour
             if (spritesPlaced < requiredSprites)
             {
                 // move the old sprite to the new slot
-                currentSpriteSlotHolder.GetChild(0).GetChild(0).SetParent(nextSpritesHolder);
+                currentSpriteSlotHolder.GetChild(spritesPlaced).GetChild(0).SetParent(nextSpritesHolder.GetChild(spritesPlaced));
                 spritesPlaced++;
             }
         }
-
 
         // instantiate remaining sprites
         for (; spritesPlaced < requiredSprites; spritesPlaced++)
         {
             GameObject newUnitSprite = GameObject.Instantiate(unitSpritePrefab, nextSpritesHolder.GetChild(spritesPlaced));
-            //newUnitSprite.transform.SetParent(nextSpritesHolder);
+            newUnitSprite.GetComponent<SpriteRenderer>().material = Controller.PlayerId == 0 ? team1Mat : team2Mat;
+        }
+
+        if (spritesPlaced < oldNumSprites)
+        {
+            List<Transform> spritesToDestroy = new List<Transform>();
+            for (int i = spritesPlaced; i < oldNumSprites; i++)
+            {
+                spritesToDestroy.Add(currentSpriteSlotHolder.GetChild(i).GetChild(0));
+            }
+            for (int i = 0; i < spritesToDestroy.Count; i++)
+            {
+                Destroy(spritesToDestroy[i].gameObject);
+            }
         }
 
         currentSpriteSlotHolder = nextSpritesHolder;

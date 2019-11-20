@@ -1,31 +1,31 @@
 fileFormatVersion: 2
-guid: 557713e1564cf6846a5b54cccb49cb31
+guid: d25c93727cc6e154d9db9e5c86a63923
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3154150011874791226
-    second: Units_0
+      213: -2192652857146593006
+    second: Units_red_0
   - first:
-      213: -3387478527075654864
-    second: Units_1
+      213: -1776706073890628795
+    second: Units_red_1
   - first:
-      213: 4837840602407752856
-    second: Units_2
+      213: 3154862621289908252
+    second: Units_red_2
   - first:
-      213: -7808734593389313954
-    second: Units_3
+      213: -8446101913367035906
+    second: Units_red_3
   - first:
-      213: -5877259873991932285
-    second: Units_4
+      213: 975240178276134644
+    second: Units_red_4
   - first:
-      213: 8759150981705163766
-    second: Units_5
+      213: -5867659706473736448
+    second: Units_red_5
   - first:
-      213: -8816038613044792324
-    second: Units_6
+      213: -7849233557142634265
+    second: Units_red_6
   - first:
-      213: 8319982639285221730
-    second: Units_7
+      213: -5126773995643509169
+    second: Units_red_7
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -44,7 +44,7 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
-  isReadable: 1
+  isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   grayScaleToAlpha: 0
@@ -110,7 +110,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Units_0
+      name: Units_red_0
       rect:
         serializedVersion: 2
         x: 0
@@ -118,20 +118,20 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 9
-      pivot: {x: 0.5, y: 0.1}
+      pivot: {x: 8, y: 4}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e0eef77e8b94efd45929f383ad02c3e7
-      internalID: -3154150011874791226
+      spriteID: 878465cd47f1c2a458195a1bee6c07cc
+      internalID: -2192652857146593006
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Units_1
+      name: Units_red_1
       rect:
         serializedVersion: 2
         x: 32
@@ -139,20 +139,20 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 9
-      pivot: {x: 0.5, y: 0.1}
+      pivot: {x: 8, y: 4}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e4f37f2bb5ea2ab469fe0a51ef5d6fad
-      internalID: -3387478527075654864
+      spriteID: 48eb00aa5e3b34b40b1d003585dcb3b5
+      internalID: -1776706073890628795
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Units_2
+      name: Units_red_2
       rect:
         serializedVersion: 2
         x: 64
@@ -160,20 +160,20 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 9
-      pivot: {x: 0.5, y: 0.1}
+      pivot: {x: 8, y: 4}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1896818f0128dda459c48690d2bf4e56
-      internalID: 4837840602407752856
+      spriteID: a60d30da53aee914a90aa783a39f8824
+      internalID: 3154862621289908252
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Units_3
+      name: Units_red_3
       rect:
         serializedVersion: 2
         x: 96
@@ -181,20 +181,20 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 9
-      pivot: {x: 0.5, y: 0.1}
+      pivot: {x: 8, y: 4}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4bde5980be272ce4fb831118cec459f6
-      internalID: -7808734593389313954
+      spriteID: e355d4135530d7f4698c1ef23deb4129
+      internalID: -8446101913367035906
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Units_4
+      name: Units_red_4
       rect:
         serializedVersion: 2
         x: 0
@@ -202,20 +202,20 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 9
-      pivot: {x: 0.5, y: 0.1}
+      pivot: {x: 8, y: 4}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 226da192b3facd148886ed6915f98f53
-      internalID: -5877259873991932285
+      spriteID: 9217f254b81efe74a9d201f449bbfe15
+      internalID: 975240178276134644
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Units_5
+      name: Units_red_5
       rect:
         serializedVersion: 2
         x: 32
@@ -223,20 +223,20 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 9
-      pivot: {x: 0.5, y: 0.1}
+      pivot: {x: 8, y: 4}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3b44ebb4f5bb6214da39cfffad4dcfd5
-      internalID: 8759150981705163766
+      spriteID: edec41148c708e8418a5bf5e1cb5925d
+      internalID: -5867659706473736448
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Units_6
+      name: Units_red_6
       rect:
         serializedVersion: 2
         x: 64
@@ -244,20 +244,20 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 9
-      pivot: {x: 0.5, y: 0.1}
+      pivot: {x: 8, y: 4}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f4f0affaf58a26f4daf1c23167476db4
-      internalID: -8816038613044792324
+      spriteID: 1b7b94325295e804f82272f5648f8165
+      internalID: -7849233557142634265
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Units_7
+      name: Units_red_7
       rect:
         serializedVersion: 2
         x: 96
@@ -265,14 +265,14 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 9
-      pivot: {x: 0.5, y: 0.1}
+      pivot: {x: 8, y: 4}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f727139f8c81bba49bcdb02d80cc9a52
-      internalID: 8319982639285221730
+      spriteID: 1801d533ad702c44fa5dbdd3f6685a10
+      internalID: -5126773995643509169
       vertices: []
       indices: 
       edges: []
@@ -280,7 +280,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 8c128d82a5423234889d152b2e01b2ea
+    spriteID: 11b0c05ad78a1f24da15c4844369c019
     internalID: 0
     vertices: []
     indices: 
