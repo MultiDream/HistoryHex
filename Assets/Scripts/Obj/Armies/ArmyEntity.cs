@@ -84,7 +84,7 @@ public class ArmyEntity : MonoBehaviour
     void Initialize()
     {
         supplyLines = new List<HexPath>();
-        Name = "UnnamedArmy";
+        Name = "Army";
         Food = Mathf.Floor(Random.value * Global.MAXIMUM_FOOD);
         Manpower = 100;
         roller = new DiceRoller(6);
@@ -488,7 +488,7 @@ public class ArmyEntity : MonoBehaviour
     private void OnInitializeUI(UICom com)
     {
         UIArmy uiArmy = (UIArmy)com;
-        uiArmy.SetText(Name, Controller.PlayerId.ToString(), Food.ToString(), "", Manpower.ToString(), "", "", "");
+        uiArmy.SetText(Name, (Controller.PlayerId + 1).ToString(), Food.ToString(), "", Manpower.ToString(), "", "", "");
         void ArmyMove() { ActionMode = ArmyActionMode.Move; }
         void ArmySupply() { ActionMode = ArmyActionMode.SetSupply; }
         uiArmy.SetButtonListeners(ArmyMove, ArmySupply);

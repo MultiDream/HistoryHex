@@ -160,7 +160,7 @@ public class HexEntity : MonoBehaviour
 		}
 		float PopSupply = laborPool[LaborPool.Supply];
 
-		uiHex.SetText(Name, Controller.PlayerId.ToString(), Food.ToString(),
+		uiHex.SetText(Name, (Controller.PlayerId + 1).ToString(), Food.ToString(),
 		(expectedNextFood).ToString(), TotalPopulation.ToString(),
 		Mathf.FloorToInt(TotalPopulation * 0.02f).ToString(),
 		FoodSupply.ToString() + " / " + (foodNeed()).ToString(),
