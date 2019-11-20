@@ -23,6 +23,7 @@ public class ArmyEntity : MonoBehaviour
 			_manpower = value;
 			if (amountLost >= 0){
 				DisplayDmg(amountLost, transform.position, new Vector3(0, 2.5f, 0), 2);
+                CreateSprites();
 			}
 		}
 	}
