@@ -97,8 +97,8 @@ public class GameMaster : MonoBehaviour
 
     public void GameEnd() {
         enableKeys = false;
-        gameEndState.SetDisplayResults(Global.ActivePlayerId);
-        playerTurnStates[Global.ActivePlayerId].OnGameEnd();
+        gameEndState.SetDisplayResults(99);
+        //playerTurnStates[Global.ActivePlayerId].OnGameEnd();
     }
 
     public void ExitGame() {

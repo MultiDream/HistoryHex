@@ -72,8 +72,8 @@ public class UIMaster : MonoBehaviour
 	}
 
 	void J_Key() {
-		Debug.Log("Registering UI");
-		RegisterUIComponent();
+		//Debug.Log("Registering UI");
+		//RegisterUIComponent();
 	}
 	
 	void K_Key() {
@@ -98,6 +98,6 @@ public class UIMaster : MonoBehaviour
 		Color color = GM.Players[GM.currentPlayer].GetComponent<Player>().Colour;
 		color.a = 0.5f;
 		currentPlayerImage.color = color;
-		currentPlayerText.text = "Player " + GM.currentPlayer;
+		currentPlayerText.text = "Player " + (GM.currentPlayer + 1);
 	}
 }

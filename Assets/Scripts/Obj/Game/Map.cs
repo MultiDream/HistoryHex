@@ -40,6 +40,7 @@ public class Map : MonoBehaviour
     //Initializes the Map.
     public void InitMap()
     {
+        Global.MapFlyWeight = this;
         Dictionary<Vector3Int, GameObject> HeavyMap = new Dictionary<Vector3Int, GameObject>(new MapEqualityComparer());
 
         Vector3 Q = new Vector3(Mathf.PI / 3.0f, 0, 0.5f);      //  60* axis 
@@ -99,8 +100,9 @@ public class Map : MonoBehaviour
         playerAdjacencyMaps = new Dictionary<Player, AdjacencyMap>();
         foreach (GameObject hexObject in hexMap.Values){
             HexEntity hex = hexObject.GetComponent<HexEntity>();
-            if (hex.Controller == null)
+            if (hex.Controller == null){
                 continue;
+            }
             if (!playerAdjacencyMaps.ContainsKey(hex.Controller))
                 playerAdjacencyMaps[hex.Controller] = new AdjacencyMap();
             playerAdjacencyMaps[hex.Controller].AddVertex(hexObject);
@@ -120,11 +122,14 @@ public class Map : MonoBehaviour
         HexEntity hex = hexObject.GetComponent<HexEntity>();
         Player transferFrom = hex.Controller;
         hex.Controller = transferTo;
-        if (transferFrom != null && playerAdjacencyMaps.ContainsKey(transferFrom))
+        if (transferFrom != null && playerAdjacencyMaps.ContainsKey(transferFrom)){
+            transferFrom.UnregisterAllMatchedOrders(hex);
             playerAdjacencyMaps[transferFrom].RemoveVertex(hexObject);
-        if (!playerAdjacencyMaps.ContainsKey(hex.Controller))
-            playerAdjacencyMaps[hex.Controller] = new AdjacencyMap();
+        }
+        if (!playerAdjacencyMaps.ContainsKey(transferTo))
+            playerAdjacencyMaps[transferTo] = new AdjacencyMap();
         playerAdjacencyMaps[transferTo].AddVertex(hexObject);
+        transferFrom.RefreshAllArmies();
     }
 
     public Dictionary<Vector3Int, GameObject> GetMapAxial()
