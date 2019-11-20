@@ -2,83 +2,228 @@
 using System.Collections.Generic;
 using System;
 
-//using UnityEngine.Events; //Bah, why use this?
 using UnityEngine;
-
 
 
 // Relevant Delegates:
 public delegate void NextTurnHandler(); //Handles moving game forward one turn.
+public delegate void NextCycleHandler(); //Handles restarting the player cycle.
+public delegate void EndGameHandler();
 
 /// <summary>
-/// Master Class for the game. Will handle networking infrastructure,
-/// or hotseat mechanics, which ever is applicable.
+/// Master Class for the game. Holds important logic and classes for intializing
+/// and observing the state of the game.
 /// </summary>
-public class GameMaster : MonoBehaviour {
 
-	//Prefabs needed for this Component and sub components.
-	public GameObject playerPrefab;
-	public GameObject UIMasterPrefab;
+public class GameMaster : MonoBehaviour
+{
+    //Prefabs needed for this Component and sub components.
+    public GameObject playerPrefab;
+    public GameObject UIMasterPrefab;
+    public int NumberOfPlayers;
+    public int currentPlayer = 0;
+    public GameObject[] Players;
+    public HistoryHex.StateMachine fsm;
+    public HistoryHex.GameStates.PlayerTurn[] playerTurnStates;
+    public HistoryHex.GameStates.Pause pauseState;
+    public HistoryHex.GameStates.ConfirmExit confirmExit;
+    public HistoryHex.GameStates.GameEnd gameEndState;
+    public Map Board;               //Handles map creation.
+	
+	//Button Mappings;
+	private KeyCode NextTurnKey = KeyCode.Space;
+    private KeyCode PauseKey = KeyCode.Escape;
 
-	public int NumberOfPlayers;
-	public int currentPlayer = 0;
-	public GameObject[] Players;
-	public Map Board;				//Handles map creation.
+    private bool enableKeys = true;
 
 	// Start is called before the first frame update
-	void Start() {
+	void Start()
+    {
+		//Throws itself up into Globally Accessible Scope.
+		Global.GM = this;
+
+        enableKeys = true;
+
 		Players = new GameObject[NumberOfPlayers];
-		for (int i = 0; i < NumberOfPlayers; i++){
-			Players[i] = Instantiate(playerPrefab);
-			Players[i].transform.GetComponent<Player>().Colour = UnityEngine.Random.ColorHSV();
-			Players[i].transform.GetComponent<Player>().PlayerId = i;
-		}
+        float split = 1.0f / NumberOfPlayers;
+        float centeringOffset = split/2f;
+        float rangeOffset = centeringOffset;
 
-		Board.InitMap();
+        for (int i = 0; i < NumberOfPlayers; i++)
+        {
+            float center = i*split + centeringOffset;
+            Players[i] = Instantiate(playerPrefab);
+            Players[i].transform.GetComponent<Player>().Colour = UnityEngine.Random.ColorHSV(center - rangeOffset, center + rangeOffset, 0.3f, 1f, 0.3f, 1f);
+            Players[i].transform.GetComponent<Player>().PlayerId = i;
+        }
 
-		Player[] _players = new Player[NumberOfPlayers];
-		for(int i = 0; i < NumberOfPlayers; i++){
-			_players[i] = Players[i].GetComponent<Player>();
-		}
+		Board.radius = PlayerPrefs.GetInt("MapSize",3);
+        Board.InitMap();
 
-		//Possible to refactor by tossing current player into the Global flyweight.
-		Board.setControl(_players); //Needs to run after the map is generated.
+        Player[] _players = new Player[NumberOfPlayers];
+        for (int i = 0; i < NumberOfPlayers; i++)
+        {
+            _players[i] = Players[i].GetComponent<Player>();
+        }
 
+        //Possible to refactor by tossing current player into the Global flyweight.
+        Board.setControl(_players); //Needs to run after the map is generated.
+        Board.InitPlayerAdjacencies();
 
+        UIMaster.instance.SetCurrentPlayerHUD();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (enableKeys && Input.GetKeyDown(NextTurnKey))
+        {
+            NextTurnKeyPress();
+        }
+
+        if (enableKeys && Input.GetKeyDown(PauseKey)) {
+            PauseKeyPress();
+        }
+
+        // TEMPORARY
+        if (Input.GetKeyDown(KeyCode.Alpha8)) {
+            GameEnd();
+        }
 	}
 
-	// Update is called once per frame
-	void Update() {
-		if (Input.GetKeyDown(KeyCode.Space)){
-			Space_Key();
-		}
+    void FixedUpdate()
+    {
+        //Board.DrawSelectedPath(UIMasterPrefab.GetComponent<UIMaster>().selectController);
+    }
+
+    public void GameEnd() {
+        enableKeys = false;
+        gameEndState.SetDisplayResults(99);
+        //playerTurnStates[Global.ActivePlayerId].OnGameEnd();
+    }
+
+    public void ExitGame() {
+        pauseState.OnEndGamePressed();
+    }
+
+    public void ConfirmExitGame() {
+        confirmExit.OnEndGamePressed();
+    }
+
+	/// <summary>
+	/// Tests to see if end conditions have been met.
+	/// If so, a playerId is given to represent the winner
+	/// of the game. Else, return -1.
+	/// </summary>
+	/// <returns></returns>
+	public void TestEndConditions(){
+		HashSet<int> remainingPlayers = RemainingPlayers();
+		if (remainingPlayers.Count <= 1) 
+		{
+			int winner = remainingPlayers.RemoveWhere(_ => true); //Removes first element in set.
+			enableKeys = false;
+			gameEndState.SetDisplayResults(winner);
+			playerTurnStates[winner].OnGameEnd();
+		} 
+			
 	}
 
-	#region KeyBindings
-	/*-------------------------------------------------
+	private HashSet<int> RemainingPlayers(){
+		HashSet<int> remainingPlayers = new HashSet<int>();
+
+		HexEntity entity;
+		foreach (GameObject hexObj in Board.hexMap.Values){
+			entity = hexObj.GetComponent<HexEntity>();
+			remainingPlayers.Add(entity.Controller.PlayerId);
+		}
+
+		return remainingPlayers;
+	}
+    #region KeyBindings
+    /*-------------------------------------------------
 	 *                  Key Bindings
 	 *-----------------------------------------------*/
-	public event NextTurnHandler NextTurn = new NextTurnHandler(logNextTurn); //Contains subscribers to next turn method.
-	public void Space_Key(){
-		Debug.Log("Space Key Pressed!");
-		currentPlayer++;
-		if (currentPlayer >= NumberOfPlayers){
-			currentPlayer = 0;
-		}
-		Global.ActivePlayerId = Players[currentPlayer].GetComponent<Player>().PlayerId;
+	public void NextTurnKeyPress()
+    {
+        Debug.Log("Space Key Pressed!");
+        playerTurnStates[Global.ActivePlayerId].OnTurnEnd();
+        currentPlayer++;
+        if (currentPlayer >= NumberOfPlayers)
+        {
+            currentPlayer = 0;
+			OnNextCycle();
+        }
+        Global.ActivePlayerId = Players[currentPlayer].GetComponent<Player>().PlayerId;
 
-		OnNextTurn(); // OnNext Turn Event fires.
+        OnNextTurn();
+    }
+
+	public void PauseKeyPress()
+	{
+        if (fsm.GetCurrentState() == pauseState) {
+            pauseState.OnReturnToGame(Global.ActivePlayerId);
+        }
+        else if (fsm.GetCurrentState() == confirmExit) {
+            confirmExit.OnCancelPressed();
+        }
+        else {
+            playerTurnStates[Global.ActivePlayerId].OnPause(pauseState);
+        }
+	}
+	#endregion
+
+	#region EventBindings
+
+	public event NextTurnHandler NextTurn = new NextTurnHandler(LogNextTurn); //Contains subscribers to next turn method.
+	private void OnNextTurn()
+    {
+		TestEndConditions();
+		NextTurn(); // Event will never be null.
+		HexUpdate();
+		ArmyUpdate();
+    }
+
+	public event NextTurnHandler HexUpdate = new NextTurnHandler(LogNextTurn); //Contains subscribers to next turn method.
+	private void OnHexUpdate() {
+		HexUpdate(); // Event will never be null.
 	}
 
-	private void OnNextTurn(){
-		Debug.Log("OnNextTurn Event Firing!");
-		if (NextTurn != null){
-			NextTurn();
-		}
+	public event NextTurnHandler ArmyUpdate = new NextTurnHandler(LogNextTurn); //Contains subscribers to next turn method.
+	private void OnArmyUpdate() {
+		ArmyUpdate(); // Event will never be null.
+
+	}
+	/// <summary>
+	/// Default function for logging next Turn Events firing.
+	/// </summary>
+	static void LogNextTurn()
+    {
+        Debug.Log("OnNextTurn Event Fired!");
+    }
+
+	public event NextCycleHandler NextCycle = new NextCycleHandler(LogNextCycle); //Contains subscribers to next turn method.
+	private void OnNextCycle() {
+		NextCycle(); // Event will never be null.
 	}
 
-	static void logNextTurn(){
-		Debug.Log("OnNextTurn Event Fired!");
+	/// <summary>
+	/// Default function for logging next Cycle Events firing.
+	/// </summary>
+	static void LogNextCycle() {
+		Debug.Log("OnNextCycle Event Fired!");
 	}
+
+	public event EndGameHandler EndGame = new EndGameHandler(LogEvent);
+	private void OnEndGame(){
+		EndGame(); // Event will never be null.
+	}
+
+	/// <summary>
+	/// Default function for logging Events firing.
+	/// </summary>
+	static void LogEvent() {
+		Debug.Log($"Event Fired!");
+	}
+
 	#endregion
 }
