@@ -57,6 +57,7 @@ public class GameMaster : MonoBehaviour
             Players[i].transform.GetComponent<Player>().PlayerId = i;
         }
 
+		Board.radius = PlayerPrefs.GetInt("MapSize",3);
         Board.InitMap();
 
         Player[] _players = new Player[NumberOfPlayers];

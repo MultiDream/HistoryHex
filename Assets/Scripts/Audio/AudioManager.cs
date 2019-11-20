@@ -31,7 +31,7 @@ namespace HistoryHex {
         public void Start() {
             audioDict = new Dictionary<string, AudioClip>();
 
-            volumeScale = PlayerPrefs.GetFloat("volume", 1.0f);
+            volumeScale = PlayerPrefs.GetFloat("Volume", 1.0f);
             oceanSource.volume *= volumeScale;
             musicSource.volume *= volumeScale;
 
@@ -64,7 +64,7 @@ namespace HistoryHex {
         public void SetVolumeScale(float volumeScale) {
             this.volumeScale = volumeScale;
 
-            PlayerPrefs.SetFloat("volume", volumeScale);
+            PlayerPrefs.SetFloat("Volume", volumeScale);
         }
     }
 }

@@ -17,7 +17,17 @@ namespace HistoryHex {
                 changeState(main);
             }
 
-            public override void Enter(IState previousState) {
+			public void OnVolumeOptionChange(float value){
+				PlayerPrefs.SetFloat("Volume",value);
+			}
+
+			public void OnMapSizeOptionChange(float value) {
+				//Need to transform appropriately.
+				int transformedValue = Mathf.FloorToInt(value * 8.0f) + 2;
+				PlayerPrefs.SetInt("MapSize", transformedValue);
+			}
+
+			public override void Enter(IState previousState) {
                 optionsMenu.SetActive(true);
             }
 
