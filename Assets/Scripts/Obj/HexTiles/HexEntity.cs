@@ -153,10 +153,19 @@ public class HexEntity : MonoBehaviour
 		UIHex uiHex = (UIHex)com;
 		float expectedNextFood = laborPool[LaborPool.Food] * FoodBase;
 
+		float FoodSupply = 0;
+		if (supplyNeed() != 0)
+		{
+			FoodSupply = (foodNeed() * (laborPool[LaborPool.Supply] / supplyNeed()));
+		}
+		float PopSupply = laborPool[LaborPool.Supply];
+
 		uiHex.SetText(Name, Controller.PlayerId.ToString(), Food.ToString(),
 		(expectedNextFood).ToString(), TotalPopulation.ToString(),
 		Mathf.FloorToInt(TotalPopulation * 0.02f).ToString(),
-		(foodNeed()).ToString(), laborPool[LaborPool.Supply].ToString() + " / " + supplyNeed());
+		FoodSupply.ToString() + " / " + (foodNeed()).ToString(),
+		PopSupply.ToString() + " / " + supplyNeed()
+		);
 
 		
 		if (allowArmySpawn())
