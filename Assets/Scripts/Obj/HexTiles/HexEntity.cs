@@ -232,6 +232,7 @@ public class HexEntity : MonoBehaviour
 			ArmyEntity armyEntity = army.transform.GetComponent<ArmyEntity>();
 			armyEntity.Position = Position;
 			armyEntity.Controller = Controller;
+			Controller.armies.Add(armyEntity);
 		}
 	}
 

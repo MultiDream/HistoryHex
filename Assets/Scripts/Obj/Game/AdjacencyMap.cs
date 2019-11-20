@@ -93,12 +93,18 @@ public class AdjacencyMap
     public void RemoveVertex(GameObject vertex)
     {
         List<GameObject> neighbors = null;
-        if (vertexEntities.Contains(vertex))
+        Debug.Log("RemoveVertex Logic: vertexEntities.Contains(vertex): (EXPECT TRUE) " +vertexEntities.Contains(vertex) );
+        Debug.Log("What vertexes are here then?" + vertexEntities.Count);
+        if (vertexEntities.Contains(vertex)){
             vertexEntities.Remove(vertex);
+            Debug.Log("This should be false (vertexEntities):" + !vertexEntities.Contains(vertex));
+        }
+        Debug.Log("RemoveVertex Logic: adjacencyMap.ContainsKey(vertex): (EXPECT TRUE) " +adjacencyMap.ContainsKey(vertex) );
         if (adjacencyMap.ContainsKey(vertex))
         {
             neighbors = adjacencyMap[vertex];
             adjacencyMap.Remove(vertex);
+            Debug.Log("This should be false (adjacencyMap):" + !adjacencyMap.ContainsKey(vertex));
         }
         else
             return;
@@ -108,6 +114,7 @@ public class AdjacencyMap
         {
             if (adjacencyMap[otherVertex].Contains(vertex))
                 adjacencyMap[otherVertex].Remove(vertex);
+            Debug.Log("This should be false (neighbors)" + !adjacencyMap[otherVertex].Contains(vertex));
         }
     }
 
